@@ -17,6 +17,8 @@ class CoreTestCase(TestCase):
 
     def test_no_such_user(self):
         engine = core.GameEngine()
+        self.assertRaises(ValueError,
+            engine.get_user_idleness, 'an_user', timestamp=1010)
 
     def test_base_login(self):
         engine = core.GameEngine()
