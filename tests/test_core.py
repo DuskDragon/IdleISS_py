@@ -43,6 +43,7 @@ class CoreTestCase(TestCase):
                 'new_level': 1,
             }
         })
+        self.assertEqual(engine.users['an_user']['level'], 1)
 
         # can't trigger the same events again I guess?
         events = engine.get_events(timestamp=1007)
@@ -54,6 +55,7 @@ class CoreTestCase(TestCase):
                 'new_level': 2,
             }
         })
+        self.assertEqual(engine.users['an_user']['level'], 2)
 
     def test_events_skip_time(self):
         engine = core.GameEngine()
@@ -65,6 +67,7 @@ class CoreTestCase(TestCase):
                 'new_level': 7,
             }
         })
+        self.assertEqual(engine.users['an_user']['level'], 7)
 
     def test_events_user_spoke(self):
         engine = core.GameEngine()
@@ -79,3 +82,6 @@ class CoreTestCase(TestCase):
         events = engine.get_events(timestamp=1053)
         # would not trigger the lower level events again
         self.assertEqual(events, {})
+
+        # user level should not decrement either.
+        self.assertEqual(engine.users['an_user']['level'], 6)
