@@ -12,7 +12,7 @@ setup(name='idleiss',
       # Get more strings from
       # http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 1 - Planning",
         ],
       keywords='',
       author='DuskDragon',
