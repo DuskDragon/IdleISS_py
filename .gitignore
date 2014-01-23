@@ -35,5 +35,9 @@ nosetests.xml
 .project
 .pydevproject
 
+# Temporary editor files
+*~
+.*.swp
+
 # Reminder Files
 env.txt
