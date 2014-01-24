@@ -6,9 +6,50 @@ class User(object):
         self.id = user_id
         self.fleet = FleetManager()
         self.resources = ResourceManager()
-        self.online = True
+        self.online = False
         self.online_at = -1
         #self.last_active = -1
         self.offline_at = -1
         self.total_idle_time = 0
-        
+
+        self.last_payout = 0
+
+    def get_current_idle_duration(self, timestamp):
+        if not self.online:
+            return 0
+        return timestamp - self.online_at
+
+    def log_in(self, timestamp):
+        if self.online:
+            # already logged in
+            return
+
+        self.online = True
+        self.online_at = timestamp
+        # start tracking payout here
+        # XXX see `update` below on resources payouts
+        self.last_payout = timestamp
+
+    def log_out(self, timestamp):
+        if not self.online:
+            # already logged out
+            return
+
+        self.update(timestamp)
+        self.online = False
+        self.offline_at = timestamp
+
+    def update(self, timestamp):
+        if not self.online:
+            # at least until there are some other things that affect an
+            # offline user.  We may have to split this up into the two
+            # parts when that happens.
+            return
+
+        # pay out resources
+        # XXX consider tracking the last payout time inside the resource
+        # instance?
+        self.resources.pay_resources(timestamp - self.last_payout)
+        self.last_payout = timestamp
+        # update idle time
+        self.total_idle_time += timestamp - self.online_at
