@@ -124,12 +124,12 @@ class CoreTestCase(TestCase):
         events = engine.get_events(timestamp=200)
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 20)
         
-    def test_log_in_backwards_in_time(self):
+    def test_log_in_backwards_in_time_failure(self):
         engine = core.GameEngine()
         events = engine.get_events(timestamp=100)
         self.assertRaises(core.TimeOutofBounds, engine.user_logged_in, 'an_user', timestamp=50)
     
-    def test_log_out_backwards_in_time(self):
+    def test_log_out_backwards_in_time_failure(self):
         engine = core.GameEngine()
         events = engine.get_events(timestamp=100)
         engine.user_logged_in('an_user', timestamp=101)
