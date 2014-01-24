@@ -13,9 +13,10 @@ class GameEngine(object):
     def __init__(self):
         self.users = {}
         
-        #last_event_called_timestamp is updated 
-        #by get_events each time it is called
-        self.last_event_called_timestamp = 0
+        # The current world_timestamp - only updated whenever the world
+        # is updated by calling update_world with the current/latest
+        # simulated timestamp.
+        self.world_timestamp = 0
 
     def user_logged_in(self, user_id, timestamp):
         if user_id not in self.users:
@@ -40,12 +41,12 @@ class GameEngine(object):
         self.users[user_id].offline_at = timestamp
         
         # pay resources and update total idle time since last get_events or online
-        if self.last_event_called_timestamp < self.users[user_id].online_at:
+        if self.world_timestamp < self.users[user_id].online_at:
             self.users[user_id].resources.pay_resources(timestamp - self.users[user_id].online_at)
             self.users[user_id].total_idle_time += timestamp - self.users[user_id].online_at 
         else: 
-            self.users[user_id].resources.pay_resources(timestamp - self.last_event_called_timestamp)
-            self.users[user_id].total_idle_time += timestamp - self.last_event_called_timestamp 
+            self.users[user_id].resources.pay_resources(timestamp - self.world_timestamp)
+            self.users[user_id].total_idle_time += timestamp - self.world_timestamp 
 
     def get_user_current_idle_duration(self, user_id, timestamp):
         if user_id not in self.users:
@@ -53,14 +54,14 @@ class GameEngine(object):
 
         return timestamp - self.users[user_id].online_at
 
-    def get_events(self, timestamp):
-        if timestamp == self.last_event_called_timestamp:
+    def update_world(self, timestamp):
+        if timestamp == self.world_timestamp:
             return []
-        if timestamp < self.last_event_called_timestamp:
+        if timestamp < self.world_timestamp:
             # can't go back in time for now.
             raise TimeOutofBounds("get_events: Timestamps are going backwards in time")
 
-        time_diff = timestamp - self.last_event_called_timestamp
+        time_diff = timestamp - self.world_timestamp
         
         result = []
 
@@ -68,7 +69,7 @@ class GameEngine(object):
         for user_id in self.users:
             user = self.users[user_id]
             #user is online, but logged in since the last get_events
-            if user.online and self.last_event_called_timestamp < user.online_at:
+            if user.online and self.world_timestamp < user.online_at:
                 user.resources.pay_resources(timestamp - user.online_at)
                 user.total_idle_time += timestamp - user.online_at
             elif user.online:
@@ -89,5 +90,5 @@ class GameEngine(object):
 
 
         
-        self.last_event_called_timestamp = timestamp
+        self.world_timestamp = timestamp
         return result
