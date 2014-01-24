@@ -19,6 +19,8 @@ class CoreTestCase(TestCase):
         engine = core.GameEngine()
         self.assertRaises(ValueError,
             engine.get_user_current_idle_duration, 'an_user', timestamp=1010)
+        self.assertRaises(ValueError,
+            engine.user_logged_out, 'an_user', timestamp=1010)
 
     def test_base_login(self):
         engine = core.GameEngine()
@@ -125,12 +127,12 @@ class CoreTestCase(TestCase):
     def test_log_in_backwards_in_time(self):
         engine = core.GameEngine()
         events = engine.get_events(timestamp=100)
-        self.assertRaises(core.TimeOutofBounds, engine.user_logged_in('an_user', timestamp=50))
+        self.assertRaises(core.TimeOutofBounds, engine.user_logged_in, 'an_user', timestamp=50)
     
     def test_log_out_backwards_in_time(self):
         engine = core.GameEngine()
         events = engine.get_events(timestamp=100)
         engine.user_logged_in('an_user', timestamp=101)
-        self.assertRaises(core.TimeOutofBounds, engine.user_logged_out('an_user', timestamp=50))
+        self.assertRaises(core.TimeOutofBounds, engine.user_logged_out, 'an_user', timestamp=50)
         
         

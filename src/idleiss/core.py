@@ -20,8 +20,9 @@ class GameEngine(object):
     def user_logged_in(self, user_id, timestamp):
         if user_id not in self.users:
             self.users[user_id] = User(user_id)
-            self.users[user_id].online_at = timestamp
-            #self.users[user_id].last_active = timestamp
+        
+        self.users[user_id].online_at = timestamp
+        #self.users[user_id].last_active = timestamp
 
     # Honestly I'm not even sure if I want to penalize messages ... hmmm
     #def user_room_message(self, user_id, message, timestamp):
@@ -32,6 +33,9 @@ class GameEngine(object):
     #    self.users[user_id].last_active = timestamp
 
     def user_logged_out(self, user_id, timestamp):
+        if user_id not in self.users:
+            raise ValueError
+
         self.users[user_id].online = False
         self.users[user_id].offline_at = timestamp
         
