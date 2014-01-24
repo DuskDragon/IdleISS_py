@@ -25,6 +25,14 @@ class GameEngine(object):
         self._engine_events = []
 
     def add_event(self, event_type, **kw):
+        if 'timestamp' in kw:
+            # this is a bit of a magic as we assume that any keyword
+            # arguments that are called `timestamp` relates to the
+            # current time.  We check that the engine hasn't processed
+            # any timestamp future to this.  If it is, force it to where
+            # the engine last checked.
+            kw['timestamp'] = max(kw['timestamp'], self.world_timestamp)
+
         self._engine_events.append(GameEngineEvent(event_type, **kw))
 
     def get_user(self, user_id):

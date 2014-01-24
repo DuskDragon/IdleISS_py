@@ -4,7 +4,6 @@ from idleiss import core
 
 
 class CoreTestCase(TestCase):
-    
     def setUp(self):
         pass
 
@@ -103,16 +102,34 @@ class CoreTestCase(TestCase):
         engine.user_logged_out('an_user', timestamp=170)
         engine.update_world(timestamp=200)
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 20)
-        
-    def test_log_in_backwards_in_time(self):
+
+    def test_event_engine_add(self):
+        def some_event(name='foo'):
+            return name
+
+        engine = core.GameEngine()
+        engine.add_event(some_event, name='foo')
+        self.assertEqual(engine._engine_events[0].func, some_event)
+        self.assertEqual(engine._engine_events[0].kw, {'name': 'foo'})
+
+    def test_event_engine_backwards_in_time(self):
+        def time_dependant_event(timestamp):
+            return timestamp
+
+        def time_independant_event():
+            # if there is even such a thing.
+            return
+
         engine = core.GameEngine()
         engine.update_world(timestamp=100)
-        self.assertRaises(core.TimeOutofBounds, engine.user_logged_in, 'an_user', timestamp=50)
-    
-    def test_log_out_backwards_in_time(self):
-        engine = core.GameEngine()
-        engine.update_world(timestamp=100)
-        engine.user_logged_in('an_user', timestamp=101)
-        self.assertRaises(core.TimeOutofBounds, engine.user_logged_out, 'an_user', timestamp=50)
-        
-        
+        engine.add_event(time_dependant_event, timestamp=50)
+        # timestamp argument magically forced to be the last time the
+        # world was updated.
+
+        self.assertEqual(engine._engine_events[0].kw['timestamp'], 100)
+
+        # note that the order of events that got added to the engine do
+        # matter very much.  i.e. if login and logout happened at about
+        # the same time but the order they were added in were reversed,
+        # bad things probably will happen.  Problem belongs to the user
+        # of the engine, i.e. the chatroom interface.
