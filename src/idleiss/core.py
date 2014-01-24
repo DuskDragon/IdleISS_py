@@ -1,52 +1,86 @@
 from math import log
+from user import User
+
+class TimeOutofBounds(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
 
 class GameEngine(object):
 
     def __init__(self):
         self.users = {}
-        self.last_event_timestamp = 0
+        
+        #last_event_called_timestamp is updated 
+        #by get_events each time it is called
+        self.last_event_called_timestamp = 0
 
     def user_logged_in(self, user_id, timestamp):
         if user_id not in self.users:
-            self.users[user_id] = {}
-            self.users[user_id]['last_idle'] = timestamp
+            self.users[user_id] = User(user_id)
+            self.users[user_id].online_at = timestamp
+            #self.users[user_id].last_active = timestamp
 
-    def user_room_message(self, user_id, message, timestamp):
-        if user_id not in self.users:
-            return
+    # Honestly I'm not even sure if I want to penalize messages ... hmmm
+    #def user_room_message(self, user_id, message, timestamp):
+        #however penalties are not yet implemented
+    #    if user_id not in self.users:
+    #        raise ValueError
 
-        self.users[user_id]['last_idle'] = timestamp
+    #    self.users[user_id].last_active = timestamp
 
     def user_logged_out(self, user_id, timestamp):
-        pass
+        self.users[user_id].online = False
+        self.users[user_id].offline_at = timestamp
+        
+        # pay resources since last get_events
+        self.users[user_id].resources.pay_resources(timestamp - self.last_event_called_timestamp)
+        # update total idle time since last get_events
+        self.users[user_id].total_idle_time += timestamp - self.last_event_called_timestamp 
 
-    def get_user_idleness(self, user_id, timestamp):
+    def get_user_current_idle_duration(self, user_id, timestamp):
         if user_id not in self.users:
             raise ValueError
 
-        return timestamp - self.users[user_id]['last_idle']
+        return timestamp - self.users[user_id].online_at
 
     def get_events(self, timestamp):
-        if timestamp < self.last_event_timestamp:
+        if timestamp == self.last_event_called_timestamp:
+            return {}
+        if timestamp < self.last_event_called_timestamp:
             # can't go back in time for now.
-            return
+            raise TimeOutofBounds("get_events: Timestamps are going backwards in time")
 
-        self.last_event_timestamp = timestamp
-
+        time_diff = timestamp - self.last_event_called_timestamp
+        
         result = {}
 
+        #### Pay Resources and Update total_idle_time
         for user_id in self.users:
             user = self.users[user_id]
-            idle_time = self.get_user_idleness(user_id, timestamp)
-            # probably have to split this to a dedicated method later.
-            user_level = int(log(idle_time, 2)) + 1
+            #user is online, but logged in since the last get_events
+            if user.online and self.last_event_called_timestamp < user.online_at:
+                user.resources.pay_resources(timestamp - user.online_at)
+                user.total_idle_time += timestamp - user.online_at
+            elif user.online:
+                user.resources.pay_resources(time_diff)
+                user.total_idle_time += time_diff
+        #### Random Events
+        for user_id in self.users:
+            pass
+        #### Calculate Battles
+        for user_id in self.users:
+            pass
+        #### Produce Units
+        for user_id in self.users:
+            pass
+        #### Other Events?
+        for user_id in self.users:
+            pass
 
-            if user_level > user.get('level', 0):
-                # should probably create an event object later?
-                user['level'] = user_level
-                result[user_id] = {
-                    'new_level': user_level
-                }
 
+        
+        self.last_event_called_timestamp = timestamp
         return result
