@@ -1,6 +1,7 @@
 from math import log
 
 from .user import User
+from .event import GameEngineEvent
 
 
 class TimeOutofBounds(Exception):
@@ -20,6 +21,12 @@ class GameEngine(object):
         # simulated timestamp.
         self.world_timestamp = 0
 
+        # this should be a dequeue and must be thread safe.
+        self._engine_events = []
+
+    def add_event(self, event_type, **kw):
+        self._engine_events.append(GameEngineEvent(event_type, **kw))
+
     def get_user(self, user_id):
         if user_id not in self.users:
             raise ValueError
@@ -29,6 +36,9 @@ class GameEngine(object):
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
             self.users[user_id] = User(user_id)
+
+        user = self.get_user(user_id)
+        self.add_event(user.log_in, timestamp=timestamp)
 
     # Honestly I'm not even sure if I want to penalize messages ... hmmm
     #def user_room_message(self, user_id, message, timestamp):
@@ -50,8 +60,15 @@ class GameEngine(object):
             raise TimeOutofBounds("already processed this timestamp")
 
         time_diff = timestamp - self.world_timestamp
-        
-        result = []
+
+        event_results = []
+
+        # give the _engine_events a fresh start and grab everything that
+        # has happened so far that needed our immediate attention.
+        # XXX this is also probably not thread safe...  we fix this later.
+        self._engine_events, engine_events = [], self._engine_events
+        for engine_event in engine_events:
+            event_results.append(engine_event())
 
         #### Pay Resources and Update total_idle_time
         for user_id in self.users:
@@ -68,4 +85,4 @@ class GameEngine(object):
             #### Other Events?
 
         self.world_timestamp = timestamp
-        return result
+        return event_results
