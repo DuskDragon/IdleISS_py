@@ -35,10 +35,13 @@ class GameEngine(object):
         self.users[user_id].online = False
         self.users[user_id].offline_at = timestamp
         
-        # pay resources since last get_events
-        self.users[user_id].resources.pay_resources(timestamp - self.last_event_called_timestamp)
-        # update total idle time since last get_events
-        self.users[user_id].total_idle_time += timestamp - self.last_event_called_timestamp 
+        # pay resources and update total idle time since last get_events or online
+        if self.last_event_called_timestamp < self.users[user_id].online_at:
+            self.users[user_id].resources.pay_resources(timestamp - self.users[user_id].online_at)
+            self.users[user_id].total_idle_time += timestamp - self.users[user_id].online_at 
+        else: 
+            self.users[user_id].resources.pay_resources(timestamp - self.last_event_called_timestamp)
+            self.users[user_id].total_idle_time += timestamp - self.last_event_called_timestamp 
 
     def get_user_current_idle_duration(self, user_id, timestamp):
         if user_id not in self.users:

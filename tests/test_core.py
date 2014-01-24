@@ -103,6 +103,34 @@ class CoreTestCase(TestCase):
         engine = core.GameEngine()
         engine.user_logged_in('an_user', timestamp=1000)
         engine.get_events(timestamp=1050)
-        self.assertRaises(core.TimeOutofBounds,
-            engine.get_events, timestamp=999)
-
+        self.assertRaises(core.TimeOutofBounds, engine.get_events, timestamp=999)
+            
+    def test_log_in_between_ticks(self):
+        engine = core.GameEngine()
+        engine.get_events(timestamp=100)
+        engine.user_logged_in('an_user', timestamp=150)
+        engine.users['an_user'].resources.basic_materials_income = 1
+        engine.get_events(timestamp=200)
+        self.assertEqual(engine.users['an_user'].resources.basic_materials, 50)
+    
+    def test_log_in_log_out_between_ticks(self):
+        engine = core.GameEngine()
+        events = engine.get_events(timestamp=100)
+        engine.user_logged_in('an_user', timestamp=150)
+        engine.users['an_user'].resources.basic_materials_income = 1
+        engine.user_logged_out('an_user', timestamp=170)
+        events = engine.get_events(timestamp=200)
+        self.assertEqual(engine.users['an_user'].resources.basic_materials, 20)
+        
+    def test_log_in_backwards_in_time(self):
+        engine = core.GameEngine()
+        events = engine.get_events(timestamp=100)
+        self.assertRaises(core.TimeOutofBounds, engine.user_logged_in('an_user', timestamp=50))
+    
+    def test_log_out_backwards_in_time(self):
+        engine = core.GameEngine()
+        events = engine.get_events(timestamp=100)
+        engine.user_logged_in('an_user', timestamp=101)
+        self.assertRaises(core.TimeOutofBounds, engine.user_logged_out('an_user', timestamp=50))
+        
+        
