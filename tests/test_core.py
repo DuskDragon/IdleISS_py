@@ -42,28 +42,21 @@ class CoreTestCase(TestCase):
         engine.users['an_user'].resources.advanced_materials_income = 1
         engine.users['an_user'].resources.money_income = 1
         events = engine.get_events(timestamp=1007)
-        self.assertEqual(events, {
-        #    'an_user': {
-        #        'new_level': 1,
-        #    }
-        })
+        self.assertEqual(events, [])
         self.assertEqual(engine.users['an_user'].resources.basic_materials,7)
         self.assertEqual(engine.users['an_user'].resources.advanced_materials, 7)
         self.assertEqual(engine.users['an_user'].resources.money, 7)
 
         # can't trigger the same events again I guess?
         events = engine.get_events(timestamp=1007)
-        self.assertEqual(events, {})
+        self.assertEqual(events, [])
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 7)
         self.assertEqual(engine.users['an_user'].resources.advanced_materials, 7)
         self.assertEqual(engine.users['an_user'].resources.money, 7)
 
         events = engine.get_events(timestamp=1008)
-        self.assertEqual(events, {
-        #    'an_user': {
-        #        'new_level': 2,
-        #    }
-        })
+        self.assertEqual(events, [])
+
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 8)
         self.assertEqual(engine.users['an_user'].resources.advanced_materials, 8)
         self.assertEqual(engine.users['an_user'].resources.money, 8)
@@ -75,11 +68,7 @@ class CoreTestCase(TestCase):
         engine.users['an_user'].resources.advanced_materials_income = 1
         engine.users['an_user'].resources.money_income = 1
         events = engine.get_events(timestamp=2100)
-        self.assertEqual(events, {
-        #    'an_user': {
-        #        'new_level': 7,
-        #    }
-        })
+        self.assertEqual(events, [])
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 1100)
         self.assertEqual(engine.users['an_user'].resources.advanced_materials, 1100)
         self.assertEqual(engine.users['an_user'].resources.money, 1100)

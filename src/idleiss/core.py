@@ -55,14 +55,14 @@ class GameEngine(object):
 
     def get_events(self, timestamp):
         if timestamp == self.last_event_called_timestamp:
-            return {}
+            return []
         if timestamp < self.last_event_called_timestamp:
             # can't go back in time for now.
             raise TimeOutofBounds("get_events: Timestamps are going backwards in time")
 
         time_diff = timestamp - self.last_event_called_timestamp
         
-        result = {}
+        result = []
 
         #### Pay Resources and Update total_idle_time
         for user_id in self.users:
