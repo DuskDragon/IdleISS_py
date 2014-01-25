@@ -141,16 +141,23 @@ class CoreTestCase(TestCase):
         engine.update_world(timestamp=100)
         engine.user_logged_out('an_user', 100)
         engine.user_logged_in('an_user', 100)
+        engine.users['an_user'].resources.basic_materials_income = 1
         engine.user_logged_out('an_user', 101)
         engine.user_logged_out('an_user', 100)
         engine.user_logged_in('an_user', 100)
         engine.user_logged_in('an_user', 101)
         engine.user_logged_out('an_user', 101)
         engine.user_logged_in('an_user', 100)
-        engine.update_world(timestamp=101)
+        engine.update_world(timestamp=102)
         # honestly I have no idea what the result _should_ be
         
         # for now, let's say it is supposed to be logged out since that
         # was the event with the "newest" timestamp and the newest
         # event sent to the engine
-        self.assertEqual(engine.users['an_user'].online, False)
+        test_user = engine.users['an_user']
+        self.assertEqual(test_user.online, False) #currently True
+        self.assertEqual(test_user.online_at, 101) #currently 100
+        self.assertEqual(test_user.offline_at, 101) #currently passes (101)
+        self.assertEqual(test_user.total_idle_time, 1) #currently 4 (:ohdear:)
+        self.assertEqual(test_user.last_payout, 101) #currently 102
+        self.assertEqual(test_user.resources.basic_materials, 1) #currently 4
