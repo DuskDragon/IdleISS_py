@@ -14,10 +14,6 @@ class CoreTestCase(TestCase):
         engine = core.GameEngine()
         self.assertTrue(engine)
 
-    def test_no_such_user(self):
-        engine = core.GameEngine()
-        self.assertRaises(ValueError, engine.get_user, 'an_user')
-
     # def test_user_interaction(self):
         # engine = core.GameEngine()
         # engine.user_logged_in('an_user', timestamp=1000)
@@ -28,11 +24,13 @@ class CoreTestCase(TestCase):
     def test_events_basic(self):
         engine = core.GameEngine()
         engine.user_logged_in('an_user', timestamp=1000)
+        # manually set one of the income rates
         engine.users['an_user'].resources.basic_materials_income = 1
         engine.users['an_user'].resources.advanced_materials_income = 1
         engine.users['an_user'].resources.money_income = 1
         engine.update_world(timestamp=1007)
 
+        # check that income was paid properly
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 7)
         self.assertEqual(engine.users['an_user'].resources.advanced_materials, 7)
         self.assertEqual(engine.users['an_user'].resources.money, 7)
@@ -54,11 +52,13 @@ class CoreTestCase(TestCase):
     def test_events_skip_time(self):
         engine = core.GameEngine()
         engine.user_logged_in('an_user', timestamp=1000)
+        # manually set one of the income rates
         engine.users['an_user'].resources.basic_materials_income = 1
         engine.users['an_user'].resources.advanced_materials_income = 1
         engine.users['an_user'].resources.money_income = 1
         engine.update_world(timestamp=2100)
 
+        # check that income was paid properly
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 1100)
         self.assertEqual(engine.users['an_user'].resources.advanced_materials, 1100)
         self.assertEqual(engine.users['an_user'].resources.money, 1100)
@@ -84,7 +84,9 @@ class CoreTestCase(TestCase):
         engine = core.GameEngine()
         engine.user_logged_in('an_user', timestamp=1000)
         engine.update_world(timestamp=1050)
-        self.assertRaises(core.TimeOutofBounds, engine.update_world, timestamp=999)
+        with self.assertRaises(core.TimeOutofBounds) as context:
+            engine.update_world(timestamp=999)
+        self.assertEqual(str(context.exception), "'already processed this timestamp'")
             
     def test_log_in_between_ticks(self):
         engine = core.GameEngine()
@@ -133,3 +135,22 @@ class CoreTestCase(TestCase):
         # the same time but the order they were added in were reversed,
         # bad things probably will happen.  Problem belongs to the user
         # of the engine, i.e. the chatroom interface.
+
+    def test_handle_incoming_thread_disaster(self):
+        engine = core.GameEngine()
+        engine.update_world(timestamp=100)
+        engine.user_logged_out('an_user', 100)
+        engine.user_logged_in('an_user', 100)
+        engine.user_logged_out('an_user', 101)
+        engine.user_logged_out('an_user', 100)
+        engine.user_logged_in('an_user', 100)
+        engine.user_logged_in('an_user', 101)
+        engine.user_logged_out('an_user', 101)
+        engine.user_logged_in('an_user', 100)
+        engine.update_world(timestamp=101)
+        # honestly I have no idea what the result _should_ be
+        
+        # for now, let's say it is supposed to be logged out since that
+        # was the event with the "newest" timestamp and the newest
+        # event sent to the engine
+        self.assertEqual(engine.users['an_user'].online, False)
