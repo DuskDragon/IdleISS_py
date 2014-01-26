@@ -15,6 +15,7 @@ class GameEngine(object):
 
     def __init__(self):
         self.users = {}
+        self.current_online_list = []
 
         # The current world_timestamp - only updated whenever the world
         # is updated by calling update_world with the current/latest
@@ -44,29 +45,44 @@ class GameEngine(object):
 
         self._engine_events.append(GameEngineEvent(event_type, **kw))
 
+    # Honestly I'm not even sure if I want to penalize messages ... hmmm
+    # it's classic to penalize messages in IdleRPG, but we will be different
+    #def user_room_message(self, user_id, message, timestamp):
+        #however penalties are not yet implemented
+    #    if user_id not in self.users:
+    #        raise ValueError
+    #    self.users[user_id].last_active = timestamp
+        
     def user_logged_in(self, user_id, timestamp):
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
             self.users[user_id] = User(user_id)
 
-        user = self.users[user_id]
-        self.add_event(user.log_in, timestamp=timestamp)
-
-    # Honestly I'm not even sure if I want to penalize messages ... hmmm
-    #def user_room_message(self, user_id, message, timestamp):
-        #however penalties are not yet implemented
-    #    if user_id not in self.users:
-    #        raise ValueError
-
-    #    self.users[user_id].last_active = timestamp
+        self.users[user_id].log_in(timestamp)
 
     def user_logged_out(self, user_id, timestamp):
         if user_id not in self.users:
             return
-        user = self.users[user_id]
-        self.add_event(user.log_out, timestamp=timestamp)
+        self.users[user_id].log_out(timestamp)
 
-    def update_world(self, timestamp):
+    def update_user_list(self, active_list, timestamp):
+        for member in self.current_online_list:
+            if member not in active_list:
+                self.user_logged_out(member, timestamp)
+        for member in active_list:
+            if member not in self.current_online_list:
+                self.user_logged_in(member, timestamp)
+
+        self.current_online_list = set(active_list)
+        
+    def update_world(self, active_list, timestamp):
+        """
+        update_world will be the one point of intersection as far as data 
+        modification between this engine and the outside world. 
+        Every tick (chosen by the controller program) the controller must
+        send the current timestamp along with the current user list and any commands
+        such as "fleet engage <enemy player>"
+        """
         if timestamp == self.world_timestamp:
             return []
         if timestamp < self.world_timestamp:
@@ -98,5 +114,6 @@ class GameEngine(object):
             #### Produce Units
             #### Other Events?
 
+        self.update_user_list(active_list, timestamp)
         self.world_timestamp = timestamp
         return event_results

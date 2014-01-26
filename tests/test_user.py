@@ -53,7 +53,3 @@ class UserTestCase(TestCase):
         user.log_in(100)
         user.update(107)
         self.assertEqual(user.resources.money, 7)
-
-        # logging out automatically calls update.
-        user.log_out(110)
-        self.assertEqual(user.resources.money, 10)

@@ -26,8 +26,6 @@ class User(object):
 
         self.online = True
         self.online_at = timestamp
-        # start tracking payout here
-        # XXX see `update` below on resources payouts
         self.last_payout = timestamp
 
     def log_out(self, timestamp):
@@ -35,7 +33,6 @@ class User(object):
             # already logged out
             return
 
-        self.update(timestamp)
         self.online = False
         self.offline_at = timestamp
 
