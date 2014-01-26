@@ -1,0 +1,43 @@
+{
+    "sizes": {
+        "fighter": 1,
+        "frigate": 2,
+        "cruiser": 3,
+        "battlecruiser": 4,
+        "battleship": 5
+    },
+    "ships": {
+        "light fighter": {
+            "shield": 10,
+            "armor": 10,
+            "hull": 400,
+            "firepower": 50,
+            "size": "fighter",
+            "weapon size": "fighter",
+            "multishot": {
+            }
+        },
+        "heavy fighter": {
+            "shield": 25,
+            "armor": 10,
+            "hull": 1000,
+            "firepower": 150,
+            "size": "fighter",
+            "weapon size": "fighter",
+            "multishot": {
+                "hauler": 3
+            }
+        },
+        "cruiser": {
+            "shield": 50,
+            "armor": 20,
+            "hull": 2700,
+            "firepower": 400,
+            "size": "cruiser",
+            "weapon size": "cruiser",
+            "multishot": {
+                "light fighter": 6
+            }
+        }
+    }
+}
