@@ -6,7 +6,7 @@ class UserTestCase(TestCase):
 
     def setUp(self):
         self.user = User('an_user')
-    
+
     def test_log_in(self):
         user = self.user
         user.log_in(100)
@@ -21,7 +21,7 @@ class UserTestCase(TestCase):
         # shutdowns - i.e. it could store the last time it was running as
         # the logoff time for users, log everyone out, then log them back
         # on as part of its startup routine.
-    
+
     def test_log_out(self):
         user = self.user
         user.log_out(100)

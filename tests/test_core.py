@@ -21,7 +21,7 @@ class CoreTestCase(TestCase):
         # idleness = engine.get_user_current_idleduration('an_user', timestamp=1010)
         # self.assertEqual(idleness, 4)
 
-    def test_events_basic(self):
+    def test_update_world_basic(self):
         engine = core.GameEngine()
         user_list = set(['an_user'])
         engine.update_world(active_list=user_list, timestamp=1000)
@@ -29,7 +29,7 @@ class CoreTestCase(TestCase):
         engine.users['an_user'].resources.basic_materials_income = 1
         engine.users['an_user'].resources.advanced_materials_income = 1
         engine.users['an_user'].resources.money_income = 1
-        
+
         # check that income is paid properly
         engine.update_world(active_list=user_list, timestamp=1007)
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 7)
@@ -46,6 +46,24 @@ class CoreTestCase(TestCase):
         self.assertEqual(engine.users['an_user'].resources.basic_materials, 8)
         self.assertEqual(engine.users['an_user'].resources.advanced_materials, 8)
         self.assertEqual(engine.users['an_user'].resources.money, 8)
+
+    def test_offline_users_do_not_earn_resources(self):
+        engine = core.GameEngine()
+        user_list = set(['user1', 'user2'])
+        engine.update_world(active_list=user_list, timestamp=1000)
+        engine.users['user1'].resources.basic_materials_income = 1
+        engine.users['user2'].resources.basic_materials_income = 1
+        user_list = set(['user1'])
+        engine.update_world(active_list=user_list, timestamp=1001)
+
+        # now user1 and user2 should both have 1 basic_material
+        self.assertEqual(engine.users['user1'].resources.basic_materials, 1)
+        self.assertEqual(engine.users['user2'].resources.basic_materials, 1)
+
+        engine.update_world(active_list=user_list, timestamp=1002)
+        #now user1 should have 2, while user2 still has only 1
+        self.assertEqual(engine.users['user1'].resources.basic_materials, 2)
+        self.assertEqual(engine.users['user2'].resources.basic_materials, 1)
 
     def test_events_skip_time(self):
         engine = core.GameEngine()
@@ -78,7 +96,7 @@ class CoreTestCase(TestCase):
 
         ##user level should not decrement either.
         # self.assertEqual(engine.users['an_user']['level'], 6)
-        
+
     def test_backwards_in_time_failure(self):
         engine = core.GameEngine()
         user_list = set(['an_user'])
@@ -86,7 +104,6 @@ class CoreTestCase(TestCase):
         with self.assertRaises(core.TimeOutofBounds) as context:
             engine.update_world(active_list=user_list, timestamp=999)
         self.assertEqual(str(context.exception), "'already processed this timestamp'")
-
 
     def test_event_engine_add(self):
         def some_event(name='foo'):
@@ -133,7 +150,7 @@ class CoreTestCase(TestCase):
         # engine.user_logged_in('an_user', 100)
         # engine.update_world(timestamp=102)
         # honestly I have no idea what the result _should_ be
-        
+
         # for now, let's say it is supposed to be logged out since that
         # was the event with the "newest" timestamp and the newest
         # event sent to the engine

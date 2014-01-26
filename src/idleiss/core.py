@@ -10,7 +10,7 @@ class TimeOutofBounds(Exception):
     def __str__(self):
         return repr(self.value)
 
-        
+
 class GameEngine(object):
 
     def __init__(self):
@@ -39,7 +39,7 @@ class GameEngine(object):
             # it allows us to schedule future events by simpily placing them
             # into this queue. Hopefully this does not lead to a queue
             # which is overly large and stuffed full of future events
-            
+
             # it may be a good idea to sort the queue once all
             # the events that are scheduled for this tick have been called
 
@@ -52,7 +52,7 @@ class GameEngine(object):
     #    if user_id not in self.users:
     #        raise ValueError
     #    self.users[user_id].last_active = timestamp
-        
+
     def user_logged_in(self, user_id, timestamp):
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
@@ -74,7 +74,7 @@ class GameEngine(object):
                 self.user_logged_in(member, timestamp)
 
         self.current_online_list = set(active_list)
-        
+
     def update_world(self, active_list, timestamp):
         """
         update_world will be the one point of intersection as far as data 
