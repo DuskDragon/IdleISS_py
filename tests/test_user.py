@@ -14,7 +14,7 @@ class LibraryStub(object):
                 "hull": 100,
                 "firepower": 50,
                 "size": "one",
-                "weapon size": "one",
+                "weapon_size": "one",
                 "multishot": {
                     "ship1": 2
                 }

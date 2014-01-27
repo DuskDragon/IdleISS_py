@@ -13,7 +13,7 @@
             "hull": 200,
             "firepower": 0,
             "size": "hauler",
-            "weapon size": "fighter",
+            "weapon_size": "fighter",
             "multishot": {
             }
         }

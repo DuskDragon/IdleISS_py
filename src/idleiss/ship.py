@@ -7,7 +7,7 @@ class ShipLibrary(object):
     _required_keys = {
         '': ['sizes', 'ships',],  # top level keys
         'ships': ['shield', 'armor', 'hull', 'firepower', 'size',
-            'weapon size', 'multishot',],
+            'weapon_size', 'multishot',],
     }
 
     def __init__(self, library_filename=None):

@@ -14,7 +14,7 @@
             "hull": 2700,
             "firepower": 400,
             "size": "cruiser",
-            "weapon size": "cruiser",
+            "weapon_size": "cruiser",
             "multishot": {
                 "light fighter": 6
             }

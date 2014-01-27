@@ -14,7 +14,7 @@
             "hull": 200,
             "firepower": 0,
             "size": "hauler",
-            "weapon size": "fighter",
+            "weapon_size": "fighter",
             "multishot": {
             }
         },
@@ -24,7 +24,7 @@
             "hull": 400,
             "firepower": 50,
             "size": "fighter",
-            "weapon size": "fighter",
+            "weapon_size": "fighter",
             "multishot": {
             }
         },
@@ -34,7 +34,7 @@
             "hull": 1000,
             "firepower": 150,
             "size": "fighter",
-            "weapon size": "fighter",
+            "weapon_size": "fighter",
             "multishot": {
                 "small hauler": 3
             }
@@ -45,7 +45,7 @@
             "hull": 2700,
             "firepower": 400,
             "size": "cruiser",
-            "weapon size": "cruiser",
+            "weapon_size": "cruiser",
             "multishot": {
                 "light fighter": 6
             }
