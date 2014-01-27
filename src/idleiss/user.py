@@ -2,9 +2,9 @@ from fleet import FleetManager
 from resource import ResourceManager
 
 class User(object):
-    def __init__(self, user_id):
+    def __init__(self, user_id, library):
         self.id = user_id
-        self.fleet = FleetManager()
+        self.fleet = FleetManager(library)
         self.resources = ResourceManager()
         self.online = False
         self.online_at = -1

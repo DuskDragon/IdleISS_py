@@ -1,6 +1,8 @@
+from os.path import join, dirname, abspath
 from math import log
 
 from .user import User
+from .ship import ShipLibrary
 from .event import GameEngineEvent
 
 
@@ -13,9 +15,11 @@ class TimeOutofBounds(Exception):
 
 class GameEngine(object):
 
-    def __init__(self):
+    def __init__(self, library_filename):
         self.users = {}
         self.current_online_list = []
+        target_path = join(dirname(__file__), '../../'+library_filename)
+        self.library = ShipLibrary(target_path)
 
         # The current world_timestamp - only updated whenever the world
         # is updated by calling update_world with the current/latest
@@ -56,7 +60,7 @@ class GameEngine(object):
     def user_logged_in(self, user_id, timestamp):
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
-            self.users[user_id] = User(user_id)
+            self.users[user_id] = User(user_id, self.library)
 
         self.users[user_id].log_in(timestamp)
 
@@ -77,8 +81,8 @@ class GameEngine(object):
 
     def update_world(self, active_list, timestamp):
         """
-        update_world will be the one point of intersection as far as data 
-        modification between this engine and the outside world. 
+        update_world will be the one point of intersection as far as data
+        modification between this engine and the outside world.
         Every tick (chosen by the controller program) the controller must
         send the current timestamp along with the current user list and any commands
         such as "fleet engage <enemy player>"

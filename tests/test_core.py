@@ -11,7 +11,7 @@ class CoreTestCase(TestCase):
         pass
 
     def test_base_game(self):
-        engine = core.GameEngine()
+        engine = core.GameEngine('tests/ShipLibrary Test Files/validload.json')
         self.assertTrue(engine)
 
     # def test_user_interaction(self):
@@ -22,7 +22,7 @@ class CoreTestCase(TestCase):
         # self.assertEqual(idleness, 4)
 
     def test_update_world_basic(self):
-        engine = core.GameEngine()
+        engine = core.GameEngine('tests/ShipLibrary Test Files/validload.json')
         user_list = set(['an_user'])
         engine.update_world(active_list=user_list, timestamp=1000)
         # manually set one of the income rates
@@ -48,7 +48,7 @@ class CoreTestCase(TestCase):
         self.assertEqual(engine.users['an_user'].resources.money, 8)
 
     def test_offline_users_do_not_earn_resources(self):
-        engine = core.GameEngine()
+        engine = core.GameEngine('tests/ShipLibrary Test Files/validload.json')
         user_list = set(['user1', 'user2'])
         engine.update_world(active_list=user_list, timestamp=1000)
         engine.users['user1'].resources.basic_materials_income = 1
@@ -66,7 +66,7 @@ class CoreTestCase(TestCase):
         self.assertEqual(engine.users['user2'].resources.basic_materials, 1)
 
     def test_events_skip_time(self):
-        engine = core.GameEngine()
+        engine = core.GameEngine('tests/ShipLibrary Test Files/validload.json')
         user_list = set(['an_user'])
         engine.update_world(active_list=user_list, timestamp=1000)
         # manually set one of the income rates
@@ -98,7 +98,7 @@ class CoreTestCase(TestCase):
         # self.assertEqual(engine.users['an_user']['level'], 6)
 
     def test_backwards_in_time_failure(self):
-        engine = core.GameEngine()
+        engine = core.GameEngine('tests/ShipLibrary Test Files/validload.json')
         user_list = set(['an_user'])
         engine.update_world(active_list=user_list, timestamp=1000)
         with self.assertRaises(core.TimeOutofBounds) as context:
@@ -109,7 +109,7 @@ class CoreTestCase(TestCase):
         def some_event(name='foo'):
             return name
 
-        engine = core.GameEngine()
+        engine = core.GameEngine('tests/ShipLibrary Test Files/validload.json')
         engine.add_event(some_event, name='foo')
         self.assertEqual(engine._engine_events[0].func, some_event)
         self.assertEqual(engine._engine_events[0].kw, {'name': 'foo'})
@@ -122,7 +122,7 @@ class CoreTestCase(TestCase):
             # if there is even such a thing.
             return
 
-        engine = core.GameEngine()
+        engine = core.GameEngine('tests/ShipLibrary Test Files/validload.json')
         engine.update_world(active_list=set(), timestamp=100)
         engine.add_event(time_dependent_event, timestamp=50)
         # timestamp argument magically forced to be the last time the

@@ -1,0 +1,21 @@
+{
+    "sizes": {
+        "fighter": 1,
+        "frigate": 2,
+        "cruiser": 3,
+        "hauler": 4,
+        "battlecruiser": 5,
+        "battleship": 6
+    },
+    "ships": {
+        "small hauler": {
+            "armor": 0,
+            "hull": 200,
+            "firepower": 0,
+            "size": "hauler",
+            "weapon size": "fighter",
+            "multishot": {
+            }
+        }
+    }
+}

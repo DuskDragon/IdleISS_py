@@ -1,0 +1,23 @@
+{
+    "sizes": {
+        "fighter": 1,
+        "frigate": 2,
+        "cruiser": 3,
+        "hauler": 4,
+        "battlecruiser": 5,
+        "battleship": 6
+    },
+    "ships": {
+        "cruiser": {
+            "shield": 50,
+            "armor": 20,
+            "hull": 2700,
+            "firepower": 400,
+            "size": "cruiser",
+            "weapon size": "cruiser",
+            "multishot": {
+                "light fighter": 6
+            }
+        }
+    }
+}

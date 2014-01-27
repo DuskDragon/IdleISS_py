@@ -3,10 +3,21 @@
         "fighter": 1,
         "frigate": 2,
         "cruiser": 3,
-        "battlecruiser": 4,
-        "battleship": 5
+        "hauler": 4,
+        "battlecruiser": 5,
+        "battleship": 6
     },
     "ships": {
+        "small hauler": {
+            "shield": 10,
+            "armor": 0,
+            "hull": 200,
+            "firepower": 0,
+            "size": "hauler",
+            "weapon size": "fighter",
+            "multishot": {
+            }
+        },
         "light fighter": {
             "shield": 10,
             "armor": 10,
@@ -25,7 +36,7 @@
             "size": "fighter",
             "weapon size": "fighter",
             "multishot": {
-                "hauler": 3
+                "small hauler": 3
             }
         },
         "cruiser": {
