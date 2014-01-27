@@ -1,13 +1,17 @@
+from collections import namedtuple
 from os.path import join, dirname, abspath
 import json
+
+
+ShipSchema = namedtuple('ShipSchema', ['shield', 'armor', 'hull', 'firepower',
+    'size', 'weapon_size', 'multishot',])
 
 
 class ShipLibrary(object):
 
     _required_keys = {
         '': ['sizes', 'ships',],  # top level keys
-        'ships': ['shield', 'armor', 'hull', 'firepower', 'size',
-            'weapon_size', 'multishot',],
+        'ships': ShipSchema._fields
     }
 
     def __init__(self, library_filename=None):
@@ -49,31 +53,5 @@ class ShipLibrary(object):
         # log("load succeded")
         self.raw_data = None
 
-    def get_ship_schemata(ship_name):
-        return self.ship_data[ship_name]
-
-    # consider deprecating the ones below.
-
-    def ship_shield(self, ship_name):
-        return self.ship_data[ship_name]['shield']
-
-    def ship_armor(self, ship_name):
-        return self.ship_data[ship_name]['armor']
-
-    def ship_hull(self, ship_name):
-        return self.ship_data[ship_name]['armor']
-
-    def ship_firepower(self, ship_name):
-        return self.ship_data[ship_name]['firepower']
-
-    def ship_size(self, ship_name):
-        return self.ship_data[ship_name]['size']
-
-    def ship_weapon_size(self, ship_name):
-        return self.ship_data[ship_name]['weapon size']
-
-    def ship_multishot(self, ship_attacking, ship_target):
-        if ship_target not in self.ship_data[ship_attacking]['multishot']:
-            return 1
-        else:
-            return self.ship_data[ship_attacking]['multishot'][ship_target]
+    def get_ship_schemata(self, ship_name):
+        return ShipSchema(**self.ship_data[ship_name])
