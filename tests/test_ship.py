@@ -18,11 +18,9 @@ class FleetLibraryTestCase(TestCase):
         target_path = join(dirname(__file__), test_file_name)
         with self.assertRaises(ValueError) as context:
             self.library = ship.ShipLibrary(target_path)
-        self.assertEqual(str(context.exception), 'small hauler does not have shield attribute')
 
     def test_multishot_refers_to_nonexistant_ship(self):
         test_file_name = 'ShipLibrary Test Files/invalidmultishot.json'
         target_path = join(dirname(__file__), test_file_name)
         with self.assertRaises(ValueError) as context:
             self.library = ship.ShipLibrary(target_path)
-        self.assertEqual(str(context.exception), 'light fighter does not exist as a shiptype')

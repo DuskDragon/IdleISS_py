@@ -1,44 +1,58 @@
 from os.path import join, dirname, abspath
 import json
 
+
 class ShipLibrary(object):
+
+    _required_keys = {
+        '': ['sizes', 'ships',],  # top level keys
+        'ships': ['shield', 'armor', 'hull', 'firepower', 'size',
+            'weapon size', 'multishot',],
+    }
+
     def __init__(self, library_filename=None):
         self.raw_data = None
         if library_filename:
             self.load(library_filename)
 
+    def _check_missing_keys(self, key_id, value):
+        """
+        value - the dict to be validated
+        """
+
+        required_keys = set(self._required_keys[key_id])
+        provided_keys = set(value.keys())
+        return required_keys - provided_keys
+
     def load(self, filename):
-        fd = open(filename)
-        self.raw_data = json.load(fd)
-        fd.close()
-        if "sizes" not in self.raw_data:
-            raise ValueError("ship sizes not found")
-        if "ships" not in self.raw_data:
-            raise ValueError("ship data not found")
+
+        with open(filename) as fd:
+            self.raw_data = json.load(fd)
+
+        missing = self._check_missing_keys('', self.raw_data)
+        if missing:
+            raise ValueError(', '.join(missing) + ' not found')
+
         self.size_data = self.raw_data['sizes']
         self.ship_data = self.raw_data['ships']
         for ship_name in self.ship_data:
             ship = self.ship_data[ship_name]
-            if "shield" not in ship:
-                raise ValueError(ship_name + " does not have shield attribute")
-            if "armor" not in ship:
-                raise ValueError(ship_name + " does not have armor attribute")
-            if "hull" not in ship:
-                raise ValueError(ship_name + " does not have hull attribue")
-            if "firepower" not in ship:
-                raise ValueError(ship_name + " does not have firepower attribute")
-            if "size" not in ship:
-                raise ValueError(ship_name + " does not have size attribute")
-            if "weapon size" not in ship:
-                raise ValueError(ship_name + " does not have weapon size attribute")
-            if "multishot" not in ship:
-                raise ValueError(ship_name + " does not have multishot attribute")
+            missing = self._check_missing_keys('ships', ship)
+            if missing:
+                raise ValueError("%s does not have %s attribute" % (
+                    ship, ', '.join(missing)))
+
             multishot_list = ship['multishot']
             for multishot_target in multishot_list:
                 if multishot_target not in self.ship_data:
                     raise ValueError(multishot_target + " does not exist as a shiptype")
         # log("load succeded")
         self.raw_data = None
+
+    def get_ship_schemata(ship_name):
+        return self.ship_data[ship_name]
+
+    # consider deprecating the ones below.
 
     def ship_shield(self, ship_name):
         return self.ship_data[ship_name]['shield']
