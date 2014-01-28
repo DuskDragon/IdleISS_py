@@ -34,35 +34,15 @@ class Battle(object):
             result += fleet[ship_type]
         return result
 
-    def deep_count(self, fleet):
-        # return number of ships with hull above 0
-        # deep_count takes the entire fleet or one ship type group in a fleet
-        result = 0
-        if type(fleet) is list:
-            for ship in fleet:
-                if ship[2] > 0:
-                    result += 1
-        else: # it is a dictionary
-            for ship_type in fleet:
-                for ship in fleet[ship_type]:
-                    if ship[2] > 0:
-                        result += 1
-        return result
-
     def clean_dead_ships_restore_shields(self, fleet, library):
         # return an expanded fleet with 0 hull ships removed but with
         result = {}
         for ship_type in fleet:
             schema = library.get_ship_schemata(ship_type)
-            result[ship_type] = (
-                [[schema.shield, 0, 0] for i in \
-                    range(self.deep_count(fleet[ship_type]))])
-            processed_itr = 0
-            for ship in fleet[ship_type]:
-                if ship[2] > 0: # ship lived
-                    result[ship_type][processed_itr][1] = ship[1]
-                    result[ship_type][processed_itr][2] = ship[2]
-                    processed_itr += 1
+            # if ships are actually of the ShipSchema namedtuple, access
+            # by attribute id can be done instead.
+            result[ship_type] = [[schema.shield, ship[1], ship[2]]
+                for ship in fleet[ship_type] if ship[2] > 0]
         return result
 
     def expand(self, fleet, library):
