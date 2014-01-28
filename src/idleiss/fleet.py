@@ -39,6 +39,11 @@ class Battle(object):
         result = {}
         for ship_type in fleet:
             schema = library.get_ship_schemata(ship_type)
+            # Recharge the shield by taking the full shield value from
+            # the schema for this ship type, and persist the current
+            # armor and hull value if the ship is not destroyed, as
+            # defined by having a hull value (element [2]) of greater
+            # than 0.
             # if ships are actually of the ShipSchema namedtuple, access
             # by attribute id can be done instead.
             result[ship_type] = [[schema.shield, ship[1], ship[2]]
