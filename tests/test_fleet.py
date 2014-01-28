@@ -71,3 +71,34 @@ class BattleTestCase(TestCase):
         battle_instance.prepare(library)
         self.assertEqual(battle_instance.attacker_fleet, exp_attack_test)
         self.assertEqual(battle_instance.defender_fleet, exp_def_test)
+        
+    def test_clean_and_restore(self):
+        attacker = {
+            "ship1": 5
+        }
+        defender = {
+            "ship1": 4
+        }
+        rounds = 15
+        battle_instance = fleet.Battle(attacker, defender, rounds)
+        input_to_function = {
+            "ship1": [
+                [0, 5, 10],
+                [0, 10, 0],
+                [0, 10, 0],
+                [5, 6, 50],
+                [7, 10, 1]
+            ]
+        }
+        exp_result_test = {
+            "ship1": [
+                [10, 5, 10],
+                [10, 6, 50],
+                [10, 10, 1]
+            ]
+        }
+        library = ShipLibraryMock()
+        battle_instance.prepare(library)
+        result = battle_instance.\
+            clean_dead_ships_restore_shields(input_to_function, library)
+        self.assertEqual(exp_result_test, result)
