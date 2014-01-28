@@ -30,9 +30,27 @@ class Battle(object):
     def ship_count(self, fleet):
         # return the number of ships in a attacker_count or defender_count
         result = 0
-        for ship_type in fleet:
-            result += fleet[ship_type]
+        if type(fleet.values()[0]) is int: # simple count
+            for ship_type in fleet:
+                result += fleet[ship_type]
+            return result
+        else: # expanded "fleet"
+            for ship_type in fleet:
+                result += len(fleet[ship_type])
         return result
+
+    def explode(self, hull, max_hull):
+        # only send full, expanded fleets to this function
+        # ships at 70% hull or lower will have a chance at exploding
+        # chance = 1-hull/hull_initial
+        if (float(hull) / float(max_hull)) < 0.70: # danger range
+            chance = 1.0 - (float(hull)/float(max_hull))
+            if chance < random.random():
+                return hull # it lives
+            else:
+                return 0 # it explodes
+        else: # not in danger range
+            return hull
 
     def clean_dead_ships_restore_shields(self, fleet, library):
         # return an expanded fleet with 0 hull ships removed but with
@@ -43,11 +61,12 @@ class Battle(object):
             # the schema for this ship type, and persist the current
             # armor and hull value if the ship is not destroyed, as
             # defined by having a hull value (element [2]) of greater
-            # than 0.
+            # than 0. The explode check is also calculated here.
             # if ships are actually of the ShipSchema namedtuple, access
             # by attribute id can be done instead.
             result[ship_type] = [[schema.shield, ship[1], ship[2]]
-                for ship in fleet[ship_type] if ship[2] > 0]
+                for ship in fleet[ship_type] \
+                    if self.explode(ship[2], schema.hull) > 0]
         return result
 
     def expand(self, fleet, library):
@@ -71,9 +90,9 @@ class Battle(object):
         self.attacker_fleet = self.expand(self.attacker_count, library)
         self.defender_fleet = self.expand(self.defender_count, library)
 
-    def calculate_round(self):
+    def calculate_round(self, library):
         pass
-        # attacker fires and multishot is calculated on hit if a firing
+        # attacker fires and multishot is calculated on hit. If a firing
         #     ship hits a target it has multishot on then the firing
         #     ship has a (multishot - 1)/multishot chance of firing.
         #     Multishot will check again on each hit on a multishot target
