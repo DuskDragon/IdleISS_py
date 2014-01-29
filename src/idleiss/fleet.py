@@ -52,8 +52,25 @@ class Battle(object):
         else: # not in danger range
             return hull
 
+    def pick_random_ship(self, fleet):
+        # return a random ship in a full expanded fleet
+        # return type is {"ship_type": hparray}
+        result = {}
+        total_ships = self.ship_count(fleet)
+        random_pick = random.randint(1, total_ships)
+        for ship_type in fleet:
+            subcount = ship_count(ship_type)
+            if random_pick <= subcount:
+                result[ship_type] = fleet[ship_type][random_pick-1]
+                return result
+            else:
+                random_pick -= subcount
+        # the code execution should never get here
+        return 0
+
     def clean_dead_ships_restore_shields(self, fleet, library):
         # return an expanded fleet with 0 hull ships removed but with
+        # shields recharged and armor/hull damage persisting
         result = {}
         for ship_type in fleet:
             schema = library.get_ship_schemata(ship_type)
@@ -91,12 +108,16 @@ class Battle(object):
         self.defender_fleet = self.expand(self.defender_count, library)
 
     def calculate_round(self, library):
-        pass
         # attacker fires and multishot is calculated on hit. If a firing
         #     ship hits a target it has multishot on then the firing
         #     ship has a (multishot - 1)/multishot chance of firing.
         #     Multishot will check again on each hit on a multishot target
-
+        for ship_type in self.attacker_fleet:
+            schema = library.get_ship_schemata(ship_type)
+            for ship in self.attacker_fleet[ship_type]:
+                #needs to consider refire IN PROGRESS
+                fire_on(pick_random_ship(self.defender_fleet), ship_type,
+                    schema.firepower, schema.multishot)
         # shield points are taken first (to zero, but not below)
         # armor points are taken second (to zero, but not below)
         # hull points are taken last
