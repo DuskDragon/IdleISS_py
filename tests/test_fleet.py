@@ -151,11 +151,11 @@ class BattleTestCase(TestCase):
         battle_instance = fleet.Battle(attacker, defender, rounds)
         input_to_function = {
             "ship1": [
-                [0, 5, 50],
-                [0, 10, 40],
-                [0, 10, 45],
-                [5, 6, 71],
-                [7, 10, 10]
+                [0, 5, 50], # higher than 16 hull, survive
+                [0, 10, 40],# higher than 24 hull, survive
+                [0, 10, 45],# lower than 58 hull, explode
+                [5, 6, 71], # higher than cutoff, survive
+                [7, 10, 10] # lower than 49 hull, explode
             ]
         }
         # remember that shields are fully restored
