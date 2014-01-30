@@ -52,10 +52,10 @@ class Battle(object):
         else: # not in danger range
             return hull
 
-    def pick_random_ship(self, fleet, fleet_size=None):
+    def pick_random_ship(self, fleet, fleet_size): #trying without using fleet_size=None
         """ Battle.pick_random_ship(fleet, fleet_size) => {ship_type: hp_array} """
-        if fleet_size is None:
-            fleet_size = self.ship_count(fleet)
+        # if fleet_size is None:
+        #     fleet_size = self.ship_count(fleet)
 
         ship_idx = random.randint(1, fleet_size)
         ship_types = fleet.keys()
@@ -65,7 +65,7 @@ class Battle(object):
             if type_count < ship_idx:
                 ship_idx -= type_count
             else:
-                return {ship_type: fleet[ship_type][ship_idx - 1]}
+                return [ship_type, fleet[ship_type][ship_idx - 1]]
 
         raise ValueError('fleet has less than fleet_size (%i) ships' % fleet_size)
 
@@ -108,18 +108,45 @@ class Battle(object):
         self.attacker_fleet = self.expand(self.attacker_count, library)
         self.defender_fleet = self.expand(self.defender_count, library)
 
+    def fire_on(self, ship, firepower, multishot):
+        # ship[0] = ship_type
+        # ship[1] = hparray -> [shield, armor, hull]
+        if ship[1][0] >= firepower: # if current shields are >= firepower
+            ship[1][0] -= firepower
+        else: #shields are overwelmed
+            remaining_firepower = firepower - ship[1][0]
+            ship[1][0] = 0
+            if ship[1][1] >= remaining_firepower: # if current armor is >= firepower
+                ship[1][1] -= remaining_firepower
+            else: # armor is overwhelmed
+                remaining_firepower -= ship[1][1]
+                ship[1][1] = 0
+                ship[1][2] -= remaining_firepower # strikes hull
+        # now return if multishot is true
+        if ship[0] in multishot: # check if chance of multishot
+            chance = (multishot[ship[0]] - 1.0) / multishot[ship[0]]
+            if chance > random.random():
+                return True # extra shot -> fire again
+            else:
+                return False # do not fire again
+        else:
+            return False # no chance of multishot
+
     def calculate_round(self, library):
         # attacker fires and multishot is calculated on hit. If a firing
         #     ship hits a target it has multishot on then the firing
         #     ship has a (multishot - 1)/multishot chance of firing.
         #     Multishot will check again on each hit on a multishot target
+        attacker_total_ships = self.ship_count(self.attacker_fleet)
+        defender_total_ships = self.ship_count(self.defender_fleet)
         for ship_type in self.attacker_fleet:
             schema = library.get_ship_schemata(ship_type)
             for ship in self.attacker_fleet[ship_type]:
                 #needs to consider refire IN PROGRESS
                 while True:
-                    if not fire_on(pick_random_ship(self.defender_fleet), ship_type,
-                        schema.firepower, schema.multishot):
+                    if not fire_on(pick_random_ship(self.defender_fleet,
+                                                    defender_total_ships),
+                               schema.firepower, schema.multishot):
                             break
         # shield points are taken first (to zero, but not below)
         # armor points are taken second (to zero, but not below)

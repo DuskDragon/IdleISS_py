@@ -182,7 +182,6 @@ class BattleTestCase(TestCase):
                 [7, 8, 9],
             ]
         }
-
         battle = fleet.Battle({"ship": 1}, {"ship": 1}, 10) # Values don't matter
 
         # Check distribution
@@ -201,7 +200,7 @@ class BattleTestCase(TestCase):
         # Ensure that method gets correct fleet_size if not supplied
         dist = {}
         for i in range(100000):
-            ship = battle.pick_random_ship(ships)
+            ship = battle.pick_random_ship(ships, 3)
             key = str(ship)
             if key in dist:
                 dist[key] += 1
@@ -214,5 +213,44 @@ class BattleTestCase(TestCase):
 
         # Ensure handling of out-of-bounds fleet_size
         with self.assertRaises(ValueError):
-            battle.pick_random_ship(ships, battle.ship_count(ships) + 1)
+            battle.pick_random_ship({}, 1)
 
+    def test_fire_on(self):
+        random.seed(0)
+        # will refire if less than 0.50 (return True)
+        # first 5 outputs of random.random:
+        # 0.8444218515250481 # no refire (False)
+        # 0.7579544029403025 # no refire (False)
+        # 0.420571580830845  # shoot again (True)
+        # 0.25891675029296335# shoot again (True)
+        # 0.5112747213686085 # no refire (False)
+        attacker = {
+            "ship1": 5
+        }
+        defender = {
+            "ship1": 4
+        }
+        rounds = 15
+        battle_inst = fleet.Battle(attacker, defender, rounds)
+        firepower = 50
+        multishot = {'ship1': 2}
+        input1 = ['ship1', [51,50,50]]
+        input2 = ['ship1', [25,26,50]]
+        input3 = ['ship1', [10,10,50]]
+        input4 = ['ship1', [0,0,0]]
+        input5 = ['ship1', [0,0,1]]
+        self.assertEqual(battle_inst.fire_on(input1, firepower, multishot),
+                                             False)
+        self.assertEqual(battle_inst.fire_on(input2, firepower, multishot),
+                                             False)
+        self.assertEqual(battle_inst.fire_on(input3, firepower, multishot),
+                                             True)
+        self.assertEqual(battle_inst.fire_on(input4, firepower, multishot),
+                                             True)
+        self.assertEqual(battle_inst.fire_on(input5, firepower, multishot),
+                                             False)
+        self.assertEqual(input1, ['ship1', [1, 50, 50]])
+        self.assertEqual(input2, ['ship1', [0, 1, 50]])
+        self.assertEqual(input3, ['ship1', [0, 0, 20]])
+        self.assertEqual(input4, ['ship1', [0, 0, -50]])
+        self.assertEqual(input5, ['ship1', [0, 0, -49]])
