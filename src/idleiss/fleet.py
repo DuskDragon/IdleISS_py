@@ -28,7 +28,7 @@ class Battle(object):
         self.attacker_fleet = self.defender_fleet = None
 
     def ship_count(self, fleet):
-        # return the number of ships in a attacker_count or defender_count
+        # this returns the number of ships in attacker_count or defender_count
         result = 0
         if type(fleet.values()[0]) is int: # simple count
             for ship_type in fleet:
@@ -53,13 +53,13 @@ class Battle(object):
             return hull
 
     def pick_random_ship(self, fleet):
-        # return a random ship in a full expanded fleet
-        # return type is {"ship_type": hparray}
+        # this returns a random ship in a full expanded fleet
+        # the return type is {"ship_type": hparray}
         result = {}
         total_ships = self.ship_count(fleet)
         random_pick = random.randint(1, total_ships)
         for ship_type in fleet:
-            subcount = ship_count(ship_type)
+            subcount = len(fleet[ship_type])
             if random_pick <= subcount:
                 result[ship_type] = fleet[ship_type][random_pick-1]
                 return result
@@ -116,8 +116,10 @@ class Battle(object):
             schema = library.get_ship_schemata(ship_type)
             for ship in self.attacker_fleet[ship_type]:
                 #needs to consider refire IN PROGRESS
-                fire_on(pick_random_ship(self.defender_fleet), ship_type,
-                    schema.firepower, schema.multishot)
+                while True:
+                    if not fire_on(pick_random_ship(self.defender_fleet), ship_type,
+                        schema.firepower, schema.multishot):
+                            break
         # shield points are taken first (to zero, but not below)
         # armor points are taken second (to zero, but not below)
         # hull points are taken last

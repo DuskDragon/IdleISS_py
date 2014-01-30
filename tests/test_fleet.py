@@ -171,3 +171,81 @@ class BattleTestCase(TestCase):
         result = battle_instance.\
             clean_dead_ships_restore_shields(input_to_function, library)
         self.assertEqual(expected_output, result)
+
+    def test_random_ship_selection_bad(self):
+        """
+        THIS TEST IS AWFUL AND NEEDS TO BE CHANGED
+        """
+        random.seed(1)
+        # first 5 outputs of random.randint(1, 5):
+        # 1
+        # 5
+        # 4
+        # 2
+        # 3
+        attacker = {
+            "ship1": 3
+        }
+        defender = {
+            "ship1": 3
+        }
+        rounds = 15
+        battle_instance = fleet.Battle(attacker, defender, rounds)
+        input_to_function = {
+            "ship1": [
+                [0, 5, 50],
+                [0, 10, 40],
+                [0, 10, 45]
+            ],
+            "ship2": [
+                [5, 6, 71],
+                [7, 10, 10]
+            ]
+        }
+
+        # order of this particular dictionary is 'ship2' then 'ship1' but this
+        # is only valid for this exact instance of the dictionary
+        self.assertEqual(battle_instance.pick_random_ship(input_to_function),
+                         {'ship2': input_to_function['ship2'][0]})
+        self.assertEqual(battle_instance.pick_random_ship(input_to_function),
+                         {'ship1': input_to_function['ship1'][2]})
+        self.assertEqual(battle_instance.pick_random_ship(input_to_function),
+                         {'ship1': input_to_function['ship1'][1]})
+        self.assertEqual(battle_instance.pick_random_ship(input_to_function),
+                         {'ship2': input_to_function['ship2'][1]})
+        self.assertEqual(battle_instance.pick_random_ship(input_to_function),
+                         {'ship1': input_to_function['ship1'][0]})
+
+    # def test_random_ship_selection_proper(self):
+        # random.seed(1)
+        # # first 5 outputs of random.randint(1, 5):
+        # # 1
+        # # 5
+        # # 4
+        # # 2
+        # # 3
+        # attacker = {
+            # "ship1": 3
+        # }
+        # defender = {
+            # "ship1": 3
+        # }
+        # rounds = 15
+        # battle_instance = fleet.Battle(attacker, defender, rounds)
+        # input_to_function = {
+            # "ship1": [
+                # [0, 5, 50],
+                # [0, 10, 40],
+                # [0, 10, 45]
+            # ],
+            # "ship2": [
+                # [5, 6, 71],
+                # [7, 10, 10]
+            # ]
+        # }
+
+        # results = []
+        # while len(input_to_function):
+            # value = battle_instance.pick_random_ship(input_to_function)
+            # self.assertRaises(ValueError, results.index(value))
+            # results.append(value)
