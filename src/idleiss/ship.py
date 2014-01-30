@@ -7,6 +7,12 @@ ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
     'weapon_size', 'multishot',]
 ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields)
 
+Ship = namedtuple('Ship', ['schema', 'attributes'])
+# schema - the full schema.
+# attributes - ShipAttributes
+
+ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull',])
+
 
 class ShipLibrary(object):
 
