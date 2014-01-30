@@ -56,17 +56,11 @@ class Battle(object):
         # this returns a random ship in a full expanded fleet
         # the return type is {"ship_type": hparray}
         result = {}
-        total_ships = self.ship_count(fleet)
-        random_pick = random.randint(1, total_ships)
-        for ship_type in fleet:
-            subcount = len(fleet[ship_type])
-            if random_pick <= subcount:
-                result[ship_type] = fleet[ship_type][random_pick-1]
-                return result
-            else:
-                random_pick -= subcount
-        # the code execution should never get here
-        return 0
+
+        ship_type = sorted(fleet.iterkeys())[random.randint(0, len(fleet) - 1)]
+        result[ship_type] = fleet[ship_type][random.randint(0, len(fleet[ship_type]) - 1)]
+
+        return result
 
     def clean_dead_ships_restore_shields(self, fleet, library):
         # return an expanded fleet with 0 hull ships removed but with
