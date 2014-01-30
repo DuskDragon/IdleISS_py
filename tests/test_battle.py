@@ -175,7 +175,7 @@ class BattleTestCase(TestCase):
 
         # Check distribution
         dist = {}
-        for i in range(100000):
+        for i in range(1000):
             ship = battle.pick_random_ship(ships, 3)
             key = str(ship)
             if key in dist:
@@ -184,11 +184,11 @@ class BattleTestCase(TestCase):
                 dist[key] = 1
 
         for ship in sorted(dist.keys()):
-            self.assertTrue(dist[ship] > 30000 and dist[ship] < 36000)
+            self.assertTrue(dist[ship] > 300 and dist[ship] < 360)
 
         # Ensure that method gets correct fleet_size if not supplied
         dist = {}
-        for i in range(100000):
+        for i in range(1000):
             ship = battle.pick_random_ship(ships, 3)
             key = str(ship)
             if key in dist:
@@ -198,7 +198,7 @@ class BattleTestCase(TestCase):
 
         for ship in sorted(dist.keys()):
             print "%s: %i" % (ship, dist[ship])
-            self.assertTrue(dist[ship] > 30000 and dist[ship] < 36000)
+            self.assertTrue(dist[ship] > 300 and dist[ship] < 360)
 
         # Ensure handling of out-of-bounds fleet_size
         with self.assertRaises(ValueError):
