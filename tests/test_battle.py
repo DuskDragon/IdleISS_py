@@ -204,6 +204,25 @@ class BattleTestCase(TestCase):
         with self.assertRaises(ValueError):
             battle.pick_random_ship({}, 1)
 
+    def test_is_exploded(self):
+        # first 5 outputs of random.random.
+        # the numbers generated are actually hull % remaining needed to
+        # survive, those over .70 are cutoff, i.e. they survive.
+        # 0.8444218515250481
+        # 0.7579544029403025
+        # 0.420571580830845
+        # 0.25891675029296335
+        # 0.5112747213686085
+
+        library = ShipLibraryMock()
+        schema = library.get_ship_schemata('ship1')
+        # no number is rolled for this one as it is over cutoff.
+        self.assertFalse(battle.is_exploded(71, 100))
+        self.assertTrue(battle.is_exploded(0, 100))
+        self.assertTrue(battle.is_exploded(69, 100))
+        self.assertTrue(battle.is_exploded(42, 100))
+        self.assertFalse(battle.is_exploded(26, 100))
+
     def test_fire_on(self):
         random.seed(0)
         # will refire if less than 0.50 (return True)

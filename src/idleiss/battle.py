@@ -2,6 +2,15 @@ import random
 
 from idleiss.ship import ShipLibrary
 
+HULL_DANGER_ZONE = 0.70  # percentage remaining.
+
+
+def is_exploded(hull, max_hull):
+    # ships at 70% hull or lower will have a chance at exploding
+    chance_of_survival = (float(hull) / float(max_hull))
+    return (chance_of_survival < HULL_DANGER_ZONE and
+        chance_of_survival < random.random())
+
 
 class Battle(object):
 
