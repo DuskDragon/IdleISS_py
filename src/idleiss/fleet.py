@@ -1,6 +1,6 @@
 import random
 
-from .ship import ShipLibrary
+from idleiss.ship import ShipLibrary
 
 
 class FleetManager(object):
@@ -52,21 +52,22 @@ class Battle(object):
         else: # not in danger range
             return hull
 
-    def pick_random_ship(self, fleet):
-        # this returns a random ship in a full expanded fleet
-        # the return type is {"ship_type": hparray}
-        result = {}
-        total_ships = self.ship_count(fleet)
-        random_pick = random.randint(1, total_ships)
-        for ship_type in fleet:
-            subcount = len(fleet[ship_type])
-            if random_pick <= subcount:
-                result[ship_type] = fleet[ship_type][random_pick-1]
-                return result
+    def pick_random_ship(self, fleet, fleet_size=None):
+        """ Battle.pick_random_ship(fleet, fleet_size) => {ship_type: hp_array} """
+        if fleet_size is None:
+            fleet_size = self.ship_count(fleet)
+
+        ship_idx = random.randint(1, fleet_size)
+        ship_types = fleet.keys()
+
+        for ship_type in ship_types:
+            type_count = len(fleet[ship_type])
+            if type_count < ship_idx:
+                ship_idx -= type_count
             else:
-                random_pick -= subcount
-        # the code execution should never get here
-        return 0
+                return {ship_type: fleet[ship_type][ship_idx - 1]}
+
+        raise ValueError('fleet has less than fleet_size (%i) ships' % fleet_size)
 
     def clean_dead_ships_restore_shields(self, fleet, library):
         # return an expanded fleet with 0 hull ships removed but with
