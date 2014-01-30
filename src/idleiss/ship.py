@@ -3,15 +3,16 @@ from os.path import join, dirname, abspath
 import json
 
 
-ShipSchema = namedtuple('ShipSchema', ['shield', 'armor', 'hull', 'firepower',
-    'size', 'weapon_size', 'multishot',])
+ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
+    'weapon_size', 'multishot',]
+ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields)
 
 
 class ShipLibrary(object):
 
     _required_keys = {
         '': ['sizes', 'ships',],  # top level keys
-        'ships': ShipSchema._fields
+        'ships': ship_schema_fields,
     }
 
     def __init__(self, library_filename=None):
@@ -54,4 +55,4 @@ class ShipLibrary(object):
         self.raw_data = None
 
     def get_ship_schemata(self, ship_name):
-        return ShipSchema(**self.ship_data[ship_name])
+        return ShipSchema(ship_name, **self.ship_data[ship_name])
