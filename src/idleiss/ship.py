@@ -14,6 +14,10 @@ Ship = namedtuple('Ship', ['schema', 'attributes'])
 ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull',])
 
 
+def ship_size_sort_key(obj):
+    return obj.size
+
+
 class ShipLibrary(object):
 
     _required_keys = {
@@ -46,7 +50,7 @@ class ShipLibrary(object):
         if missing:
             raise ValueError(', '.join(missing) + ' not found')
 
-        self.size_data = {i: size
+        self.size_data = {size: i
             for i, size in enumerate(raw_data['sizes'])}
 
         raw_ship_names = raw_data['ships'].keys()
@@ -58,12 +62,17 @@ class ShipLibrary(object):
                 raise ValueError("%s does not have %s attribute" % (
                     ship_name, ', '.join(missing)))
 
+            data['size'] = self.size_data[data['size']]
+            data['weapon_size'] = self.size_data[data['weapon_size']]
             self.ship_data[ship_name] = ShipSchema(ship_name, **data)
 
             multishot_list = data['multishot']
             for multishot_target in multishot_list:
                 if multishot_target not in raw_ship_names:
                     raise ValueError(multishot_target + " does not exist as a shiptype")
+
+        self.ordered_ship_data = sorted(self.ship_data.values(),
+            key=ship_size_sort_key)
 
     def get_ship_schemata(self, ship_name):
         return self.ship_data[ship_name]

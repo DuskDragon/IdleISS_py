@@ -15,6 +15,9 @@ class ShipLibraryMock(ShipLibrary):
         self._load({
             'sizes': [
                 "one",
+                "two",
+                "three",
+                "four",
             ],
             'ships': {
                 "ship1": {
@@ -34,7 +37,7 @@ class ShipLibraryMock(ShipLibrary):
                     "armor": 100,
                     "hull": 100,
                     "firepower": 51,
-                    "size": "one",
+                    "size": "two",
                     "weapon_size": "one",
                     "multishot": {
                         "ship1": 4,
@@ -47,7 +50,7 @@ class ShipLibraryMock(ShipLibrary):
                     "armor": 200,
                     "hull": 200,
                     "firepower": 100,
-                    "size": "one",
+                    "size": "three",
                     "weapon_size": "one",
                     "multishot": {
                         "ship2": 25,
@@ -59,7 +62,7 @@ class ShipLibraryMock(ShipLibrary):
                     "armor": 200,
                     "hull": 250000,
                     "firepower": 250000,
-                    "size": "one",
+                    "size": "four",
                     "weapon_size": "one",
                     "multishot": {
                     },
@@ -67,6 +70,7 @@ class ShipLibraryMock(ShipLibrary):
 
             },
         })
+
 
 class BattleTestCase(TestCase):
 
