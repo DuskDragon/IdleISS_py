@@ -12,59 +12,63 @@ import random
 class ShipLibraryMock(ShipLibrary):
 
     def __init__(self):
-        self.size_data = [
-            "one"
-        ]
-        self.ship_data = {
-            "ship1": {
-                "shield": 10,
-                "armor": 10,
-                "hull": 100,
-                "firepower": 50,
-                "size": "one",
-                "weapon_size": "one",
-                "multishot": {
-                    "ship1": 2,
+        self.raw_data = {
+            'sizes': [
+                "one",
+            ],
+            'ships': {
+                "ship1": {
+                    "shield": 10,
+                    "armor": 10,
+                    "hull": 100,
+                    "firepower": 50,
+                    "size": "one",
+                    "weapon_size": "one",
+                    "multishot": {
+                        "ship1": 2,
+                    },
                 },
-            },
 
-            "ship2": {
-                "shield": 100,
-                "armor": 100,
-                "hull": 100,
-                "firepower": 51,
-                "size": "one",
-                "weapon_size": "one",
-                "multishot": {
-                    "ship1": 4,
-                    "ship2": 16,
+                "ship2": {
+                    "shield": 100,
+                    "armor": 100,
+                    "hull": 100,
+                    "firepower": 51,
+                    "size": "one",
+                    "weapon_size": "one",
+                    "multishot": {
+                        "ship1": 4,
+                        "ship2": 16,
+                    },
                 },
-            },
 
-            "ship3": {
-                "shield": 0,
-                "armor": 200,
-                "hull": 200,
-                "firepower": 100,
-                "size": "one",
-                "weapon_size": "one",
-                "multishot": {
-                    "ship2": 25,
+                "ship3": {
+                    "shield": 0,
+                    "armor": 200,
+                    "hull": 200,
+                    "firepower": 100,
+                    "size": "one",
+                    "weapon_size": "one",
+                    "multishot": {
+                        "ship2": 25,
+                    },
                 },
-            },
 
-            "ship4": {
-                "shield": 1000000,
-                "armor": 200,
-                "hull": 250000,
-                "firepower": 250000,
-                "size": "one",
-                "weapon_size": "one",
-                "multishot": {
+                "ship4": {
+                    "shield": 1000000,
+                    "armor": 200,
+                    "hull": 250000,
+                    "firepower": 250000,
+                    "size": "one",
+                    "weapon_size": "one",
+                    "multishot": {
+                    },
                 },
-            },
 
+            },
         }
+
+        self._load()
 
 
 class BattleTestCase(TestCase):
