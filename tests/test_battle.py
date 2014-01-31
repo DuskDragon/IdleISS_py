@@ -146,15 +146,15 @@ class BattleTestCase(TestCase):
         self.assertFalse(battle.is_ship_alive(ship2))
         self.assertFalse(battle.is_ship_alive(ship3))
 
-    def test_hull_breach(self):
-        random.seed(0)
-        # first 5 outputs of random.random.
-        # the numbers generated are hull % remaining needed to survive,
-        # those over .70 always survive.
+    def test_shield_bounce(self):
+        # less than default threshold, bounces off.
+        self.assertEqual(battle.shield_bounce(1, 200, 1), 1)
+        # not less than default threshold, punches through.
+        self.assertEqual(battle.shield_bounce(1, 200, 2), -1)
 
-        library = ShipLibraryMock()
-        schema = library.get_ship_schemata('ship1')
+    def test_hull_breach(self):
         # no number is rolled for this one as it is over cutoff.
+        random.seed(0)
         self.assertEqual(battle.hull_breach(71, 100), 71)
         self.assertEqual(battle.hull_breach(0, 100), 0) # need 84.4%
         self.assertEqual(battle.hull_breach(69, 100), 0) # ~75.8%

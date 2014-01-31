@@ -5,6 +5,7 @@ from idleiss.ship import Ship
 from idleiss.ship import ShipAttributes
 from idleiss.ship import ShipLibrary
 
+SHIELD_BOUNCE_ZONE = 0.01  # max percentage damage to shield for bounce.
 HULL_DANGER_ZONE = 0.70  # percentage remaining.
 
 PrunedFleet = namedtuple('PrunedFleet', ['fleet', 'count', 'damage_taken'])
@@ -19,6 +20,23 @@ def hull_breach(hull, max_hull):
     chance_of_survival = (float(hull) / float(max_hull))
     return not (chance_of_survival < HULL_DANGER_ZONE and
         chance_of_survival < random.random()) and hull or 0
+
+def shield_bounce(shield, max_shield, firepower,
+        shield_bounce_zone=SHIELD_BOUNCE_ZONE):
+    """
+    Check whether the firepower has enough power to damage the shield or
+    just harmlessly bounce off it, only if there is a shield available.
+    Shield will be returned if the above conditions are not met,
+    otherwise the shield less firepower or negative firepower will be
+    returned.
+
+    Returns the new shield value.
+    """
+
+    # really, shield can't become negative unless some external factors
+    # hacked it into one.
+    return ((firepower < max_shield * shield_bounce_zone) and shield > 0 and
+        shield or shield - firepower)
 
 def is_ship_alive(ship):
     """
@@ -41,13 +59,9 @@ def ship_attack(attacker_schema, victim_ship):
         # save us some time, it should be the same dead ship.
         return victim_ship
 
-    # If firepower is less than 1% ship's shield the shot bounces
-    if attacker_schema.firepower < victim_ship.attributes.shield * 0.01:
-        return victim_ship
-
-    shield = victim_ship.attributes.shield - attacker_schema.firepower
+    shield = shield_bounce(victim_ship.attributes.shield,
+        victim_ship.schema.shield, attacker_schema.firepower)
     armor = victim_ship.attributes.armor + min(shield, 0)
-    #hull_breach is calculated even if the shield absorbs the shot
     hull = hull_breach(victim_ship.attributes.hull + min(armor, 0),
         victim_ship.schema.hull)
     return Ship(victim_ship.schema,
