@@ -3,6 +3,7 @@ from unittest import TestCase
 
 from idleiss import ship
 
+
 class FleetLibraryTestCase(TestCase):
 
     def setUp(self):

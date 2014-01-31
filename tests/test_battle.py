@@ -1,4 +1,5 @@
 from unittest import TestCase
+import random
 
 from idleiss import battle
 from idleiss.battle import Battle
@@ -7,7 +8,6 @@ from idleiss.ship import Ship
 from idleiss.ship import ShipAttributes
 from idleiss.ship import ShipLibrary
 
-import random
 
 class ShipLibraryMock(ShipLibrary):
 
