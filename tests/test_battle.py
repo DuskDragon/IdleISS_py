@@ -12,7 +12,7 @@ import random
 class ShipLibraryMock(ShipLibrary):
 
     def __init__(self):
-        self.raw_data = {
+        self._load({
             'sizes': [
                 "one",
             ],
@@ -66,10 +66,7 @@ class ShipLibraryMock(ShipLibrary):
                 },
 
             },
-        }
-
-        self._load()
-
+        })
 
 class BattleTestCase(TestCase):
 

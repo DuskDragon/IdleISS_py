@@ -22,7 +22,6 @@ class ShipLibrary(object):
     }
 
     def __init__(self, library_filename=None):
-        self.raw_data = None
         if library_filename:
             self.load(library_filename)
 
@@ -38,22 +37,22 @@ class ShipLibrary(object):
     def load(self, filename):
 
         with open(filename) as fd:
-            self.raw_data = json.load(fd)
+            raw_data = json.load(fd)
 
-        self._load()
+        self._load(raw_data)
 
-    def _load(self):
-        missing = self._check_missing_keys('', self.raw_data)
+    def _load(self, raw_data):
+        missing = self._check_missing_keys('', raw_data)
         if missing:
             raise ValueError(', '.join(missing) + ' not found')
 
         self.size_data = {i: size
-            for i, size in enumerate(self.raw_data['sizes'])}
+            for i, size in enumerate(raw_data['sizes'])}
 
-        raw_ship_names = self.raw_data['ships'].keys()
+        raw_ship_names = raw_data['ships'].keys()
         self.ship_data = {}
 
-        for ship_name, data in self.raw_data['ships'].items():
+        for ship_name, data in raw_data['ships'].items():
             missing = self._check_missing_keys('ships', data)
             if missing:
                 raise ValueError("%s does not have %s attribute" % (
@@ -65,8 +64,6 @@ class ShipLibrary(object):
             for multishot_target in multishot_list:
                 if multishot_target not in raw_ship_names:
                     raise ValueError(multishot_target + " does not exist as a shiptype")
-        # log("load succeded")
-        self.raw_data = None
 
     def get_ship_schemata(self, ship_name):
         return self.ship_data[ship_name]
