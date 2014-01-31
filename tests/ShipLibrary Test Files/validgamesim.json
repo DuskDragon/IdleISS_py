@@ -24,7 +24,7 @@
         "LS"
     ],
     "ships": {
-        "RL": {
+        "Rocket Launcher": {
             "shield": 20,
             "armor": 0,
             "hull": 200,
@@ -34,7 +34,7 @@
             "multishot": {
             }
         },
-        "LL": {
+        "Light Laser": {
             "shield": 25,
             "armor": 0,
             "hull": 200,
@@ -44,7 +44,7 @@
             "multishot": {
             }
         },
-        "HL": {
+        "Heavy Laser": {
             "shield": 100,
             "armor": 0,
             "hull": 800,
@@ -54,7 +54,7 @@
             "multishot": {
             }
         },
-        "IC": {
+        "Ion Cannon": {
             "shield": 500,
             "armor": 0,
             "hull": 800,
@@ -64,7 +64,7 @@
             "multishot": {
             }
         },
-        "GC": {
+        "Gauss Cannon": {
             "shield": 200,
             "armor": 0,
             "hull": 3500,
@@ -74,7 +74,7 @@
             "multishot": {
             }
         },
-        "PT": {
+        "Plasma Turret": {
             "shield": 300,
             "armor": 0,
             "hull": 10000,
@@ -84,7 +84,7 @@
             "multishot": {
             }
         },
-        "S": {
+        "Small Shield": {
             "shield": 2000,
             "armor": 0,
             "hull": 2000,
@@ -94,7 +94,7 @@
             "multishot": {
             }
         },
-        "LS": {
+        "Large Shield": {
             "shield": 10000,
             "armor": 0,
             "hull": 10000,
@@ -104,7 +104,7 @@
             "multishot": {
             }
         },
-        "EP": {
+        "Espionage Probe": {
             "shield": 0,
             "armor": 0,
             "hull": 100,
@@ -114,7 +114,7 @@
             "multishot": {
             }
         },
-        "SS": {
+        "Solar Sat.": {
             "shield": 10,
             "armor": 0,
             "hull": 200,
@@ -124,7 +124,7 @@
             "multishot": {
             }
         },
-        "SC": {
+        "Small Cargo": {
             "shield": 10,
             "armor": 0,
             "hull": 400,
@@ -136,7 +136,7 @@
                 "SS": 5
             }
         },
-        "LC": {
+        "Large Cargo": {
             "shield": 25,
             "armor": 0,
             "hull": 1200,
@@ -148,7 +148,7 @@
                 "SS": 5
             }
         },
-        "LF": {
+        "Light Fighter": {
             "shield": 10,
             "armor": 0,
             "hull": 400,
@@ -160,7 +160,7 @@
                 "SS": 5
             }
         },
-        "HF": {
+        "Heavy Fighter": {
             "shield": 25,
             "armor": 0,
             "hull": 1000,
@@ -173,7 +173,7 @@
                 "SC": 3
             }
         },
-        "CR": {
+        "Cruiser": {
             "shield": 50,
             "armor": 0,
             "hull": 2700,
@@ -187,7 +187,7 @@
                 "RL": 10
             }
         },
-        "BS": {
+        "Battleship": {
             "shield": 200,
             "armor": 0,
             "hull": 6000,
@@ -199,7 +199,7 @@
                 "SS": 5
             }
         },
-        "BC": {
+        "Battlecruiser": {
             "shield": 400,
             "armor": 0,
             "hull": 7000,
@@ -216,7 +216,7 @@
                 "BS": 7
             }
         },
-        "CS": {
+        "Colony Ship": {
             "shield": 100,
             "armor": 0,
             "hull": 300,
@@ -228,7 +228,7 @@
                 "SS": 5
             }
         },
-        "R": {
+        "Recycler": {
             "shield": 10,
             "armor": 0,
             "hull": 1600,
@@ -240,7 +240,7 @@
                 "SS": 5
             }
         },
-        "B": {
+        "Bomber": {
             "shield": 500,
             "armor": 0,
             "hull": 7500,
@@ -256,7 +256,7 @@
                 "IC": 10
             }
         },
-        "D": {
+        "Destroyer": {
             "shield": 500,
             "armor": 0,
             "hull": 11000,
@@ -270,7 +270,7 @@
                 "LL": 10
             }
         },
-        "DS": {
+        "Deathstar": {
             "shield": 50000,
             "armor": 0,
             "hull": 900000,
