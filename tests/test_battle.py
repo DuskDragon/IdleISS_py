@@ -1,5 +1,6 @@
 from unittest import TestCase
 import random
+from os.path import dirname, join
 
 from idleiss import battle
 from idleiss.battle import Battle
@@ -309,3 +310,143 @@ class BattleTestCase(TestCase):
             ({'ship1': 1, 'ship2': 20},
                 {}),
         ])
+
+
+class SpeedSimTestCase(TestCase):
+    """
+    Based on a certain game's speedsim.
+
+    Test result data should match as close as possible to real results.
+    Note down descrepencies if no suitable seed can generate one.
+    """
+
+    def setUp(self):
+        target_file = join(dirname(__file__), 'data', 'validgamesim.json')
+        self.library = ShipLibrary(target_file)
+
+    def speedsim(self, attacker, defender, seed=0):
+        random.seed(seed)
+        result = Battle(attacker, defender, 6)
+        result.prepare(self.library)
+        result.calculate_battle()
+        return result
+
+    def test_battle_1(self):
+        attacker = {
+            'Light Fighter': 100,
+        }
+
+        defender = {
+            'Light Fighter': 50,
+        }
+
+        result = self.speedsim(attacker, defender, 1)
+        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(len(result.round_results), 4)
+
+        self.assertEqual(result.round_results[-1][0].count, {
+            'Light Fighter': 95,
+        })
+
+    def test_battle_2(self):
+        attacker = {
+            'Light Fighter': 100,
+            'Heavy Fighter': 60,
+            'Cruiser': 40,
+            'Battleship': 10,
+        }
+
+        defender = {
+            'Light Fighter': 400,
+            'Rocket Launcher': 50,
+            'Light Laser': 10,
+            'Heavy Laser': 5,
+            'Gauss Cannon': 1,
+        }
+
+        result = self.speedsim(attacker, defender, 1)
+        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(len(result.round_results), 4)
+
+        self.assertEqual(result.round_results[-1][0].count, {
+            'Light Fighter': 33,  # 33 - 35
+            'Heavy Fighter': 54,  # 52 - 53
+            'Cruiser': 40,        # 39 - 40
+            'Battleship': 10,
+        })
+
+    def test_battle_3(self):
+        attacker = {
+            'Light Fighter': 2000,
+            'Heavy Fighter': 500,
+            'Cruiser': 1200,
+            'Battleship': 300,
+            'Bomber': 100,
+            'Destroyer': 400,
+            'Deathstar': 10,
+            'Battlecruiser': 500,
+        }
+
+        defender = {
+            'Light Fighter': 4000,
+            'Heavy Fighter': 1000,
+            'Cruiser': 200,
+            'Battleship': 200,
+            'Recycler': 200,
+            'Bomber': 50,
+            'Destroyer': 100,
+            'Deathstar': 1,
+            'Battlecruiser': 50,
+            'Rocket Launcher': 500,
+            'Light Laser': 100,
+            'Heavy Laser': 60,
+            'Gauss Cannon': 50,
+            'Plasma Turret': 20,
+            'Small Shield': 1,
+            'Large Shield': 1,
+        }
+
+        result = self.speedsim(attacker, defender, 1)
+        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(len(result.round_results), 5)
+
+        self.assertEqual(result.round_results[-1][0].count, {
+            'Light Fighter': 804,  # 752 - 782
+            'Heavy Fighter': 315,   # 294 - 302
+            'Cruiser': 919,        # 936 - 953
+            'Battleship': 280,      # 274 - 280
+            'Bomber': 99,          # 95 - 97
+            'Destroyer': 378,       # 387 - 391
+            'Deathstar': 10,        # 10
+            'Battlecruiser': 475,   # 475 - 480
+        })
+
+        result = self.speedsim(attacker, defender, 27)
+        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(len(result.round_results), 5)
+
+        self.assertEqual(result.round_results[-1][0].count, {
+            'Light Fighter': 782,  # 752 - 782
+            'Heavy Fighter': 302,   # 294 - 302
+            'Cruiser': 916,        # 936 - 953
+            'Battleship': 272,      # 274 - 280
+            'Bomber': 97,          # 95 - 97
+            'Destroyer': 390,       # 387 - 391
+            'Deathstar': 10,        # 10
+            'Battlecruiser': 476,   # 475 - 480
+        })
+
+        result = self.speedsim(attacker, defender, 128)
+        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(len(result.round_results), 5)
+
+        self.assertEqual(result.round_results[-1][0].count, {
+            'Light Fighter': 782,  # 752 - 782
+            'Heavy Fighter': 308,   # 294 - 302
+            'Cruiser': 946,        # 936 - 953
+            'Battleship': 283,      # 274 - 280
+            'Bomber': 98,          # 95 - 97
+            'Destroyer': 388,       # 387 - 391
+            'Deathstar': 10,        # 10
+            'Battlecruiser': 477,   # 475 - 480
+        })
