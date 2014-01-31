@@ -39,7 +39,8 @@ class ShipLibrary(object):
 
         with open(filename) as fd:
             self.raw_data = json.load(fd)
-            self._load()
+
+        self._load()
 
     def _load(self):
         missing = self._check_missing_keys('', self.raw_data)
