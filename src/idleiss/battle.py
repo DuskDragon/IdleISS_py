@@ -11,14 +11,15 @@ HULL_DANGER_ZONE = 0.70  # percentage remaining.
 PrunedFleet = namedtuple('PrunedFleet', ['fleet', 'count', 'damage_taken'])
 
 
-def hull_breach(hull, max_hull):
+def hull_breach(hull, max_hull,
+        hull_danger_zone=HULL_DANGER_ZONE):
     """
     Hull has a chance of being breached if less than the dangerzone.
     Chance of survival is determined by how much % hull remains.
     Returns input hull amount if RNG thinks it should, otherwise 0.
     """
     chance_of_survival = (float(hull) / float(max_hull))
-    return not (chance_of_survival < HULL_DANGER_ZONE and
+    return not (chance_of_survival < hull_danger_zone and
         chance_of_survival < random.random()) and hull or 0
 
 def shield_bounce(shield, max_shield, firepower,
