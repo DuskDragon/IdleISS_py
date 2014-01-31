@@ -87,6 +87,23 @@ def multishot(attacker_schema, victim_schema):
     multishot = attacker_schema.multishot.get(victim_schema.name, 0)
     return multishot > 0 and (multishot - 1.0) / multishot > random.random()
 
+def expand_fleet(fleet, library):
+    # for the listing of numbers of ship we need to expand to each ship
+    # having it's own value for shield, armor, and hull
+
+    # TO DO: Make sure fleet when expanded is ordered by size
+    #     From smallest to largest to make explode chance and
+    #     shield bounce effects work out properly.
+
+    ships = []
+    for ship_type in fleet:
+        schema = library.get_ship_schemata(ship_type)
+        ships.extend([Ship(
+                schema,  # it's just a pointer...
+                ShipAttributes(schema.shield, schema.armor, schema.hull),
+            ) for i in range(fleet[ship_type])])
+    return ships
+
 def prune_fleet(damaged_fleet):
     """
     Prune a damaged fleet of dead ships and restore the shields.
@@ -172,28 +189,11 @@ class Battle(object):
 
         self.round_results = []
 
-    def expand(self, fleet, library):
-        # for the listing of numbers of ship we need to expand to each ship
-        # having it's own value for shield, armor, and hull
-
-        # TO DO: Make sure fleet when expanded is ordered by size
-        #     From smallest to largest to make explode chance and
-        #     shield bounce effects work out properly.
-
-        ships = []
-        for ship_type in fleet:
-            schema = library.get_ship_schemata(ship_type)
-            ships.extend([Ship(
-                    schema,  # it's just a pointer...
-                    ShipAttributes(schema.shield, schema.armor, schema.hull),
-                ) for i in range(fleet[ship_type])])
-        return ships
-
     def prepare(self, library):
         # do all the fleet preparation pre-battle using this game
         # library.  Could be called initialize.
-        self.attacker_fleet = self.expand(self.attacker_count, library)
-        self.defender_fleet = self.expand(self.defender_count, library)
+        self.attacker_fleet = expand_fleet(self.attacker_count, library)
+        self.defender_fleet = expand_fleet(self.defender_count, library)
 
     def calculate_round(self):
         # really could return a result, but :effort:

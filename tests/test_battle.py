@@ -76,19 +76,13 @@ class BattleTestCase(TestCase):
     def setUp(self):
         pass
 
-    def test_battle_expand(self):
-        attacker = {
-            "ship1": 5
-        }
-        defender = {
-            "ship1": 4
-        }
-        rounds = 15
-        battle_instance = Battle(attacker, defender, rounds)
+    def test_expand_fleet(self):
         library = ShipLibraryMock()
         schema = library.get_ship_schemata('ship1')
-
-        exp_attack_test = [
+        ship_count = {
+            "ship1": 5
+        }
+        answer = [
             Ship(schema, ShipAttributes(10, 10, 100)),
             Ship(schema, ShipAttributes(10, 10, 100)),
             Ship(schema, ShipAttributes(10, 10, 100)),
@@ -96,15 +90,8 @@ class BattleTestCase(TestCase):
             Ship(schema, ShipAttributes(10, 10, 100)),
         ]
 
-        exp_def_test = [
-            Ship(schema, ShipAttributes(10, 10, 100)),
-            Ship(schema, ShipAttributes(10, 10, 100)),
-            Ship(schema, ShipAttributes(10, 10, 100)),
-            Ship(schema, ShipAttributes(10, 10, 100)),
-        ]
-        battle_instance.prepare(library)
-        self.assertEqual(battle_instance.attacker_fleet, exp_attack_test)
-        self.assertEqual(battle_instance.defender_fleet, exp_def_test)
+        result = battle.expand_fleet(ship_count, library)
+        self.assertEqual(answer, result)
 
     def test_prune_fleet(self):
         library = ShipLibraryMock()
