@@ -20,6 +20,15 @@ def hull_breach(hull, max_hull):
     return not (chance_of_survival < HULL_DANGER_ZONE and
         chance_of_survival < random.random()) and hull or 0
 
+def is_ship_alive(ship):
+    """
+    Simple check to see if ship is alive.
+    """
+
+    # If and when flag systems become advanced enough **FUN** things can
+    # be applied to make this check more hilarious.
+    return ship.attributes.hull > 0  # though it can't be < 0
+
 def ship_attack(attacker_schema, victim_ship):
     """
     Do a ship attack.
@@ -27,8 +36,8 @@ def ship_attack(attacker_schema, victim_ship):
     Apply the attacker's schema onto the victim_ship as an attack
     and return a new Ship object as the result.
     """
-    # if not (alive)
-    if not victim_ship.attributes.hull > 0:  # though it can't be < 0
+
+    if not is_ship_alive(victim_ship):
         # save us some time, it should be the same dead ship.
         return victim_ship
 

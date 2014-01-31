@@ -124,6 +124,17 @@ class BattleTestCase(TestCase):
         self.assertEqual(result.fleet, expected_fleet)
         self.assertEqual(result.count, expected_count)
 
+    def test_is_alive(self):
+        library = ShipLibraryMock()
+        schema1 = library.get_ship_schemata('ship1')
+        ship1 = Ship(schema1, ShipAttributes(10, 10, 100))
+        ship2 = Ship(schema1, ShipAttributes(10, 10, 0))
+        ship3 = Ship(schema1, ShipAttributes(10, 10, -1))  # lolwut
+
+        self.assertTrue(battle.is_ship_alive(ship1))
+        self.assertFalse(battle.is_ship_alive(ship2))
+        self.assertFalse(battle.is_ship_alive(ship3))
+
     def test_hull_breach(self):
         random.seed(0)
         # first 5 outputs of random.random.
