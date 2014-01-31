@@ -53,6 +53,17 @@ class ShipLibraryMock(ShipLibrary):
                 },
             },
 
+            "ship4": {
+                "shield": 1000000,
+                "armor": 200,
+                "hull": 250000,
+                "firepower": 250000,
+                "size": "one",
+                "weapon_size": "one",
+                "multishot": {
+                },
+            },
+
         }
 
 
@@ -182,6 +193,24 @@ class BattleTestCase(TestCase):
         ship2_3 = battle.ship_attack(schema3, ship2_2)
         self.assertEqual(ship2_3, Ship(schema2,
             ShipAttributes(0, 0, 0)))
+
+    def test_ship_attack_shield_bounce(self):
+        library = ShipLibraryMock()
+        schema1 = library.get_ship_schemata('ship1')
+        schema4 = library.get_ship_schemata('ship4')
+        ship1 = Ship(schema1, ShipAttributes(10, 10, 100))
+        ship4 = Ship(schema4, ShipAttributes(1000000, 0, 50000))
+
+        random.seed(1)
+        ship4_1 = battle.ship_attack(schema1, ship4)
+        # bounced, need 13% to survive, lives with 20%
+        self.assertEqual(ship4_1, Ship(schema4, ShipAttributes(
+            1000000, 0, 50000)))
+
+        ship4_1 = battle.ship_attack(schema1, ship4)
+        # bounced, but explode is triggered.
+        self.assertEqual(ship4_1, Ship(schema4, ShipAttributes(
+            1000000, 0, 0)))
 
     def test_multishot(self):
         library = ShipLibraryMock()
