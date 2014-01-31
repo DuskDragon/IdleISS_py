@@ -4,9 +4,9 @@ from idleiss.user import User
 
 class LibraryStub(object):
     def __init__(self):
-        self.size_data = {
-            "one": 1
-        }
+        self.size_data = [
+            "one"
+        ]
         self.ship_data = {
             "ship1": {
                 "shield": 10,

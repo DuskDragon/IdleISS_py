@@ -27,13 +27,18 @@ def ship_attack(attacker_schema, victim_ship):
     Apply the attacker's schema onto the victim_ship as an attack
     and return a new Ship object as the result.
     """
-
+    # if not (alive)
     if not victim_ship.attributes.hull > 0:  # though it can't be < 0
         # save us some time, it should be the same dead ship.
         return victim_ship
 
+    # If firepower is less than 1% ship's shield the shot bounces
+    if attacker_schema.firepower < victim_ship.attributes.shield * 0.01:
+        return victim_ship
+
     shield = victim_ship.attributes.shield - attacker_schema.firepower
     armor = victim_ship.attributes.armor + min(shield, 0)
+    #hull_breach is calculated even if the shield absorbs the shot
     hull = hull_breach(victim_ship.attributes.hull + min(armor, 0),
         victim_ship.schema.hull)
     return Ship(victim_ship.schema,
@@ -90,6 +95,7 @@ def fleet_attack(fleet_a, fleet_b):
     each ship in fleet_a.
     """
 
+    # if fleet b is empty
     if not fleet_b:
         # nothing for fleet_a to attack, and we are going to get back the
         # same dumb fleet.
@@ -134,6 +140,10 @@ class Battle(object):
     def expand(self, fleet, library):
         # for the listing of numbers of ship we need to expand to each ship
         # having it's own value for shield, armor, and hull
+
+        # TO DO: Make sure fleet when expanded is ordered by size
+        #     From smallest to largest to make explode chance and
+        #     shield bounce effects work out properly.
 
         ships = []
         for ship_type in fleet:
