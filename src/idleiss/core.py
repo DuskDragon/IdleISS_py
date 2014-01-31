@@ -18,8 +18,7 @@ class GameEngine(object):
     def __init__(self, library_filename):
         self.users = {}
         self.current_online_list = []
-        target_path = join(dirname(__file__), '../../'+library_filename)
-        self.library = ShipLibrary(target_path)
+        self.library = ShipLibrary(library_filename)
 
         # The current world_timestamp - only updated whenever the world
         # is updated by calling update_world with the current/latest
