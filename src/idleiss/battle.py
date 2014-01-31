@@ -11,18 +11,20 @@ HULL_DANGER_ZONE = 0.70  # percentage remaining.
 PrunedFleet = namedtuple('PrunedFleet', ['fleet', 'count', 'damage_taken'])
 
 
-def hull_breach(hull, max_hull,
+def hull_breach(hull, max_hull, damage,
         hull_danger_zone=HULL_DANGER_ZONE):
     """
     Hull has a chance of being breached if less than the dangerzone.
     Chance of survival is determined by how much % hull remains.
     Returns input hull amount if RNG thinks it should, otherwise 0.
     """
-    chance_of_survival = (float(hull) / float(max_hull))
-    return not (chance_of_survival < hull_danger_zone and
-        chance_of_survival < random.random()) and hull or 0
 
-def shield_bounce(shield, max_shield, firepower,
+    damaged_hull = hull - damage
+    chance_of_survival = (float(damaged_hull) / float(max_hull))
+    return not (chance_of_survival < hull_danger_zone and
+        chance_of_survival < random.random()) and damaged_hull or 0
+
+def shield_bounce(shield, max_shield, damage,
         shield_bounce_zone=SHIELD_BOUNCE_ZONE):
     """
     Check whether the firepower has enough power to damage the shield or
@@ -36,8 +38,8 @@ def shield_bounce(shield, max_shield, firepower,
 
     # really, shield can't become negative unless some external factors
     # hacked it into one.
-    return ((firepower < max_shield * shield_bounce_zone) and shield > 0 and
-        shield or shield - firepower)
+    return ((damage < shield * shield_bounce_zone) and shield > 0 and
+        shield or shield - damage)
 
 def is_ship_alive(ship):
     """
@@ -60,11 +62,20 @@ def ship_attack(attacker_schema, victim_ship):
         # save us some time, it should be the same dead ship.
         return victim_ship
 
+    if attacker_schema.firepower <= 0:
+        # Yeah nah.
+        return victim_ship
+
     shield = shield_bounce(victim_ship.attributes.shield,
         victim_ship.schema.shield, attacker_schema.firepower)
+    if shield == victim_ship.attributes.shield:
+        # it glanced off, don't need to worry about hull breaches when
+        # the weapon didn't even hit
+        return victim_ship
+
     armor = victim_ship.attributes.armor + min(shield, 0)
-    hull = hull_breach(victim_ship.attributes.hull + min(armor, 0),
-        victim_ship.schema.hull)
+    hull = hull_breach(victim_ship.attributes.hull,
+        victim_ship.schema.hull, - min(armor, 0))
     return Ship(victim_ship.schema,
         ShipAttributes(max(0, shield), max(0, armor), max(0, hull)))
 

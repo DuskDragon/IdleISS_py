@@ -148,18 +148,22 @@ class BattleTestCase(TestCase):
 
     def test_shield_bounce(self):
         # less than default threshold, bounces off.
-        self.assertEqual(battle.shield_bounce(1, 200, 1), 1)
+        self.assertEqual(battle.shield_bounce(101, 200, 1), 101)
         # not less than default threshold, punches through.
+        self.assertEqual(battle.shield_bounce(99, 200, 1), 98)
         self.assertEqual(battle.shield_bounce(1, 200, 2), -1)
 
     def test_hull_breach(self):
         # no number is rolled for this one as it is over cutoff.
         random.seed(0)
-        self.assertEqual(battle.hull_breach(71, 100), 71)
-        self.assertEqual(battle.hull_breach(0, 100), 0) # need 84.4%
-        self.assertEqual(battle.hull_breach(69, 100), 0) # ~75.8%
-        self.assertEqual(battle.hull_breach(42, 100), 0) # ~42.05%
-        self.assertEqual(battle.hull_breach(26, 100), 26) # ~25.89%
+        self.assertEqual(battle.hull_breach(72, 100, 1), 71)
+        self.assertEqual(battle.hull_breach(1, 100, 1), 0) # need 84.4%
+        # Doesn't matter if 0 damage, because armor or shield could have
+        # taken some and send shockwave down to the weakened hull.
+        # Think warp core breaches in ST:TNG.
+        self.assertEqual(battle.hull_breach(69, 100, 0), 0) # ~75.8%
+        self.assertEqual(battle.hull_breach(43, 100, 1), 0) # ~42.05%
+        self.assertEqual(battle.hull_breach(27, 100, 1), 26) # ~25.89%
 
     def test_ship_attack(self):
         library = ShipLibraryMock()
@@ -200,6 +204,7 @@ class BattleTestCase(TestCase):
         schema4 = library.get_ship_schemata('ship4')
         ship1 = Ship(schema1, ShipAttributes(10, 10, 100))
         ship4 = Ship(schema4, ShipAttributes(1000000, 0, 50000))
+        ship4b = Ship(schema4, ShipAttributes(1000000, 0, 100))
 
         random.seed(1)
         ship4_1 = battle.ship_attack(schema1, ship4)
@@ -207,10 +212,10 @@ class BattleTestCase(TestCase):
         self.assertEqual(ship4_1, Ship(schema4, ShipAttributes(
             1000000, 0, 50000)))
 
-        ship4_1 = battle.ship_attack(schema1, ship4)
-        # bounced, but explode is triggered.
-        self.assertEqual(ship4_1, Ship(schema4, ShipAttributes(
-            1000000, 0, 0)))
+        # bounced, again it should be ignored.
+        ship4b_1 = battle.ship_attack(schema1, ship4b)
+        self.assertEqual(ship4b_1, Ship(schema4, ShipAttributes(
+            1000000, 0, 100)))
 
     def test_multishot(self):
         library = ShipLibraryMock()
