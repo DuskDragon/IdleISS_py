@@ -1,12 +1,12 @@
 {
-    "sizes": [
-        "fighter",
-        "frigate",
-        "cruiser",
-        "hauler",
-        "battlecruiser",
-        "battleship"
-    ],
+    "sizes": {
+        "fighter": 50,
+        "frigate": 60,
+        "cruiser": 100,
+        "hauler": 150,
+        "battlecruiser": 300,
+        "battleship": 600
+    },
     "ships": {
         "small hauler": {
             "armor": 0,

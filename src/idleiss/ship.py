@@ -50,8 +50,8 @@ class ShipLibrary(object):
         if missing:
             raise ValueError(', '.join(missing) + ' not found')
 
-        self.size_data = {size: i
-            for i, size in enumerate(raw_data['sizes'])}
+        self.size_data = {}
+        self.size_data.update(raw_data['sizes'])
 
         raw_ship_names = raw_data['ships'].keys()
         self.ship_data = {}

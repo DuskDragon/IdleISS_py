@@ -14,12 +14,12 @@ class ShipLibraryMock(ShipLibrary):
 
     def __init__(self):
         self._load({
-            'sizes': [
-                "one",
-                "two",
-                "three",
-                "four",
-            ],
+            'sizes': {
+                "one": 1,
+                "two": 2,
+                "three": 3,
+                "four": 4,
+            },
             'ships': {
                 "ship1": {
                     "shield": 10,
