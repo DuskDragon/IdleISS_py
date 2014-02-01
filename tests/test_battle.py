@@ -399,7 +399,21 @@ class BattleTestCase(TestCase):
         ])
 
 
-class SpeedSimTestCase(TestCase):
+class SimBase(object):
+
+    def set_library(self, target_file):
+        target_file = join(dirname(__file__), 'data', target_file)
+        self.library = ShipLibrary(target_file)
+
+    def fight(self, attacker, defender, seed=0, rounds=6):
+        random.seed(seed)
+        result = Battle(attacker, defender, rounds)
+        result.prepare(self.library)
+        result.calculate_battle()
+        return result
+
+
+class SpeedSimTestCase(TestCase, SimBase):
     """
     Based on a certain game's speedsim.
 
@@ -408,15 +422,7 @@ class SpeedSimTestCase(TestCase):
     """
 
     def setUp(self):
-        target_file = join(dirname(__file__), 'data', 'validgamesim.json')
-        self.library = ShipLibrary(target_file)
-
-    def speedsim(self, attacker, defender, seed=0):
-        random.seed(seed)
-        result = Battle(attacker, defender, 6)
-        result.prepare(self.library)
-        result.calculate_battle()
-        return result
+        self.set_library('validgamesim.json')
 
     def test_battle_1(self):
         attacker = {
@@ -427,7 +433,7 @@ class SpeedSimTestCase(TestCase):
             'Light Fighter': 50,
         }
 
-        result = self.speedsim(attacker, defender, 1)
+        result = self.fight(attacker, defender, 1)
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 4)
 
@@ -451,7 +457,7 @@ class SpeedSimTestCase(TestCase):
             'Gauss Cannon': 1,
         }
 
-        result = self.speedsim(attacker, defender, 1)
+        result = self.fight(attacker, defender, 1)
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 4)
 
@@ -493,7 +499,7 @@ class SpeedSimTestCase(TestCase):
             'Large Shield': 1,
         }
 
-        result = self.speedsim(attacker, defender, 1)
+        result = self.fight(attacker, defender, 1)
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 5)
 
@@ -508,7 +514,7 @@ class SpeedSimTestCase(TestCase):
             'Battlecruiser': 475,   # 475 - 480
         })
 
-        result = self.speedsim(attacker, defender, 27)
+        result = self.fight(attacker, defender, 27)
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 5)
 
@@ -523,7 +529,7 @@ class SpeedSimTestCase(TestCase):
             'Battlecruiser': 476,   # 475 - 480
         })
 
-        result = self.speedsim(attacker, defender, 128)
+        result = self.fight(attacker, defender, 128)
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 5)
 
@@ -537,3 +543,141 @@ class SpeedSimTestCase(TestCase):
             'Deathstar': 10,        # 10
             'Battlecruiser': 477,   # 475 - 480
         })
+
+
+class DucttapeSimTestCase(TestCase, SimBase):
+    """
+    Based on duct tape ships.
+    """
+
+    def setUp(self):
+        self.set_library('minmatar.json')
+
+    def test_battle_1(self):
+        attacker = {
+            'rifter': 1,
+        }
+
+        defender = {
+            'thrasher': 1,
+        }
+
+        result = self.fight(attacker, defender, 1)
+        self.assertEqual(result.attacker_fleet, [])
+        self.assertEqual(len(result.round_results), 1)
+
+        self.assertEqual(result.round_results[0][0].shots_taken, 8)
+        self.assertEqual(result.round_results[0][1].ship_count, {
+            'thrasher': 1,
+        })
+
+    def test_battle_2(self):
+        attacker = {
+            'rifter': 100,
+        }
+
+        defender = {
+            'thrasher': 100,
+        }
+
+        result = self.fight(attacker, defender, 1)
+        self.assertEqual(result.attacker_fleet, [])
+        self.assertEqual(len(result.round_results), 1)
+
+        self.assertEqual(result.round_results[0][0].shots_taken, 935)
+        self.assertEqual(result.round_results[0][1].ship_count, {
+            'thrasher': 94,
+        })
+
+    def test_battle_3(self):
+        attacker = {
+            'rifter': 1,
+        }
+
+        defender = {
+            'tempest': 1,
+        }
+
+        result = self.fight(attacker, defender, rounds=6)
+        self.assertEqual(len(result.round_results), 6)
+
+        # first round of shots fired and damage
+        self.assertEqual(result.round_results[0][0].shots_taken, 1)
+        self.assertEqual(result.round_results[0][1].shots_taken, 9)
+        # battleship can barely land a damage on a frigate...
+        self.assertEqual(result.round_results[0][0].damage_taken, 76)
+        # but who knew frigates can harass a battleship so much more.
+        self.assertEqual(result.round_results[0][1].damage_taken, 3600)
+
+        # stalemate, ofc.
+        self.assertEqual(result.round_results[-1][0].ship_count, attacker)
+        self.assertEqual(result.round_results[-1][1].ship_count, defender)
+
+    def test_battle_3(self):
+        attacker = {
+            'rifter': 1,
+            'thrasher': 1,
+            'stabber': 1,
+            'hurricane': 1,
+            'tempest': 1,
+        }
+
+        defender = {
+            'rifter': 1,
+            'thrasher': 1,
+            'stabber': 1,
+            'hurricane': 1,
+            'tempest': 1,
+        }
+
+        result = self.fight(attacker, defender, rounds=6)
+        self.assertEqual(len(result.round_results), 5)
+
+        # first round of shots fired and damage
+        self.assertEqual(result.round_results[0][0].shots_taken, 10)
+        self.assertEqual(result.round_results[0][1].shots_taken, 10)
+        # even if same amount of shots fired, depends who got hit.
+        self.assertEqual(result.round_results[0][0].damage_taken, 7228)
+        self.assertEqual(result.round_results[0][1].damage_taken, 12084)
+        self.assertEqual(result.round_results[0][0].ship_count, {
+            'rifter': 1,
+            'thrasher': 1,
+            'hurricane': 1,
+            'tempest': 1,
+        })
+        self.assertEqual(result.round_results[0][1].ship_count, {
+            'rifter': 1,
+            'hurricane': 1,
+            'stabber': 1,
+            'tempest': 1,
+        })
+
+        # I guess the hurricane did die, but not after it killed all
+        # the things.
+        self.assertEqual(result.round_results[-1][0].ship_count, {
+            'rifter': 1,
+            'tempest': 1,
+        })
+        self.assertEqual(result.round_results[-1][1].ship_count, {})
+
+    def test_battle_3(self):
+        attacker = {
+            'hurricane': 256,
+        }
+
+        defender = {
+            'stabber': 128,
+            'tempest': 256,
+        }
+
+        result = self.fight(attacker, defender, rounds=6)
+
+        # hurricanes are waaaay too OP.
+        self.assertEqual(len(result.round_results), 2)
+        self.assertEqual(result.round_results[0][0].ship_count, {
+            'hurricane': 40,
+        })
+        self.assertEqual(result.round_results[0][1].ship_count, {
+            'tempest': 1,
+        })
+        # I don't think we need to think about what happened next.

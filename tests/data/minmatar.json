@@ -1,0 +1,89 @@
+{
+    "sizes": {
+        "frigate": 35,
+        "destroyer": 35,
+        "cruiser": 100,
+        "battlecruiser": 250,
+        "battleship": 360
+    },
+
+    "ships": {
+        "rifter": {
+            "shield": 391,
+            "armor": 351,
+            "hull": 336,
+            "firepower": 400,
+            "size": "frigate",
+            "weapon_size": "frigate",
+            "multishot": {
+                "rifter": 2,
+                "thrasher": 2,
+                "stabber": 4,
+                "hurricane": 3,
+                "tempest": 9
+            }
+        },
+
+        "thrasher": {
+            "shield": 800,
+            "armor": 750,
+            "hull": 750,
+            "firepower": 1000,
+            "size": "destroyer",
+            "weapon_size": "frigate",
+            "multishot": {
+                "rifter": 9,
+                "thrasher": 3,
+                "stabber": 4,
+                "hurricane": 3,
+                "tempest": 2
+            }
+        },
+
+        "stabber": {
+            "shield": 1600,
+            "armor": 1300,
+            "hull": 1300,
+            "firepower": 1500,
+            "size": "cruiser",
+            "weapon_size": "cruiser",
+            "multishot": {
+                "rifter": 4,
+                "thrasher": 9,
+                "stabber": 4,
+                "hurricane": 4,
+                "tempest": 3
+            }
+        },
+
+        "hurricane": {
+            "shield": 4250,
+            "armor": 4500,
+            "hull": 3500,
+            "firepower": 3000,
+            "size": "battlecruiser",
+            "weapon_size": "cruiser",
+            "multishot": {
+                "rifter": 2,
+                "thrasher": 4,
+                "stabber": 16,
+                "hurricane": 9,
+                "tempest": 25
+            }
+        },
+
+        "tempest": {
+            "shield": 6300,
+            "armor": 7000,
+            "hull": 6800,
+            "firepower": 8000,
+            "size": "battleship",
+            "weapon_size": "battleship",
+            "multishot": {
+                "stabber": 2,
+                "hurricane": 5,
+                "tempest": 2
+            }
+        }
+    }
+}
