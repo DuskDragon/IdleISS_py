@@ -158,6 +158,22 @@ class BattleTestCase(TestCase):
         self.assertEqual(battle.hull_breach(43, 100, 1), 0) # ~42.05%
         self.assertEqual(battle.hull_breach(27, 100, 1), 26) # ~25.89%
 
+    def test_true_damage(self):
+        # weapon size less than target_size, exactly same as full damage
+        self.assertEqual(battle.true_damage(100, 1, 2), 100)
+
+        # weapon size at target size, ditto.
+        self.assertEqual(battle.true_damage(100, 2, 2), 100)
+
+        # weapon size larget than target size, 44.44% damage rounded up
+        self.assertEqual(battle.true_damage(100, 3, 2), 45)
+
+        # weapon size obscenely huge compared to size, still damaged.
+        self.assertEqual(battle.true_damage(100, 1000, 2), 1)
+
+        # weapon size just a weee bit larger than target size
+        self.assertEqual(battle.true_damage(100, 10000, 9999), 100)
+
     def test_ship_attack(self):
         library = ShipLibraryMock()
         schema1 = library.get_ship_schemata('ship1')

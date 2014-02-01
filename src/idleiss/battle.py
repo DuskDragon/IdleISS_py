@@ -1,3 +1,5 @@
+from __future__ import division
+
 import random
 from collections import namedtuple
 
@@ -25,18 +27,17 @@ def hull_breach(hull, max_hull, damage,
     """
 
     damaged_hull = hull - damage
-    chance_of_survival = (float(damaged_hull) / float(max_hull))
+    chance_of_survival = damaged_hull / max_hull
     return not (chance_of_survival < hull_danger_zone and
         chance_of_survival < random.random()) and damaged_hull or 0
 
 def shield_bounce(shield, max_shield, damage,
         shield_bounce_zone=SHIELD_BOUNCE_ZONE):
     """
-    Check whether the firepower has enough power to damage the shield or
+    Check whether the damage has enough power to damage the shield or
     just harmlessly bounce off it, only if there is a shield available.
     Shield will be returned if the above conditions are not met,
-    otherwise the shield less firepower or negative firepower will be
-    returned.
+    otherwise the current shield less damage taken will be returned.
 
     Returns the new shield value.
     """
@@ -45,6 +46,26 @@ def shield_bounce(shield, max_shield, damage,
     # hacked it into one.
     return ((damage < shield * shield_bounce_zone) and shield > 0 and
         shield or shield - damage)
+
+def true_damage(damage, weapon_size, target_size):
+    """
+    Calculates true damage.  If weapon size is greater than the target
+    size, then only the area that falls within the target will the
+    damage be applied.  Round up to the nearest integer.
+    """
+
+    # idea:
+    # painters gives > 1 multiplier to the target_size against target
+    # reason - painters expand the target to make it easier to hit.
+
+    # idea:
+    # webbers give < 1 multiplier to the weapon_size against target
+    # reason - weapons can focus more damage on a webbed target
+
+    if weapon_size <= target_size:
+        return damage
+
+    return int(((target_size ** 2) / (weapon_size ** 2)) * damage) + 1
 
 def is_ship_alive(ship):
     """
@@ -71,8 +92,13 @@ def ship_attack(attacker_schema, victim_ship):
         # Yeah nah.
         return victim_ship
 
+    damage = true_damage(attacker_schema.firepower,
+        attacker_schema.weapon_size,
+        victim_ship.schema.size,
+    )
+
     shield = shield_bounce(victim_ship.attributes.shield,
-        victim_ship.schema.shield, attacker_schema.firepower)
+        victim_ship.schema.shield, damage)
     if shield == victim_ship.attributes.shield:
         # it glanced off, don't need to worry about hull breaches when
         # the weapon didn't even hit
@@ -122,9 +148,6 @@ def prune_fleet(damaged_fleet):
     for ship in damaged_fleet:
         if not ship.attributes.hull > 0:
             continue
-
-        # damage_taken can't be calculated now as armor might not have
-        # been damaged this round.  Need actual damage information.
 
         # I considered doing another attribute to ship for temporary
         # afflictions, such as damage/ecm and the like will be tagged
