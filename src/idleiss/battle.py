@@ -8,7 +8,12 @@ from idleiss.ship import ShipLibrary
 SHIELD_BOUNCE_ZONE = 0.01  # max percentage damage to shield for bounce.
 HULL_DANGER_ZONE = 0.70  # percentage remaining.
 
-PrunedFleet = namedtuple('PrunedFleet', ['fleet', 'count', 'damage_taken'])
+AttackResult = namedtuple('AttackResult',
+    ['attacker_fleet', 'damaged_fleet', 'shots_taken', 'damage_taken'])
+PrunedFleet = namedtuple('PrunedFleet',
+    ['fleet', 'ship_count'])
+RoundResult = namedtuple('RoundResult',
+    ['ship_count', 'shots_taken', 'damage_taken'])
 
 
 def hull_breach(hull, max_hull, damage,
@@ -135,7 +140,7 @@ def prune_fleet(damaged_fleet):
         ))
         count[ship.schema.name] = count.get(ship.schema.name, 0) + 1
 
-    return PrunedFleet(fleet, count, damage_taken)
+    return PrunedFleet(fleet, count)
 
 def fleet_attack(fleet_a, fleet_b):
     """
@@ -155,6 +160,8 @@ def fleet_attack(fleet_a, fleet_b):
 
     result = []
     result.extend(fleet_b)
+    shots = 0
+    damage = 0
 
     for ship in fleet_a:
         firing = True
@@ -166,8 +173,15 @@ def fleet_attack(fleet_a, fleet_b):
             target_id = random.randrange(0, len(result))
             result[target_id] = ship_attack(ship.schema, result[target_id])
             firing = multishot(ship.schema, result[target_id].schema)
+            shots += 1
 
-    return result
+    damage = sum((
+            (fresh.attributes.shield - damaged.attributes.shield) +
+            (fresh.attributes.armor - damaged.attributes.armor) +
+            (fresh.attributes.hull - damaged.attributes.hull)
+        for fresh, damaged in zip(fleet_b, result)))
+
+    return AttackResult(fleet_a, result, shots, damage)
 
 
 class Battle(object):
@@ -196,19 +210,23 @@ class Battle(object):
         self.defender_fleet = expand_fleet(self.defender_count, library)
 
     def calculate_round(self):
-        # really could return a result, but :effort:
-        self.defender_fleet = fleet_attack(
+        defender_damaged = fleet_attack(
             self.attacker_fleet, self.defender_fleet)
-        self.attacker_fleet = fleet_attack(
+        attacker_damaged = fleet_attack(
             self.defender_fleet, self.attacker_fleet)
 
-        defender_results = prune_fleet(self.defender_fleet)
-        attacker_results = prune_fleet(self.attacker_fleet)
+        defender_results = prune_fleet(defender_damaged.damaged_fleet)
+        attacker_results = prune_fleet(attacker_damaged.damaged_fleet)
 
         # TODO figure out a better way to store round information that
         # can accommodate multiple fleets.
 
-        self.round_results.append((attacker_results, defender_results))
+        self.round_results.append((
+            RoundResult(attacker_results.ship_count,
+                attacker_damaged.shots_taken, attacker_damaged.damage_taken),
+            RoundResult(defender_results.ship_count,
+                defender_damaged.shots_taken, defender_damaged.damage_taken),
+        ))
 
         self.defender_fleet = defender_results.fleet
         self.attacker_fleet = attacker_results.fleet
