@@ -260,6 +260,10 @@ class BattleTestCase(TestCase):
             battle_instance.attacker_fleet,
             battle_instance.defender_fleet,
         )
+
+        self.assertEqual(attack_result.shots_taken, 8)
+        self.assertEqual(attack_result.damage_taken, 340)
+
         result = battle.prune_fleet(attack_result.damaged_fleet)
         self.assertEqual(result.fleet, [
             Ship(schema1, ShipAttributes(10, 0, 70)),
@@ -268,6 +272,26 @@ class BattleTestCase(TestCase):
         self.assertEqual(result.ship_count, {
             'ship1': 2,
         })
+
+    def test_fleet_attack_damage_limited_by_hp(self):
+        attacker = {
+            "ship4": 1,
+        }
+        defender = {
+            "ship1": 1,
+        }
+        rounds = 6
+        battle_instance = Battle(attacker, defender, rounds)
+        library = ShipLibraryMock()
+
+        battle_instance.prepare(library)
+        attack_result = battle.fleet_attack(
+            battle_instance.attacker_fleet,
+            battle_instance.defender_fleet,
+        )
+
+        self.assertEqual(attack_result.shots_taken, 1)
+        self.assertEqual(attack_result.damage_taken, 120)
 
     def test_calculate_round(self):
         attacker = {
@@ -286,6 +310,27 @@ class BattleTestCase(TestCase):
         battle_instance.calculate_round()
 
         self.assertEqual(battle_instance.defender_fleet, [])
+
+    def test_calculate_battle_stalemate(self):
+        # too much shield and shield recharge haha.
+        stalemates = {
+            "ship4": 3,
+        }
+        rounds = 6
+        battle_instance = Battle(stalemates, stalemates, rounds)
+        library = ShipLibraryMock()
+        battle_instance.prepare(library)
+        battle_instance.calculate_battle()
+
+        self.assertEqual(len(battle_instance.round_results), 6)
+        for a, d in battle_instance.round_results:
+            self.assertEqual(a.ship_count, stalemates)
+            self.assertEqual(a.shots_taken, 3)
+            self.assertEqual(a.damage_taken, 750000)
+
+            self.assertEqual(d.ship_count, stalemates)
+            self.assertEqual(d.shots_taken, 3)
+            self.assertEqual(d.damage_taken, 750000)
 
     def test_calculate_battle(self):
         attacker = {
@@ -317,6 +362,24 @@ class BattleTestCase(TestCase):
                 {'ship1': 2}),
             ({'ship1': 1, 'ship2': 20},
                 {}),
+        ])
+
+        shots = [(a.shots_taken, d.shots_taken)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(shots, [
+            (185, 198),
+            (73, 111),
+            (22, 63),
+            (2, 70),
+        ])
+
+        damage = [(a.damage_taken, d.damage_taken)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(damage, [
+            (7850, 9013),
+            (3260, 4022),
+            (1090, 1656),
+            (100, 109),
         ])
 
 
