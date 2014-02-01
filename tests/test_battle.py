@@ -126,7 +126,7 @@ class BattleTestCase(TestCase):
 
         result = battle.prune_fleet(tattered_fleet)
         self.assertEqual(result.fleet, expected_fleet)
-        self.assertEqual(result.count, expected_count)
+        self.assertEqual(result.ship_count, expected_count)
 
     def test_is_alive(self):
         library = ShipLibraryMock()
@@ -226,14 +226,21 @@ class BattleTestCase(TestCase):
     def test_fleet_attack_empty(self):
         library = ShipLibraryMock()
         schema1 = library.get_ship_schemata('ship1')
+
+        # attacking nothing will have no rounds.
         result = battle.fleet_attack([], [])
         self.assertEqual(result, [])
+
+        # attacking nothing will have no rounds (for now?).
         result = battle.fleet_attack(
             [Ship(schema1, ShipAttributes(10, 0, 70)),], [])
         self.assertEqual(result, [])
+
+        # nothing attacking a fleet will still result in a round (for now?).
         result = battle.fleet_attack(
             [], [Ship(schema1, ShipAttributes(10, 0, 70)),])
-        self.assertEqual(result, [Ship(schema1, ShipAttributes(10, 0, 70)),])
+        self.assertEqual(result.damaged_fleet,
+            [Ship(schema1, ShipAttributes(10, 0, 70)),])
 
     def test_fleet_attack(self):
         attacker = {
@@ -249,18 +256,42 @@ class BattleTestCase(TestCase):
 
         random.seed(1)
         battle_instance.prepare(library)
-        damaged_fleet = battle.fleet_attack(
+        attack_result = battle.fleet_attack(
             battle_instance.attacker_fleet,
             battle_instance.defender_fleet,
         )
-        result = battle.prune_fleet(damaged_fleet)
+
+        self.assertEqual(attack_result.shots_taken, 8)
+        self.assertEqual(attack_result.damage_taken, 340)
+
+        result = battle.prune_fleet(attack_result.damaged_fleet)
         self.assertEqual(result.fleet, [
             Ship(schema1, ShipAttributes(10, 0, 70)),
             Ship(schema1, ShipAttributes(10, 0, 70)),
         ])
-        self.assertEqual(result.count, {
+        self.assertEqual(result.ship_count, {
             'ship1': 2,
         })
+
+    def test_fleet_attack_damage_limited_by_hp(self):
+        attacker = {
+            "ship4": 1,
+        }
+        defender = {
+            "ship1": 1,
+        }
+        rounds = 6
+        battle_instance = Battle(attacker, defender, rounds)
+        library = ShipLibraryMock()
+
+        battle_instance.prepare(library)
+        attack_result = battle.fleet_attack(
+            battle_instance.attacker_fleet,
+            battle_instance.defender_fleet,
+        )
+
+        self.assertEqual(attack_result.shots_taken, 1)
+        self.assertEqual(attack_result.damage_taken, 120)
 
     def test_calculate_round(self):
         attacker = {
@@ -279,6 +310,27 @@ class BattleTestCase(TestCase):
         battle_instance.calculate_round()
 
         self.assertEqual(battle_instance.defender_fleet, [])
+
+    def test_calculate_battle_stalemate(self):
+        # too much shield and shield recharge haha.
+        stalemates = {
+            "ship4": 3,
+        }
+        rounds = 6
+        battle_instance = Battle(stalemates, stalemates, rounds)
+        library = ShipLibraryMock()
+        battle_instance.prepare(library)
+        battle_instance.calculate_battle()
+
+        self.assertEqual(len(battle_instance.round_results), 6)
+        for a, d in battle_instance.round_results:
+            self.assertEqual(a.ship_count, stalemates)
+            self.assertEqual(a.shots_taken, 3)
+            self.assertEqual(a.damage_taken, 750000)
+
+            self.assertEqual(d.ship_count, stalemates)
+            self.assertEqual(d.shots_taken, 3)
+            self.assertEqual(d.damage_taken, 750000)
 
     def test_calculate_battle(self):
         attacker = {
@@ -299,7 +351,8 @@ class BattleTestCase(TestCase):
         self.assertEqual(battle_instance.defender_fleet, [])
         self.assertEqual(len(battle_instance.round_results), 4)
 
-        counts = [(a.count, d.count) for a, d in battle_instance.round_results]
+        counts = [(a.ship_count, d.ship_count)
+            for a, d in battle_instance.round_results]
         self.assertEqual(counts, [
             ({'ship1': 15, 'ship2': 23},
                 {'ship1': 60}),
@@ -309,6 +362,24 @@ class BattleTestCase(TestCase):
                 {'ship1': 2}),
             ({'ship1': 1, 'ship2': 20},
                 {}),
+        ])
+
+        shots = [(a.shots_taken, d.shots_taken)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(shots, [
+            (185, 198),
+            (73, 111),
+            (22, 63),
+            (2, 70),
+        ])
+
+        damage = [(a.damage_taken, d.damage_taken)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(damage, [
+            (7850, 9013),
+            (3260, 4022),
+            (1090, 1656),
+            (100, 109),
         ])
 
 
@@ -344,7 +415,7 @@ class SpeedSimTestCase(TestCase):
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 4)
 
-        self.assertEqual(result.round_results[-1][0].count, {
+        self.assertEqual(result.round_results[-1][0].ship_count, {
             'Light Fighter': 95,
         })
 
@@ -368,7 +439,7 @@ class SpeedSimTestCase(TestCase):
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 4)
 
-        self.assertEqual(result.round_results[-1][0].count, {
+        self.assertEqual(result.round_results[-1][0].ship_count, {
             'Light Fighter': 33,  # 33 - 35
             'Heavy Fighter': 54,  # 52 - 53
             'Cruiser': 40,        # 39 - 40
@@ -410,7 +481,7 @@ class SpeedSimTestCase(TestCase):
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 5)
 
-        self.assertEqual(result.round_results[-1][0].count, {
+        self.assertEqual(result.round_results[-1][0].ship_count, {
             'Light Fighter': 804,  # 752 - 782
             'Heavy Fighter': 315,   # 294 - 302
             'Cruiser': 919,        # 936 - 953
@@ -425,7 +496,7 @@ class SpeedSimTestCase(TestCase):
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 5)
 
-        self.assertEqual(result.round_results[-1][0].count, {
+        self.assertEqual(result.round_results[-1][0].ship_count, {
             'Light Fighter': 782,  # 752 - 782
             'Heavy Fighter': 302,   # 294 - 302
             'Cruiser': 916,        # 936 - 953
@@ -440,7 +511,7 @@ class SpeedSimTestCase(TestCase):
         self.assertEqual(result.defender_fleet, [])
         self.assertEqual(len(result.round_results), 5)
 
-        self.assertEqual(result.round_results[-1][0].count, {
+        self.assertEqual(result.round_results[-1][0].ship_count, {
             'Light Fighter': 782,  # 752 - 782
             'Heavy Fighter': 308,   # 294 - 302
             'Cruiser': 946,        # 936 - 953
