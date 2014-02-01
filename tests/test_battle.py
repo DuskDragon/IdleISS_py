@@ -551,7 +551,7 @@ class DucttapeSimTestCase(TestCase, SimBase):
     """
 
     def setUp(self):
-        self.set_library('minmatar.json')
+        self.set_library('og_minmatar.json')
 
     def test_battle_1(self):
         attacker = {

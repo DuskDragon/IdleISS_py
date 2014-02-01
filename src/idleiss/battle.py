@@ -156,7 +156,7 @@ def prune_fleet(damaged_fleet):
         fleet.append(Ship(
             ship.schema,
             ShipAttributes(
-                ship.schema.shield,
+                ship.schema.shield_recharge,
                 ship.attributes.armor,
                 ship.attributes.hull,
             ),
@@ -262,3 +262,6 @@ class Battle(object):
                 break
             self.calculate_round()
 
+        # when/if we implement more than 1v1 then this will need to change
+        self.attacker_result = self.round_results[-1][0].ship_count
+        self.defender_result = self.round_results[-1][1].ship_count

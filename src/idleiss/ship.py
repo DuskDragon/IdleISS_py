@@ -5,7 +5,9 @@ import json
 
 ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
     'weapon_size', 'multishot',]
-ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields)
+ship_optional_fields = ['shield_recharge',]
+ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
+    ship_optional_fields)
 
 Ship = namedtuple('Ship', ['schema', 'attributes'])
 # schema - the full schema.
@@ -64,6 +66,10 @@ class ShipLibrary(object):
 
             data['size'] = self.size_data[data['size']]
             data['weapon_size'] = self.size_data[data['weapon_size']]
+
+            #going to want to depreciate this in the future
+            data['shield_recharge'] = data.get('shield_recharge', data['shield'])
+
             self.ship_data[ship_name] = ShipSchema(ship_name, **data)
 
             multishot_list = data['multishot']

@@ -1,0 +1,25 @@
+Frigates
+Crucifier - Tracking Disruptiion
+
+Executioner - Tackle
+Condor - Tackle
+
+Rifter - Assault
+Tormentor - Assault
+
+Punisher - Brawler
+
+Inquisitor - Logistic
+Bantam - Logistic
+
+
+Combat Statistics/Values Strategy:
+let's approximate that a round is 30 seconds
+then let's say max battle length is 10 minutes
+thus: max rounds is 20
+
+10 frigates kill a battleship in about 3 rounds
+1 v 1 frigates get a kill in a single round
+destroyers kill 2-3 frigates per round
+
+
