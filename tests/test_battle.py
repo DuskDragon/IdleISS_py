@@ -421,6 +421,30 @@ class BattleTestCase(TestCase):
         result = battle.repair_fleet(tattered_fleet)
         self.assertEqual(result, expected_fleet)
 
+    def test_repair_fleet_does_not_scramble(self):
+        random.seed(0)
+        # rep orders
+        # shield: 3, 3, 1, 1, 2,
+        # armor: 1, 3, 1, 1, 2
+        library = ShipLibraryMock()
+        schema_remote = library.get_ship_schemata('remote_rep_test')
+        tattered_fleet = [
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
+            Ship(schema_remote, ShipAttributes(10, 10, 10)), #1
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
+            Ship(schema_remote, ShipAttributes(10, 10, 0)),  #2
+            Ship(schema_remote, ShipAttributes(99, 99, 100)),#3
+        ]
+        expected_fleet = [
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
+            Ship(schema_remote, ShipAttributes(30, 40, 10)), #1
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
+            Ship(schema_remote, ShipAttributes(20, 20, 0)),  #2
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),#3
+        ]
+        result = battle.repair_fleet(tattered_fleet)
+        self.assertEqual(result, expected_fleet)
+
     def test_calculate_battle(self):
         attacker = {
             "ship1": 45,

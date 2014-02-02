@@ -192,7 +192,6 @@ def repair_fleet(input_fleet):
         return input_fleet
 
     damaged_shield = []
-    undamaged = []
 
     # I have a bad feeling that this function won't last longer
     # than a single commit :ohdear:
@@ -200,57 +199,48 @@ def repair_fleet(input_fleet):
     # and a ship might get over repped, but that's actually intended
 
     # shield first
-    for ship in input_fleet:
-        if ship.attributes.shield != ship.schema.shield:
-            damaged_shield.append(ship)
-        else:
-            undamaged.append(ship)
+    for x in xrange(len(input_fleet)):
+        if input_fleet[x].attributes.shield != input_fleet[x].schema.shield:
+            damaged_shield.append(x)
 
     if damaged_shield != []:
         for ship in logi_shield:
-            rep_target = random.randint(0, len(damaged_shield)-1)
-            damaged_shield[rep_target] = Ship(
-                damaged_shield[rep_target].schema,
+            rep_target = random.choice(damaged_shield)
+            input_fleet[rep_target] = Ship(
+                input_fleet[rep_target].schema,
                 ShipAttributes(
-                    min(damaged_shield[rep_target].schema.shield,
-                        (damaged_shield[rep_target].attributes.shield
+                    min(input_fleet[rep_target].schema.shield,
+                        (input_fleet[rep_target].attributes.shield
                             + ship.schema.remote_shield)
                     ),
-                    damaged_shield[rep_target].attributes.armor,
-                    damaged_shield[rep_target].attributes.hull,
+                    input_fleet[rep_target].attributes.armor,
+                    input_fleet[rep_target].attributes.hull,
                 ),
             )
 
-    shield_repped_fleet = damaged_shield + undamaged
-    damaged_shield = []
     damaged_armor = []
-    undamaged = []
 
     #armor second
-    for ship in shield_repped_fleet:
-        if ship.attributes.armor != ship.schema.armor:
-            damaged_armor.append(ship)
-        else:
-            undamaged.append(ship)
+    for x in xrange(len(input_fleet)):
+        if input_fleet[x].attributes.armor != input_fleet[x].schema.armor:
+            damaged_armor.append(int(x))
 
     if damaged_armor != []:
         for ship in logi_armor:
-            rep_target = random.randint(0, len(damaged_armor)-1)
-            damaged_armor[rep_target] = Ship(
-                damaged_armor[rep_target].schema,
+            rep_target = random.choice(damaged_armor)
+            input_fleet[rep_target] = Ship(
+                input_fleet[rep_target].schema,
                 ShipAttributes(
-                    damaged_armor[rep_target].attributes.shield,
-                    min(damaged_armor[rep_target].schema.armor,
-                        (damaged_armor[rep_target].attributes.armor
+                    input_fleet[rep_target].attributes.shield,
+                    min(input_fleet[rep_target].schema.armor,
+                        (input_fleet[rep_target].attributes.armor
                             + ship.schema.remote_armor)
                     ),
-                    damaged_armor[rep_target].attributes.hull,
+                    input_fleet[rep_target].attributes.hull,
                 ),
             )
 
-    result_fleet = undamaged + damaged_armor
-
-    return result_fleet
+    return input_fleet
 
 def fleet_attack(fleet_a, fleet_b):
     """
