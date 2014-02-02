@@ -9,9 +9,11 @@
 
     "ships": {
         "rifter": {
-            "shield": 391,
-            "armor": 351,
-            "hull": 336,
+            "shield": 2680,
+            "armor": 833,
+            "hull": 350,
+            "shield_recharge": 7
+            "armor_local_repair": 0
             "firepower": 400,
             "size": "frigate",
             "weapon_size": "frigate",

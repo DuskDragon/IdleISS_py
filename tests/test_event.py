@@ -4,7 +4,7 @@ from idleiss.event import Event
 
 
 class EventTestCase(TestCase):
-    
+
     def setUp(self):
         pass
 

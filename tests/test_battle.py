@@ -69,6 +69,30 @@ class ShipLibraryMock(ShipLibrary):
                     },
                 },
 
+                "local_rep_test": {
+                    "shield": 100,
+                    "shield_recharge": 5,
+                    "armor_local_repair": 5,
+                    "armor": 100,
+                    "hull": 100,
+                    "firepower": 100,
+                    "size": "one",
+                    "weapon_size": "one",
+                    "multishot": {
+                    },
+                },
+                "remote_rep_test": {
+                    "shield": 100,
+                    "remote_shield": 10,
+                    "remote_armor": 10,
+                    "armor": 100,
+                    "hull": 100,
+                    "firepower": 100,
+                    "size": "one",
+                    "weapon_size": "one",
+                    "multishot": {
+                    },
+                },
             },
         })
 
@@ -347,6 +371,55 @@ class BattleTestCase(TestCase):
             self.assertEqual(d.ship_count, stalemates)
             self.assertEqual(d.shots_taken, 3)
             self.assertEqual(d.damage_taken, 750000)
+
+    def test_local_rep(self):
+        attacker = {
+            "local_rep_test": 10,
+        }
+        defender = {
+            "local_rep_test": 20,
+        }
+        rounds = 6
+        battle_instance = Battle(attacker, defender, rounds)
+        library = ShipLibraryMock()
+        schema_rep = library.get_ship_schemata('local_rep_test')
+        tattered_fleet = [
+            Ship(schema_rep, ShipAttributes(100, 100, 100)),
+            Ship(schema_rep, ShipAttributes(0, 0, 100)),
+            Ship(schema_rep, ShipAttributes(10, 10, 0)),
+            Ship(schema_rep, ShipAttributes(10, 10, 100)),
+        ]
+        expected_fleet = [
+            Ship(schema_rep, ShipAttributes(100, 100, 100)),
+            Ship(schema_rep, ShipAttributes(5, 5, 100)),
+            Ship(schema_rep, ShipAttributes(15, 15, 100)),
+        ]
+        result = battle.prune_fleet(tattered_fleet)
+        self.assertEqual(result.fleet, expected_fleet)
+
+    def test_repair_fleet(self):
+        random.seed(0)
+        # rep orders
+        # shield: 3, 3, 1, 1, 2,
+        # armor: 1, 3, 1, 1, 2
+        library = ShipLibraryMock()
+        schema_remote = library.get_ship_schemata('remote_rep_test')
+        tattered_fleet = [
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
+            Ship(schema_remote, ShipAttributes(10, 10, 10)), #1
+            Ship(schema_remote, ShipAttributes(10, 10, 0)),  #2
+            Ship(schema_remote, ShipAttributes(99, 99, 100)),#3
+        ]
+        expected_fleet = [
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
+            Ship(schema_remote, ShipAttributes(30, 40, 10)), #1
+            Ship(schema_remote, ShipAttributes(20, 20, 0)),  #2
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),#3
+        ]
+        result = battle.repair_fleet(tattered_fleet)
+        self.assertEqual(result, expected_fleet)
 
     def test_calculate_battle(self):
         attacker = {

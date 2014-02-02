@@ -5,7 +5,8 @@ import json
 
 ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
     'weapon_size', 'multishot',]
-ship_optional_fields = ['shield_recharge', 'armor_local_repair',]
+ship_optional_fields = ['shield_recharge', 'armor_local_repair',
+    'remote_shield', 'remote_armor',]
 ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
     ship_optional_fields)
 
@@ -70,6 +71,8 @@ class ShipLibrary(object):
             #going to want to depreciate these in the future
             data['shield_recharge'] = data.get('shield_recharge', data['shield'])
             data['armor_local_repair'] = data.get('armor_local_repair', 0)
+            data['remote_shield'] = data.get('remote_shield', 0)
+            data['remote_armor'] = data.get('remote_shield', 0)
 
             self.ship_data[ship_name] = ShipSchema(ship_name, **data)
 

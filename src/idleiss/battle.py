@@ -137,7 +137,7 @@ def expand_fleet(fleet, library):
 
 def prune_fleet(damaged_fleet):
     """
-    Prune a damaged fleet of dead ships and restore the shields.
+    Prune a damaged fleet of dead ships and restore shields/armor.
     Returns the pruned fleet and a count of ships.
     """
 
@@ -168,6 +168,89 @@ def prune_fleet(damaged_fleet):
         count[ship.schema.name] = count.get(ship.schema.name, 0) + 1
 
     return PrunedFleet(fleet, count)
+
+def logi_subfleet(input_fleet):
+    logi_shield = []
+    logi_armor = []
+    for ship in input_fleet:
+        if ship.schema.remote_shield:
+            logi_shield.append(ship)
+        if ship.schema.remote_armor:
+            logi_armor.append(ship)
+        else:
+            continue
+    return [logi_shield, logi_armor]
+
+def repair_fleet(input_fleet):
+    """
+    Have logistics ships do their job and repair other ships in the fleet
+    """
+    logistics = logi_subfleet(input_fleet)
+    logi_shield = logistics[0]
+    logi_armor = logistics[1]
+    if (logi_shield == []) and (logi_armor == []):
+        return input_fleet
+
+    damaged_shield = []
+    undamaged = []
+
+    # I have a bad feeling that this function won't last longer
+    # than a single commit :ohdear:
+    # also this has a slight bug that ships can rep themselves
+    # and a ship might get over repped, but that's actually intended
+
+    # shield first
+    for ship in input_fleet:
+        if ship.attributes.shield != ship.schema.shield:
+            damaged_shield.append(ship)
+        else:
+            undamaged.append(ship)
+
+    if damaged_shield != []:
+        for ship in logi_shield:
+            rep_target = random.randint(0, len(damaged_shield)-1)
+            damaged_shield[rep_target] = Ship(
+                damaged_shield[rep_target].schema,
+                ShipAttributes(
+                    min(damaged_shield[rep_target].schema.shield,
+                        (damaged_shield[rep_target].attributes.shield
+                            + ship.schema.remote_shield)
+                    ),
+                    damaged_shield[rep_target].attributes.armor,
+                    damaged_shield[rep_target].attributes.hull,
+                ),
+            )
+
+    shield_repped_fleet = damaged_shield + undamaged
+    damaged_shield = []
+    damaged_armor = []
+    undamaged = []
+
+    #armor second
+    for ship in shield_repped_fleet:
+        if ship.attributes.armor != ship.schema.armor:
+            damaged_armor.append(ship)
+        else:
+            undamaged.append(ship)
+
+    if damaged_armor != []:
+        for ship in logi_armor:
+            rep_target = random.randint(0, len(damaged_armor)-1)
+            damaged_armor[rep_target] = Ship(
+                damaged_armor[rep_target].schema,
+                ShipAttributes(
+                    damaged_armor[rep_target].attributes.shield,
+                    min(damaged_armor[rep_target].schema.armor,
+                        (damaged_armor[rep_target].attributes.armor
+                            + ship.schema.remote_armor)
+                    ),
+                    damaged_armor[rep_target].attributes.hull,
+                ),
+            )
+
+    result_fleet = undamaged + damaged_armor
+
+    return result_fleet
 
 def fleet_attack(fleet_a, fleet_b):
     """
@@ -242,8 +325,11 @@ class Battle(object):
         attacker_damaged = fleet_attack(
             self.defender_fleet, self.attacker_fleet)
 
-        defender_results = prune_fleet(defender_damaged.damaged_fleet)
-        attacker_results = prune_fleet(attacker_damaged.damaged_fleet)
+        attacker_repaired = repair_fleet(attacker_damaged.damaged_fleet)
+        defender_repaired = repair_fleet(defender_damaged.damaged_fleet)
+
+        defender_results = prune_fleet(defender_repaired)
+        attacker_results = prune_fleet(attacker_repaired)
 
         # TODO figure out a better way to store round information that
         # can accommodate multiple fleets.
