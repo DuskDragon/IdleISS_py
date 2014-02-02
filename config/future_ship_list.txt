@@ -78,7 +78,20 @@ Cyclone - Brawler
 
 Battleship
 ----------
+Abaddon - Frontline
+Rokh - Frontline
 
+Apocalypse - Attack
+Raven - Attack
+Maelstrom - Attack
+Tempest - Attack
+Typhoon - Attack
+Hyperion - Attack
+
+Armageddon - Neut
+Scorpion - ECM
+
+Dominix - Drone
 
 List of Sizes:
 --------------
@@ -88,14 +101,28 @@ Cruiser
 Battlecruiser
 Battleship
 
-Combat Statistics/Values Strategy:
+Combat Statistics and Values Developing Strategy:
 ----------------------------------
 let's approximate that a round is 30 seconds
 then let's say max battle length is 10 minutes
 thus: max rounds is 20
 
-10 frigates kill a battleship in about 3 rounds
 1 v 1 frigates get a kill in a single round
-destroyers kill 2-3 frigates per round
+destroyers kill 2-3 frigates per round - 5 frigates might kill a destroyer
+3 rounds for a frigate to kill a cruiser, but the cruiser would kill 3 frigates in that time
+5 frigates kill a battlecruiser in about 3 rounds, but those frigates would likely all die
+10 frigates kill a battleship in about 3 rounds, and the battleship might kill one (drones?)
 
+destroyer can kill 1-3 destroyers per round
+destroyer kills a cruiser in 2 rounds, but cruisers kill 2-3 destroyers per round
+destroyer takes 6 rounds to kill a BC, but BC can kill about 1 destroyer each round
+destroyer kills a battleship in 13 rounds, but that battleship will kill the destroyer first with drones
 
+cruiser 1v1 get a kill in a single round
+cruiser kills a battlecruiser in 3-4 rounds, but battlecruisers kill 1-2 cruisers per round
+cruiser kills a battleship in 10 rounds but a battleship would likely kill 3-5 cruisers in that time
+
+Battlecruiser 1v1 takes 3-4 rounds
+Battlecruiser kills battleship in 10 rounds, but in that time 10 bcs would die
+
+Battleship 1v1s take 3-4 rounds
