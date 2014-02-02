@@ -156,8 +156,12 @@ def prune_fleet(damaged_fleet):
         fleet.append(Ship(
             ship.schema,
             ShipAttributes(
-                ship.schema.shield_recharge,
-                ship.attributes.armor,
+                min(ship.schema.shield,
+                    (ship.attributes.shield + ship.schema.shield_recharge)
+                ),
+                min(ship.schema.armor,
+                    (ship.attributes.armor + ship.schema.armor_local_repair)
+                ),
                 ship.attributes.hull,
             ),
         ))

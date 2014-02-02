@@ -1,19 +1,95 @@
 Frigates
+--------
 Crucifier - Tracking Disruptiion
+Griffin - ECM
+Maulus - Sensor Dampener
+Vigil - Target Painter
 
 Executioner - Tackle
 Condor - Tackle
+Slasher - Tackle
+Atron - Tackle
 
 Rifter - Assault
 Tormentor - Assault
+Kestrel - Assault
+Tristan - Assault
 
 Punisher - Brawler
+Merlin - Brawler
+Incursus - Brawler
+Breacher - Brawler
 
 Inquisitor - Logistic
 Bantam - Logistic
+Navitas - Logistic
+Burst - Logistic
 
+Destroyer
+---------
+Coercer - Gunnery
+Cormorant - Gunnery
+Catalyst - Gunnery
+Thrasher - Gunnery
+
+Dragoon - Neut/Swarmer
+Corax - High Damage/Swarmer
+Algos - High Damage/Swarmer
+Talwar - Sniper
+
+Cruiser
+-------
+Arbitrator - Tracking Disruption
+Blackbird - ECM
+Celestis - Sensor Dampener
+Bellicose - Target Painter
+
+Augoror - Logistic
+Osprey - Logistic
+Exequror - Logistic
+Scythe - Logistic
+
+Maller - Brawler
+Moa - Brawler
+Vexor - Brawler
+Stabber - Brawler
+
+Omen - Assault
+Caracal - Assault
+Thorax - Assault
+Rupture - Assault
+
+Battlecruiser
+-------------
+Oracle - Sniper
+Naga - Sniper
+Talos - Sniper
+Tornado - Sniper
+
+Harbringer - Assault
+Ferox - Assault
+Brutix - Assault
+Hurricane - Assault
+
+Prophecy - Brawler
+Drake - Brawler
+Myrmidon - Brawler
+Cyclone - Brawler
+
+Battleship
+----------
+
+
+List of Sizes:
+--------------
+Frigate
+Destroyer
+Cruiser
+Battlecruiser
+Battleship
 
 Combat Statistics/Values Strategy:
+----------------------------------
 let's approximate that a round is 30 seconds
 then let's say max battle length is 10 minutes
 thus: max rounds is 20
