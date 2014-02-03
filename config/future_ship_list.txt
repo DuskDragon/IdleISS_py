@@ -32,7 +32,7 @@ Cormorant - Gunnery
 Catalyst - Gunnery
 Thrasher - Gunnery
 
-Dragoon - Neut/Swarmer
+Dragoon - TD/Swarmer
 Corax - High Damage/Swarmer
 Algos - High Damage/Swarmer
 Talwar - Sniper
@@ -88,7 +88,7 @@ Tempest - Attack
 Typhoon - Attack
 Hyperion - Attack
 
-Armageddon - Neut
+Armageddon - Web/TD
 Scorpion - ECM
 
 Dominix - Drone

@@ -131,7 +131,7 @@ def ship_attack(attacker_schema, victim_ship, attacker_debuffs):
         return victim_ship
 
     if attacker_debuffs.get('active', {}).get('ECM', 0) != 0:
-        # attacker is jammed can't attack
+        # attacker is jammed can't attack or apply debuffs
         return victim_ship
 
     debuffs = grab_debuffs(attacker_schema, victim_ship)
