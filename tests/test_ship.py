@@ -15,7 +15,7 @@ class FleetLibraryTestCase(TestCase):
         self.library = ship.ShipLibrary(target_path)
         schema = self.library.get_ship_schemata('small hauler')
         self.assertEqual(schema, ship.ShipSchema('small hauler',
-            10, 0, 200, 0, 160, 50, {}, 10, 0, 0, 0))
+            10, 0, 200, 0, 160, 50, {}, 1, 10, 0, 0, 0, 0, 0, 0, 0,))
 
     def test_load_fail_no_shield(self):
         test_file_name = 'noshield.json'
@@ -45,6 +45,7 @@ class FleetLibraryTestCase(TestCase):
                     "hull": 336,
                     "firepower": 120,
                     "size": "frigate",
+                    "sensor_strength": 9.6,
                     "weapon_size": "frigate",
                     "multishot": {
                         "stabber": 3,
@@ -58,6 +59,7 @@ class FleetLibraryTestCase(TestCase):
                     "hull": 1300,
                     "firepower": 330,
                     "size": "cruiser",
+                    "sensor_strength": 13,
                     "weapon_size": "cruiser",
                     "multishot": {
                         "rifter": 9,
@@ -71,6 +73,7 @@ class FleetLibraryTestCase(TestCase):
                     "hull": 6800,
                     "firepower": 650,
                     "size": "battleship",
+                    "sensor_strength": 22.4,
                     "weapon_size": "battleship",
                     "multishot": {
                         "stabber": 25,

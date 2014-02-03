@@ -13,6 +13,7 @@
             "armor": 20,
             "hull": 2700,
             "firepower": 400,
+            "sensor_strength": 1,
             "size": "cruiser",
             "weapon_size": "cruiser",
             "multishot": {

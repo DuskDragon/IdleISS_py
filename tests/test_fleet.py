@@ -17,6 +17,7 @@ class ShipLibraryMock(ShipLibrary):
                 "armor": 10,
                 "hull": 100,
                 "firepower": 50,
+                "sensor_strength": 1,
                 "size": "one",
                 "weapon_size": "one",
                 "multishot": {

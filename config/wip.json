@@ -14,6 +14,7 @@
             "hull": 350,
             "shield_recharge": 7
             "armor_local_repair": 0
+            "sensor_strength": 9.6,
             "firepower": 400,
             "size": "frigate",
             "weapon_size": "frigate",
@@ -31,6 +32,7 @@
             "armor": 750,
             "hull": 750,
             "firepower": 1000,
+            "sensor_strength": 10.8,
             "size": "destroyer",
             "weapon_size": "frigate",
             "multishot": {
@@ -48,6 +50,7 @@
             "hull": 1300,
             "firepower": 1500,
             "size": "cruiser",
+            "sensor_strength": 13.0,
             "weapon_size": "cruiser",
             "multishot": {
                 "rifter": 4,
@@ -63,6 +66,7 @@
             "armor": 4500,
             "hull": 3500,
             "firepower": 3000,
+            "sensor_strength": 19.2,
             "size": "battlecruiser",
             "weapon_size": "cruiser",
             "multishot": {
@@ -79,6 +83,7 @@
             "armor": 7000,
             "hull": 6800,
             "firepower": 8000,
+            "sensor_strength": 22.4,
             "size": "battleship",
             "weapon_size": "battleship",
             "multishot": {

@@ -126,3 +126,17 @@ Battlecruiser 1v1 takes 3-4 rounds
 Battlecruiser kills battleship in 10 rounds, but in that time 10 bcs would die
 
 Battleship 1v1s take 3-4 rounds
+
+
+Debuffs:
+--------
+value tells how severe the effect is
+prune_fleet takes care of changing active status
+Example:
+{
+	'active': {
+		'ecm': 1
+	}
+	'inactive': {
+	}
+}

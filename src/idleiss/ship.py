@@ -4,9 +4,10 @@ import json
 
 
 ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
-    'weapon_size', 'multishot',]
+    'weapon_size', 'multishot', 'sensor_strength',]
 ship_optional_fields = ['shield_recharge', 'armor_local_repair',
-    'remote_shield', 'remote_armor',]
+    'remote_shield', 'remote_armor', 'target_painter', 'tracking_disruption',
+    'ECM', 'web',]
 ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
     ship_optional_fields)
 
@@ -14,7 +15,7 @@ Ship = namedtuple('Ship', ['schema', 'attributes'])
 # schema - the full schema.
 # attributes - ShipAttributes
 
-ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull',])
+ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull', 'debuffs',])
 
 
 def ship_size_sort_key(obj):
@@ -73,6 +74,10 @@ class ShipLibrary(object):
             data['armor_local_repair'] = data.get('armor_local_repair', 0)
             data['remote_shield'] = data.get('remote_shield', 0)
             data['remote_armor'] = data.get('remote_shield', 0)
+            data['target_painter'] = data.get('target_painter', 0)
+            data['tracking_disruption'] = data.get('tracking_disruption', 0)
+            data['ECM'] = data.get('ECM', 0)
+            data['web'] = data.get('web', 0)
 
             self.ship_data[ship_name] = ShipSchema(ship_name, **data)
 

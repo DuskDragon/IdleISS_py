@@ -13,6 +13,7 @@
             "armor": 0,
             "hull": 200,
             "firepower": 0,
+            "sensor_strength": 1,
             "size": "hauler",
             "weapon_size": "fighter",
             "multishot": {
@@ -23,6 +24,7 @@
             "armor": 10,
             "hull": 400,
             "firepower": 50,
+            "sensor_strength": 1,
             "size": "fighter",
             "weapon_size": "fighter",
             "multishot": {
@@ -33,6 +35,7 @@
             "armor": 10,
             "hull": 1000,
             "firepower": 150,
+            "sensor_strength": 1,
             "size": "fighter",
             "weapon_size": "fighter",
             "multishot": {
@@ -44,6 +47,7 @@
             "armor": 20,
             "hull": 2700,
             "firepower": 400,
+            "sensor_strength": 1,
             "size": "cruiser",
             "weapon_size": "cruiser",
             "multishot": {
