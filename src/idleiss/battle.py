@@ -48,11 +48,21 @@ def shield_bounce(shield, max_shield, damage,
     return ((damage < shield * shield_bounce_zone) and shield > 0 and
         shield or shield - damage)
 
+def size_damage_factor(weapon_size, target_size):
+    """
+    Calculates damage factor on size.  If weapon size is greater than
+    the target size, then only the area that falls within the target
+    will the damage be applied.
+    """
+
+    if weapon_size <= target_size:
+        return damage
+
+    return (target_size ** 2) / (weapon_size ** 2)
+
 def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
     """
-    Calculates true damage.  If weapon size is greater than the target
-    size, then only the area that falls within the target will the
-    damage be applied.  Round up to the nearest integer.
+    Calculates true damage based on parameters.
     """
 
     # source_debuffs: tracking disruption
@@ -71,12 +81,13 @@ def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
     # reason - weapons can focus more damage on a webbed target
 
     if web == 0 or weapon_size / web * tracking_disrupt <=  \
-        target_size * target_painter:
+            target_size * target_painter:
         return damage
 
-    return int(math.ceil((((target_size * target_painter) ** 2) /
-        (((weapon_size / web) * tracking_disrupt) ** 2)) *
-        damage))
+    true_weapon_size = (weapon_size / web) * tracking_disrupt
+    true_target_size = target_size * target_painter
+    damage_factor = size_damage_factor(true_weapon_size, true_target_size)
+    return int(math.ceil(damage_factor * damage))
 
 def is_ship_alive(ship):
     """
