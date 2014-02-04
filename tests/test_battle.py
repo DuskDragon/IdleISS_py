@@ -314,7 +314,8 @@ class BattleTestCase(TestCase):
         self.assertEqual(ship2_1, Ship(schema3, ShipAttributes(0, 100, 200)))
         # make sure active prevents attacking
         # ship1 attacks ship2 again
-        ship1 = Ship(schema3, ShipAttributes(0, 200, 200))
+        ship1 = Ship(schema3, ShipAttributes(0, 200, 200),
+            {'active': {'ECM': 1}})
         ship2 = Ship(schema3, ShipAttributes(0, 200, 200))
         ship2_2 = battle.ship_attack(ship1, ship2)
         self.assertEqual(ship2_2, Ship(schema3, ShipAttributes(0, 200, 200)))

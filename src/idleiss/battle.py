@@ -93,9 +93,8 @@ def grab_debuffs(source, target_in):
     as well as ship attributes.
     Source is ShipSchema
     target_in is a Ship
-    These debuffs are 'inactive' so they are for next turn
     """
-    result = {}
+    inactive = {}
     sensor_str = target_in.schema.sensor_strength
     target = target_in
     # I'm sure there's a list comprehension thing that could be used
@@ -103,20 +102,26 @@ def grab_debuffs(source, target_in):
     if source.target_painter:
         if target.debuffs.get('inactive', {}).get('target_painter', 0) < \
             source.target_painter:
-                result['target_painter'] = source.target_painter
+                inactive['target_painter'] = source.target_painter
     if source.tracking_disruption:
         if target.debuffs.get('inactive', {}).get('tracking_disruption', 0) < \
             source.tracking_disruption:
-                result['tracking_disruption'] = source.tracking_disruption
+                inactive['tracking_disruption'] = source.tracking_disruption
     if source.ECM:
         if not target.debuffs.get('inactive', {}).get('ECM', 0):
             if sensor_str == 0 or \
                 random.random() < (float(source.ECM) / sensor_str):
-                    result['ECM'] = source.ECM
+                    inactive['ECM'] = source.ECM
     if source.web:
         if target.debuffs.get('inactive', {}).get('web', 0) < source.web:
-                result['web'] = source.web
-    return { 'inactive': result, 'active': target.debuffs.get('active', {}) }
+                inactive['web'] = source.web
+
+    result = {}
+    if inactive:
+        result['inactive'] = inactive
+    if target.debuffs.get('active'):
+        result['active'] = target.debuffs.get('active')
+    return result
 
 def ship_attack(attacker_ship, victim_ship):
     """
@@ -219,7 +224,8 @@ def prune_fleet(attack_result):
             continue
 
         updated_debuffs = {}
-        updated_debuffs['active'] = ship.debuffs.get('inactive', {})
+        if ship.debuffs.get('inactive'):
+            updated_debuffs['active'] = ship.debuffs.get('inactive')
         # switch the inactive debuffs to active and drop current active ones
 
         fleet.append(Ship(

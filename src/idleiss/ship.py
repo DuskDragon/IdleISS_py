@@ -2,12 +2,16 @@ from collections import namedtuple
 from os.path import join, dirname, abspath
 import json
 
-
 ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
     'weapon_size', 'multishot', 'sensor_strength',]
-ship_optional_fields = ['shield_recharge', 'armor_local_repair',
-    'remote_shield', 'remote_armor', 'target_painter', 'tracking_disruption',
-    'ECM', 'web',]
+
+buff_effects = ['shield_recharge', 'armor_local_repair',
+    'remote_shield', 'remote_armor',]
+# XXX damage will become a debuff.
+debuff_effects = ['target_painter', 'tracking_disruption', 'ECM', 'web',]
+
+ship_optional_fields = buff_effects + debuff_effects
+
 ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
     ship_optional_fields)
 
@@ -19,10 +23,13 @@ ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
 _Ship = namedtuple('Ship', ['schema', 'attributes', 'debuffs'])
 def Ship(schema, attributes, debuffs=None):
     if not debuffs:
-        debuffs = {'active': {}, 'inactive': {}}
+        # XXX debuffs will become a tuple.
+        # debuffs = ShipDebuffs(*([False] * len(debuff_effects)))
+        debuffs = {}
     return _Ship(schema, attributes, debuffs)
 
 ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull'])
+ShipDebuffs = namedtuple('ShipDebuffs', debuff_effects)
 
 
 def ship_size_sort_key(obj):
