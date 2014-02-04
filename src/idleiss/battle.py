@@ -118,7 +118,7 @@ def grab_debuffs(source, target_in):
                 result['web'] = source.web
     return { 'inactive': result, 'active': target.debuffs.get('active', {}) }
 
-def ship_attack(attacker_schema, victim_ship, attacker_debuffs):
+def ship_attack(attacker_ship, victim_ship):
     """
     Do a ship attack.
 
@@ -130,23 +130,23 @@ def ship_attack(attacker_schema, victim_ship, attacker_debuffs):
         # save us some time, it should be the same dead ship.
         return victim_ship
 
-    if attacker_debuffs.get('active', {}).get('ECM', 0) != 0:
+    if attacker_ship.attributes.debuffs.get('active', {}).get('ECM', 0) != 0:
         # attacker is jammed can't attack or apply debuffs
         return victim_ship
 
-    debuffs = grab_debuffs(attacker_schema, victim_ship)
+    debuffs = grab_debuffs(attacker_ship.schema, victim_ship)
 
-    if attacker_schema.firepower <= 0:
+    if attacker_ship.schema.firepower <= 0:
     # damage doesn't need to be calculated, but debuffs do
         return Ship(victim_ship.schema,
             ShipAttributes(victim_ship.attributes.shield,
                            victim_ship.attributes.armor,
                            victim_ship.attributes.hull, debuffs))
 
-    damage = true_damage(attacker_schema.firepower,
-        attacker_schema.weapon_size,
+    damage = true_damage(attacker_ship.schema.firepower,
+        attacker_ship.schema.weapon_size,
         victim_ship.schema.size,
-        attacker_debuffs,
+        attacker_ship.attributes.debuffs,
         victim_ship.attributes.debuffs
     )
 
@@ -339,8 +339,7 @@ def fleet_attack(fleet_a, fleet_b):
         # complexity when dealing with a list (it's an array).
         while firing:
             target_id = random.randrange(0, len(result))
-            result[target_id] = ship_attack(ship.schema, result[target_id],
-                ship.attributes.debuffs)
+            result[target_id] = ship_attack(ship, result[target_id])
             firing = multishot(ship.schema, result[target_id].schema)
             shots += 1
 

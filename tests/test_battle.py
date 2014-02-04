@@ -305,7 +305,7 @@ class BattleTestCase(TestCase):
         ship1 = Ship(schema3, ShipAttributes(0, 200, 200, {
             'inactive': { 'ECM': 1 }}))
         ship2 = Ship(schema3, ShipAttributes(0, 200, 200, {}))
-        ship2_1 = battle.ship_attack(schema3, ship2, ship1.attributes.debuffs)
+        ship2_1 = battle.ship_attack(ship1, ship2)
         self.assertEqual(ship2_1, Ship(schema3, ShipAttributes(0, 100, 200, {
             'active': {}, 'inactive': {}})))
         # make sure active prevents attacking
@@ -313,7 +313,7 @@ class BattleTestCase(TestCase):
         ship1 = Ship(schema3, ShipAttributes(0, 200, 200, {
             'active': { 'ECM': 1 }}))
         ship2 = Ship(schema3, ShipAttributes(0, 200, 200, {}))
-        ship2_2 = battle.ship_attack(schema3, ship2, ship1.attributes.debuffs)
+        ship2_2 = battle.ship_attack(ship1, ship2)
         self.assertEqual(ship2_2, Ship(schema3, ShipAttributes(0, 200, 200, {})))
 
     def test_ewar_web_effect(self):
@@ -361,34 +361,35 @@ class BattleTestCase(TestCase):
         schema3 = library.get_ship_schemata('ship3')
         ship1 = Ship(schema1, ShipAttributes(10, 10, 100, {}))
         ship2 = Ship(schema2, ShipAttributes(100, 100, 100, {}))
+        ship3 = Ship(schema3, ShipAttributes(100, 100, 100, {}))
 
         random.seed(1)
-        ship1_1 = battle.ship_attack(schema2, ship1, {})
+        ship1_1 = battle.ship_attack(ship2, ship1)
         # 1 hp, below hull breach cutoff. but lucky roll, lives
         self.assertEqual(ship1_1, Ship(schema1, ShipAttributes(0, 0, 69, {
             'active': {}, 'inactive': {}})))
 
-        ship1_2 = battle.ship_attack(schema2, ship1_1, {})
+        ship1_2 = battle.ship_attack(ship2, ship1_1)
         # 1 hp, below hull breach cutoff. but roll says it dies.
         self.assertEqual(ship1_2, Ship(schema1, ShipAttributes(0, 0, 0, {
             'active': {}, 'inactive': {}})))
 
-        ship2_1 = battle.ship_attack(schema2, ship2, {})
+        ship2_1 = battle.ship_attack(ship2, ship2)
         self.assertEqual(ship2_1, Ship(schema2,
             ShipAttributes(49, 100, 100, {
                 'active': {}, 'inactive': {}})))
 
-        ship2_2 = battle.ship_attack(schema2, ship2_1, {})
+        ship2_2 = battle.ship_attack(ship2, ship2_1)
         self.assertEqual(ship2_2, Ship(schema2,
             ShipAttributes(0, 98, 100, {
                 'active': {}, 'inactive': {}})))
 
-        ship2_2 = battle.ship_attack(schema3, ship2_2, {})
+        ship2_2 = battle.ship_attack(ship3, ship2_2)
         self.assertEqual(ship2_2, Ship(schema2,
             ShipAttributes(0, 0, 98, {
                 'active': {}, 'inactive': {}})))
 
-        ship2_3 = battle.ship_attack(schema3, ship2_2, {})
+        ship2_3 = battle.ship_attack(ship3, ship2_2)
         self.assertEqual(ship2_3, Ship(schema2,
             ShipAttributes(0, 0, 0, {
                 'active': {}, 'inactive': {}})))
@@ -402,13 +403,13 @@ class BattleTestCase(TestCase):
         ship4b = Ship(schema4, ShipAttributes(1000000, 0, 100, {}))
 
         random.seed(1)
-        ship4_1 = battle.ship_attack(schema1, ship4, {})
+        ship4_1 = battle.ship_attack(ship1, ship4)
         # bounced, need 13% to survive, lives with 20%
         self.assertEqual(ship4_1, Ship(schema4, ShipAttributes(
             1000000, 0, 50000, {'active': {}, 'inactive': {}})))
 
         # bounced, again it should be ignored.
-        ship4b_1 = battle.ship_attack(schema1, ship4b, {})
+        ship4b_1 = battle.ship_attack(ship1, ship4b)
         self.assertEqual(ship4b_1, Ship(schema4, ShipAttributes(
             1000000, 0, 100, {'active': {}, 'inactive': {}})))
 
