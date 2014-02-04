@@ -13,8 +13,8 @@ HULL_DANGER_ZONE = 0.70  # percentage remaining.
 
 AttackResult = namedtuple('AttackResult',
     ['attacker_fleet', 'damaged_fleet', 'shots_taken', 'damage_taken'])
-PrunedFleet = namedtuple('PrunedFleet',
-    ['fleet', 'ship_count'])
+Fleet = namedtuple('Fleet',
+    ['ships', 'ship_count'])
 RoundResult = namedtuple('RoundResult',
     ['ship_count', 'shots_taken', 'damage_taken'])
 
@@ -174,7 +174,7 @@ def multishot(attacker_schema, victim_schema):
     multishot = attacker_schema.multishot.get(victim_schema.name, 0)
     return multishot > 0 and (multishot - 1.0) / multishot > random.random()
 
-def expand_fleet(fleet, library):
+def expand_fleet(ship_count, library):
     # for the listing of numbers of ship we need to expand to each ship
     # having it's own value for shield, armor, and hull
 
@@ -183,17 +183,17 @@ def expand_fleet(fleet, library):
     #     shield bounce effects work out properly.
 
     ships = []
-    for ship_type in fleet:
+    for ship_type in ship_count:
         schema = library.get_ship_schemata(ship_type)
         ships.extend([Ship(
                 schema,  # it's just a pointer...
                 ShipAttributes(schema.shield, schema.armor, schema.hull, {}),
-            ) for i in range(fleet[ship_type])])
-    return ships
+            ) for i in range(ship_count[ship_type])])
+    return Fleet(ships, ship_count)
 
-def prune_fleet(damaged_fleet):
+def prune_fleet(attack_result):
     """
-    Prune a damaged fleet of dead ships and restore shields/armor.
+    Prune an AttackResult of dead ships and restore shields/armor.
     Returns the pruned fleet and a count of ships.
     """
 
@@ -201,7 +201,7 @@ def prune_fleet(damaged_fleet):
     count = {}
     damage_taken = 0
 
-    for ship in damaged_fleet:
+    for ship in attack_result.damaged_fleet:
         if not ship.attributes.hull > 0:
             continue
 
@@ -224,7 +224,7 @@ def prune_fleet(damaged_fleet):
         ))
         count[ship.schema.name] = count.get(ship.schema.name, 0) + 1
 
-    return PrunedFleet(fleet, count)
+    return Fleet(fleet, count)
 
 def logi_subfleet(input_fleet):
     """
@@ -321,17 +321,15 @@ def fleet_attack(fleet_a, fleet_b):
     """
 
     # if fleet b is empty
-    if not fleet_b:
-        # nothing for fleet_a to attack, and we are going to get back the
-        # same dumb fleet.
-        return fleet_b
+    if not fleet_b.ships:
+        return AttackResult(fleet_a, fleet_b.ships, 0, 0)
 
     result = []
-    result.extend(fleet_b)
+    result.extend(fleet_b.ships)
     shots = 0
     damage = 0
 
-    for ship in fleet_a:
+    for ship in fleet_a.ships:
         firing = True
         # I kind of wanted to do apply an "attacked_by" attribute to
         # the target, but let's wait for that and just mutate this
@@ -347,9 +345,9 @@ def fleet_attack(fleet_a, fleet_b):
             (fresh.attributes.shield - damaged.attributes.shield) +
             (fresh.attributes.armor - damaged.attributes.armor) +
             (fresh.attributes.hull - damaged.attributes.hull)
-        for fresh, damaged in zip(fleet_b, result)))
+        for fresh, damaged in zip(fleet_b.ships, result)))
 
-    return AttackResult(fleet_a, result, shots, damage)
+    return AttackResult(fleet_a.ships, result, shots, damage)
 
 
 class Battle(object):
@@ -386,8 +384,8 @@ class Battle(object):
         attacker_repaired = repair_fleet(attacker_damaged.damaged_fleet)
         defender_repaired = repair_fleet(defender_damaged.damaged_fleet)
 
-        defender_results = prune_fleet(defender_repaired)
-        attacker_results = prune_fleet(attacker_repaired)
+        defender_results = prune_fleet(defender_damaged)
+        attacker_results = prune_fleet(attacker_damaged)
 
         # TODO figure out a better way to store round information that
         # can accommodate multiple fleets.
@@ -399,14 +397,14 @@ class Battle(object):
                 defender_damaged.shots_taken, defender_damaged.damage_taken),
         ))
 
-        self.defender_fleet = defender_results.fleet
-        self.attacker_fleet = attacker_results.fleet
+        self.defender_fleet = defender_results
+        self.attacker_fleet = attacker_results
 
     def calculate_battle(self):
         # avoid using round as variable name as it's a predefined method
         # that might be useful when working with numbers.
         for r in xrange(self.rounds):
-            if not (self.defender_fleet and self.attacker_fleet):
+            if not (self.defender_fleet.ships and self.attacker_fleet.ships):
                 break
             self.calculate_round()
 
