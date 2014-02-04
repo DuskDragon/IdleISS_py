@@ -11,11 +11,18 @@ ship_optional_fields = ['shield_recharge', 'armor_local_repair',
 ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
     ship_optional_fields)
 
-Ship = namedtuple('Ship', ['schema', 'attributes'])
+# I don't quite like this method of providing default values, but also
+# don't like overloading the __new__ method...
 # schema - the full schema.
 # attributes - ShipAttributes
+# debuffs - debuffs.
+_Ship = namedtuple('Ship', ['schema', 'attributes', 'debuffs'])
+def Ship(schema, attributes, debuffs=None):
+    if not debuffs:
+        debuffs = {'active': {}, 'inactive': {}}
+    return _Ship(schema, attributes, debuffs)
 
-ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull', 'debuffs',])
+ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull'])
 
 
 def ship_size_sort_key(obj):

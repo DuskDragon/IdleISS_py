@@ -97,7 +97,7 @@ def grab_debuffs(source, target_in):
     """
     result = {}
     sensor_str = target_in.schema.sensor_strength
-    target = target_in.attributes
+    target = target_in
     # I'm sure there's a list comprehension thing that could be used
     # to clean this up but I have no idea what
     if source.target_painter:
@@ -130,7 +130,7 @@ def ship_attack(attacker_ship, victim_ship):
         # save us some time, it should be the same dead ship.
         return victim_ship
 
-    if attacker_ship.attributes.debuffs.get('active', {}).get('ECM', 0) != 0:
+    if attacker_ship.debuffs.get('active', {}).get('ECM', 0) != 0:
         # attacker is jammed can't attack or apply debuffs
         return victim_ship
 
@@ -138,16 +138,21 @@ def ship_attack(attacker_ship, victim_ship):
 
     if attacker_ship.schema.firepower <= 0:
     # damage doesn't need to be calculated, but debuffs do
-        return Ship(victim_ship.schema,
-            ShipAttributes(victim_ship.attributes.shield,
-                           victim_ship.attributes.armor,
-                           victim_ship.attributes.hull, debuffs))
+        return Ship(
+            victim_ship.schema,
+            ShipAttributes(
+                victim_ship.attributes.shield,
+                victim_ship.attributes.armor,
+                victim_ship.attributes.hull,
+            ),
+            debuffs,
+        )
 
     damage = true_damage(attacker_ship.schema.firepower,
         attacker_ship.schema.weapon_size,
         victim_ship.schema.size,
-        attacker_ship.attributes.debuffs,
-        victim_ship.attributes.debuffs
+        attacker_ship.debuffs,
+        victim_ship.debuffs
     )
 
     shield = shield_bounce(victim_ship.attributes.shield,
@@ -155,16 +160,24 @@ def ship_attack(attacker_ship, victim_ship):
     if shield == victim_ship.attributes.shield:
         # it glanced off, don't need to worry about hull breaches when
         # the weapon didn't even hit
-        return Ship(victim_ship.schema,
-        ShipAttributes(victim_ship.attributes.shield,
-                       victim_ship.attributes.armor,
-                       victim_ship.attributes.hull, debuffs))
+        return Ship(
+            victim_ship.schema,
+            ShipAttributes(
+                victim_ship.attributes.shield,
+                victim_ship.attributes.armor,
+                victim_ship.attributes.hull,
+            ),
+            debuffs,
+        )
 
     armor = victim_ship.attributes.armor + min(shield, 0)
     hull = hull_breach(victim_ship.attributes.hull,
         victim_ship.schema.hull, - min(armor, 0))
-    return Ship(victim_ship.schema,
-        ShipAttributes(max(0, shield), max(0, armor), max(0, hull), debuffs))
+    return Ship(
+        victim_ship.schema,
+        ShipAttributes(max(0, shield), max(0, armor), max(0, hull)),
+        debuffs,
+    )
 
 def multishot(attacker_schema, victim_schema):
     """
@@ -187,7 +200,7 @@ def expand_fleet(ship_count, library):
         schema = library.get_ship_schemata(ship_type)
         ships.extend([Ship(
                 schema,  # it's just a pointer...
-                ShipAttributes(schema.shield, schema.armor, schema.hull, {}),
+                ShipAttributes(schema.shield, schema.armor, schema.hull),
             ) for i in range(ship_count[ship_type])])
     return Fleet(ships, ship_count)
 
@@ -206,7 +219,7 @@ def prune_fleet(attack_result):
             continue
 
         updated_debuffs = {}
-        updated_debuffs['active'] = ship.attributes.debuffs.get('inactive', {})
+        updated_debuffs['active'] = ship.debuffs.get('inactive', {})
         # switch the inactive debuffs to active and drop current active ones
 
         fleet.append(Ship(
@@ -219,8 +232,8 @@ def prune_fleet(attack_result):
                     (ship.attributes.armor + ship.schema.armor_local_repair)
                 ),
                 ship.attributes.hull,
-                updated_debuffs,
             ),
+            updated_debuffs,
         ))
         count[ship.schema.name] = count.get(ship.schema.name, 0) + 1
 
@@ -236,7 +249,7 @@ def logi_subfleet(input_fleet):
     logi_shield = []
     logi_armor = []
     for ship in input_fleet:
-        if ship.attributes.debuffs.get('active', {}).get('ECM', 0) != 0:
+        if ship.debuffs.get('active', {}).get('ECM', 0) != 0:
         # can't target to apply repairs
             continue
         if ship.schema.remote_shield:
@@ -281,8 +294,8 @@ def repair_fleet(input_fleet):
                     ),
                     input_fleet[rep_target].attributes.armor,
                     input_fleet[rep_target].attributes.hull,
-                    input_fleet[rep_target].attributes.debuffs,
                 ),
+                input_fleet[rep_target].debuffs,
             )
 
     damaged_armor = []
@@ -304,8 +317,8 @@ def repair_fleet(input_fleet):
                             + ship.schema.remote_armor)
                     ),
                     input_fleet[rep_target].attributes.hull,
-                    input_fleet[rep_target].attributes.debuffs,
                 ),
+                input_fleet[rep_target].debuffs,
             )
 
     return input_fleet
