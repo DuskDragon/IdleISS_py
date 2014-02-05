@@ -4,6 +4,15 @@ from unittest import TestCase
 from idleiss import ship
 
 
+class HelperTestCase(TestCase):
+
+    def test_construct_tuple(self):
+        result = ship._construct_tuple(
+            ship.ShipSchema, {'shield': 1, 'not_shield': 1})
+        self.assertEqual(result.shield, 1)
+        self.assertEqual(result.armor, 0)
+
+
 class FleetLibraryTestCase(TestCase):
 
     def setUp(self):

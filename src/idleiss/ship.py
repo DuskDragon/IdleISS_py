@@ -15,6 +15,18 @@ ship_optional_fields = buff_effects + debuff_effects
 ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
     ship_optional_fields)
 
+def _construct_tuple(tuple_cls, kwargs, default_value=0):
+    """
+    Constructs a namedtuple object, using the tuple_cls as the template
+    and kwargs as the supplied keyward arguments, which will be merged
+    with the default keywords and default_value if the required ones are
+    not provided.
+    """
+
+    default_kwargs = {f: kwargs.get(f, default_value)
+        for f in tuple_cls._fields}
+    return tuple_cls(**default_kwargs)
+
 # I don't quite like this method of providing default values, but also
 # don't like overloading the __new__ method...
 # schema - the full schema.
