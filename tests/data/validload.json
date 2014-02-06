@@ -16,6 +16,9 @@
             "sensor_strength": 1,
             "size": "hauler",
             "weapon_size": "fighter",
+            "buffs": {
+                "local_shield_repair": 10
+            },
             "multishot": {
             }
         },
@@ -27,6 +30,9 @@
             "sensor_strength": 1,
             "size": "fighter",
             "weapon_size": "fighter",
+            "buffs": {
+                "local_shield_repair": 10
+            },
             "multishot": {
             }
         },
@@ -38,6 +44,9 @@
             "sensor_strength": 1,
             "size": "fighter",
             "weapon_size": "fighter",
+            "buffs": {
+                "local_shield_repair": 25
+            },
             "multishot": {
                 "small hauler": 3
             }
@@ -50,6 +59,9 @@
             "sensor_strength": 1,
             "size": "cruiser",
             "weapon_size": "cruiser",
+            "buffs": {
+                "local_shield_repair": 50
+            },
             "multishot": {
                 "light fighter": 6
             }

@@ -16,6 +16,9 @@
             "sensor_strength": 1,
             "size": "frigate",
             "weapon_size": "frigate",
+            "buffs": {
+                "local_shield_repair": 99999
+            },
             "multishot": {
                 "rifter": 2,
                 "thrasher": 2,
@@ -33,6 +36,9 @@
             "sensor_strength": 1,
             "size": "destroyer",
             "weapon_size": "frigate",
+            "buffs": {
+                "local_shield_repair": 99999
+            },
             "multishot": {
                 "rifter": 9,
                 "thrasher": 3,
@@ -50,6 +56,9 @@
             "sensor_strength": 1,
             "size": "cruiser",
             "weapon_size": "cruiser",
+            "buffs": {
+                "local_shield_repair": 99999
+            },
             "multishot": {
                 "rifter": 4,
                 "thrasher": 9,
@@ -67,6 +76,9 @@
             "sensor_strength": 1,
             "size": "battlecruiser",
             "weapon_size": "cruiser",
+            "buffs": {
+                "local_shield_repair": 99999
+            },
             "multishot": {
                 "rifter": 2,
                 "thrasher": 4,
@@ -84,6 +96,9 @@
             "firepower": 8000,
             "size": "battleship",
             "weapon_size": "battleship",
+            "buffs": {
+                "local_shield_repair": 99999
+            },
             "multishot": {
                 "stabber": 2,
                 "hurricane": 5,

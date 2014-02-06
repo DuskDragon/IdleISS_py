@@ -7,7 +7,9 @@ from idleiss.battle import Battle
 from idleiss.battle import Fleet
 from idleiss.battle import AttackResult
 
+from idleiss import ship
 from idleiss.ship import Ship
+from idleiss.ship import ShipDebuffs
 from idleiss.ship import ShipAttributes
 from idleiss.ship import ShipLibrary
 
@@ -31,6 +33,9 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 1,
                     "size": "one",
                     "weapon_size": "one",
+                    "buffs": {
+                        "local_shield_repair": 10,
+                    },
                     "multishot": {
                         "ship1": 2,
                     },
@@ -44,6 +49,9 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 1,
                     "size": "two",
                     "weapon_size": "one",
+                    "buffs": {
+                        "local_shield_repair": 100,
+                    },
                     "multishot": {
                         "ship1": 4,
                         "ship2": 16,
@@ -58,6 +66,8 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 1,
                     "size": "three",
                     "weapon_size": "one",
+                    "buffs": {
+                    },
                     "multishot": {
                         "ship2": 25,
                     },
@@ -71,33 +81,40 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 1,
                     "size": "four",
                     "weapon_size": "one",
+                    "buffs": {
+                        "local_shield_repair": 1000000,
+                    },
                     "multishot": {
                     },
                 },
 
                 "local_rep_test": {
                     "shield": 100,
-                    "shield_recharge": 5,
-                    "armor_local_repair": 5,
                     "armor": 100,
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
                     "size": "one",
                     "weapon_size": "one",
+                    "buffs": {
+                        "local_shield_repair": 5,
+                        "local_armor_repair": 5,
+                    },
                     "multishot": {
                     },
                 },
                 "remote_rep_test": {
                     "shield": 100,
-                    "remote_shield": 10,
-                    "remote_armor": 10,
                     "armor": 100,
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
                     "size": "one",
                     "weapon_size": "one",
+                    "buffs": {
+                        "remote_shield_repair": 10,
+                        "remote_armor_repair": 10,
+                    },
                     "multishot": {
                     },
                 },
@@ -106,13 +123,15 @@ class ShipLibraryMock(ShipLibrary):
                     "armor": 100,
                     "hull": 100,
                     "firepower": 100,
-                    'target_painter': 0.7,
-                    'tracking_disruption': 1.6,
-                    'ECM': 1,
-                    'web': 0.7,
                     "sensor_strength": 1,
                     "size": "one",
                     "weapon_size": "one",
+                    "debuffs": {
+                        'target_painter': 0.7,
+                        'tracking_disruption': 1.6,
+                        'ECM': 1,
+                        'web': 0.7,
+                    },
                     "multishot": {
                     },
                 },
@@ -121,10 +140,12 @@ class ShipLibraryMock(ShipLibrary):
                     "armor": 100,
                     "hull": 100,
                     "firepower": 200,
-                    'ECM': 1,
                     "sensor_strength": 1,
                     "size": "one",
                     "weapon_size": "one",
+                    "debuffs": {
+                        'ECM': 1,
+                    },
                     "multishot": {
                     },
                 },
@@ -229,78 +250,37 @@ class BattleTestCase(TestCase):
         self.assertEqual(battle.hull_breach(43, 100, 1), 0) # ~42.05%
         self.assertEqual(battle.hull_breach(27, 100, 1), 26) # ~25.89%
 
+    # XXX weapon_size vs ship_size test needed
     def test_true_damage_no_ewar(self):
         # weapon size less than target_size, exactly same as full damage
-        self.assertEqual(battle.true_damage(100, 1, 2, {}, {}), 100)
+        d = ship._construct_tuple(ShipDebuffs, {})
+        self.assertEqual(battle.true_damage(100, 1, 2, d, d), 100)
 
         # weapon size at target size, ditto.
-        self.assertEqual(battle.true_damage(100, 2, 2, {}, {}), 100)
+        self.assertEqual(battle.true_damage(100, 2, 2, d, d), 100)
 
         # weapon size larget than target size, 44.44% damage rounded up
-        self.assertEqual(battle.true_damage(100, 3, 2, {}, {}), 45)
+        self.assertEqual(battle.true_damage(100, 3, 2, d, d), 45)
 
         # weapon size obscenely huge compared to size, still damaged.
-        self.assertEqual(battle.true_damage(100, 1000, 2, {}, {}), 1)
+        self.assertEqual(battle.true_damage(100, 1000, 2, d, d), 1)
 
         # weapon size just a weee bit larger than target size
-        self.assertEqual(battle.true_damage(100, 10000, 9999, {}, {}), 100)
-
-    def test_ewar_persist(self):
-        library = ShipLibraryMock()
-        schema_holder = library.get_ship_schemata('ship2')
-        attack_result = AttackResult([], [
-            Ship(
-                schema_holder,
-                ShipAttributes(100, 100, 100),
-                {
-                'active': {
-                    'target_painter': 1,
-                    'tracking_disruption': 1,
-                    'ECM': 1,
-                    'web': 1
-                },
-                'inactive': {
-                    'target_painter': 2,
-                    'tracking_disruption': 2,
-                    'ECM': 2,
-                    'web': 2
-                }}),
-        ], 0, 0)
-        expected_fleet = [
-            Ship(schema_holder,
-                ShipAttributes(100, 100, 100),
-                {'active': {
-                    'target_painter': 2,
-                    'tracking_disruption': 2,
-                    'ECM': 2,
-                    'web': 2
-                }}),
-        ]
-        result = battle.prune_fleet(attack_result)
-        self.assertEqual(result.ships, expected_fleet)
+        self.assertEqual(battle.true_damage(100, 10000, 9999, d, d), 100)
 
     def test_ewar_target_painter_effect(self):
-        # make sure inactive doesn't work
         self.assertEqual(
-            battle.true_damage(100, 10, 5, {}, {
-                'inactive': { 'target_painter': 1 } }),
-            25)
-        # make sure active does
-        self.assertEqual(
-            battle.true_damage(100, 10, 5, {}, {
-                'active': { 'target_painter': 1 } }),
+            battle.true_damage(100, 10, 5,
+                ship._construct_tuple(ShipDebuffs, {}),
+                ship._construct_tuple(ShipDebuffs, {'target_painter': 1})),
             100)
 
     def test_ewar_tracking_disruption_effect(self):
-        #make sure inactive doesn't work
         self.assertEqual(
-            battle.true_damage(100, 10, 10, {
-                'inactive': { 'tracking_disruption': 1 } }, {}),
-            100)
-        # make sure active does
-        self.assertEqual(
-            battle.true_damage(100, 10, 10, {
-                'active': { 'tracking_disruption': 1 } }, {}),
+            battle.true_damage(100, 10, 10,
+                ship._construct_tuple(
+                    ShipDebuffs, {'tracking_disruption': 1}),
+                ship._construct_tuple(ShipDebuffs, {})),
             25)
 
     def test_ewar_ecm_effect(self):
@@ -315,7 +295,7 @@ class BattleTestCase(TestCase):
         # make sure active prevents attacking
         # ship1 attacks ship2 again
         ship1 = Ship(schema3, ShipAttributes(0, 200, 200),
-            {'active': {'ECM': 1}})
+            ship._construct_tuple(ShipDebuffs, {'ECM': 1}))
         ship2 = Ship(schema3, ShipAttributes(0, 200, 200))
         ship2_2 = battle.ship_attack(ship1, ship2)
         self.assertEqual(ship2_2, Ship(schema3, ShipAttributes(0, 200, 200)))
