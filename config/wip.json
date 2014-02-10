@@ -9,7 +9,7 @@
 
     "ships": {
         "rifter": {
-			"hullclass": "frigate",
+            "hullclass": "frigate",
             "shield": 2680,
             "armor": 833,
             "hull": 350,
@@ -25,7 +25,7 @@
         },
 
         "thrasher": {
-			"hullclass": "destroyer",
+            "hullclass": "destroyer",
             "shield": 800,
             "armor": 750,
             "hull": 750,
@@ -43,7 +43,7 @@
         },
 
         "stabber": {
-			"hullclass": "cruiser",
+            "hullclass": "cruiser",
             "shield": 1600,
             "armor": 1300,
             "hull": 1300,
@@ -61,7 +61,7 @@
         },
 
         "hurricane": {
-			"hullclass": "battlecruiser",
+            "hullclass": "battlecruiser",
             "shield": 4250,
             "armor": 4500,
             "hull": 3500,
@@ -79,7 +79,7 @@
         },
 
         "tempest": {
-			"hullclass": "battleship",
+            "hullclass": "battleship",
             "shield": 6300,
             "armor": 7000,
             "hull": 6800,
