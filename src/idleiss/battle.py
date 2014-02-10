@@ -5,6 +5,7 @@ import math
 from collections import namedtuple
 
 from idleiss.ship import Ship
+from idleiss.ship import ShipDebuffs
 from idleiss.ship import ShipAttributes
 from idleiss.ship import ShipLibrary
 
@@ -13,8 +14,8 @@ HULL_DANGER_ZONE = 0.70  # percentage remaining.
 
 AttackResult = namedtuple('AttackResult',
     ['attacker_fleet', 'damaged_fleet', 'shots_taken', 'damage_taken'])
-PrunedFleet = namedtuple('PrunedFleet',
-    ['fleet', 'ship_count'])
+Fleet = namedtuple('Fleet',
+    ['ships', 'ship_count'])
 RoundResult = namedtuple('RoundResult',
     ['ship_count', 'shots_taken', 'damage_taken'])
 
@@ -48,21 +49,29 @@ def shield_bounce(shield, max_shield, damage,
     return ((damage < shield * shield_bounce_zone) and shield > 0 and
         shield or shield - damage)
 
+def size_damage_factor(weapon_size, target_size):
+    """
+    Calculates damage factor on size.  If weapon size is greater than
+    the target size, then only the area that falls within the target
+    will the damage be applied.
+    """
+
+    if weapon_size <= target_size:
+        return damage
+
+    return (target_size ** 2) / (weapon_size ** 2)
+
 def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
     """
-    Calculates true damage.  If weapon size is greater than the target
-    size, then only the area that falls within the target will the
-    damage be applied.  Round up to the nearest integer.
+    Calculates true damage based on parameters.
     """
 
     # source_debuffs: tracking disruption
-    tracking_disrupt = 1 + source_debuff.get('active', {}).get(
-        'tracking_disruption', 0)
+    tracking_disrupt = 1 + source_debuff.tracking_disruption
+
     # target_debuffs: target painter, web
-    target_painter = 1 + target_debuff.get('active', {}).get(
-        'target_painter', 0)
-    web = 1 - target_debuff.get('active', {}).get(
-        'web', 0)
+    target_painter = 1 + target_debuff.target_painter
+    web = 1 - target_debuff.web
 
     # painters gives > 1 multiplier to the target_size against target
     # reason - painters expand the target to make it easier to hit.
@@ -71,12 +80,13 @@ def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
     # reason - weapons can focus more damage on a webbed target
 
     if web == 0 or weapon_size / web * tracking_disrupt <=  \
-        target_size * target_painter:
+            target_size * target_painter:
         return damage
 
-    return int(math.ceil((((target_size * target_painter) ** 2) /
-        (((weapon_size / web) * tracking_disrupt) ** 2)) *
-        damage))
+    true_weapon_size = (weapon_size / web) * tracking_disrupt
+    true_target_size = target_size * target_painter
+    damage_factor = size_damage_factor(true_weapon_size, true_target_size)
+    return int(math.ceil(damage_factor * damage))
 
 def is_ship_alive(ship):
     """
@@ -87,38 +97,35 @@ def is_ship_alive(ship):
     # be applied to make this check more hilarious.
     return ship.attributes.hull > 0  # though it can't be < 0
 
-def grab_debuffs(source, target_in):
+def grab_debuffs(attacker_ship, victim_ship):
     """
-    Retuns a dict of applied debufs calculated from ship schema
-    as well as ship attributes.
-    Source is ShipSchema
-    target_in is a Ship
-    These debuffs are 'inactive' so they are for next turn
-    """
-    result = {}
-    sensor_str = target_in.schema.sensor_strength
-    target = target_in.attributes
-    # I'm sure there's a list comprehension thing that could be used
-    # to clean this up but I have no idea what
-    if source.target_painter:
-        if target.debuffs.get('inactive', {}).get('target_painter', 0) < \
-            source.target_painter:
-                result['target_painter'] = source.target_painter
-    if source.tracking_disruption:
-        if target.debuffs.get('inactive', {}).get('tracking_disruption', 0) < \
-            source.tracking_disruption:
-                result['tracking_disruption'] = source.tracking_disruption
-    if source.ECM:
-        if not target.debuffs.get('inactive', {}).get('ECM', 0):
-            if sensor_str == 0 or \
-                random.random() < (float(source.ECM) / sensor_str):
-                    result['ECM'] = source.ECM
-    if source.web:
-        if target.debuffs.get('inactive', {}).get('web', 0) < source.web:
-                result['web'] = source.web
-    return { 'inactive': result, 'active': target.debuffs.get('active', {}) }
+    Debuff calculator.
 
-def ship_attack(attacker_schema, victim_ship, attacker_debuffs):
+    Returns a new ShipDebuffs tuple with the calculated values.
+    """
+
+    new_debuffs = attacker_ship.schema.debuffs
+    current_debuffs = victim_ship.debuffs
+
+    target_painter = max(
+        new_debuffs.target_painter, current_debuffs.target_painter)
+
+    tracking_disruption = max(
+        new_debuffs.tracking_disruption, current_debuffs.tracking_disruption)
+
+    # XXX break this out into its function as it's more complicated.
+    ecm = 0
+    if new_debuffs.ECM and not current_debuffs.ECM:
+        if (victim_ship.schema.sensor_strength == 0 or
+                random.random() < (float(
+                    source.ECM) / victim_ship.schema.sensor_strength)):
+            ecm = new_debuffs.ECM
+
+    web = max(new_debuffs.web, current_debuffs.web)
+
+    return ShipDebuffs(target_painter, tracking_disruption, ecm, web)
+
+def ship_attack(attacker_ship, victim_ship):
     """
     Do a ship attack.
 
@@ -130,24 +137,29 @@ def ship_attack(attacker_schema, victim_ship, attacker_debuffs):
         # save us some time, it should be the same dead ship.
         return victim_ship
 
-    if attacker_debuffs.get('active', {}).get('ECM', 0) != 0:
+    if attacker_ship.debuffs.ECM:
         # attacker is jammed can't attack or apply debuffs
         return victim_ship
 
-    debuffs = grab_debuffs(attacker_schema, victim_ship)
+    debuffs = grab_debuffs(attacker_ship, victim_ship)
 
-    if attacker_schema.firepower <= 0:
+    if attacker_ship.schema.firepower <= 0:
     # damage doesn't need to be calculated, but debuffs do
-        return Ship(victim_ship.schema,
-            ShipAttributes(victim_ship.attributes.shield,
-                           victim_ship.attributes.armor,
-                           victim_ship.attributes.hull, debuffs))
+        return Ship(
+            victim_ship.schema,
+            ShipAttributes(
+                victim_ship.attributes.shield,
+                victim_ship.attributes.armor,
+                victim_ship.attributes.hull,
+            ),
+            debuffs,
+        )
 
-    damage = true_damage(attacker_schema.firepower,
-        attacker_schema.weapon_size,
+    damage = true_damage(attacker_ship.schema.firepower,
+        attacker_ship.schema.weapon_size,
         victim_ship.schema.size,
-        attacker_debuffs,
-        victim_ship.attributes.debuffs
+        attacker_ship.debuffs,
+        victim_ship.debuffs
     )
 
     shield = shield_bounce(victim_ship.attributes.shield,
@@ -155,16 +167,24 @@ def ship_attack(attacker_schema, victim_ship, attacker_debuffs):
     if shield == victim_ship.attributes.shield:
         # it glanced off, don't need to worry about hull breaches when
         # the weapon didn't even hit
-        return Ship(victim_ship.schema,
-        ShipAttributes(victim_ship.attributes.shield,
-                       victim_ship.attributes.armor,
-                       victim_ship.attributes.hull, debuffs))
+        return Ship(
+            victim_ship.schema,
+            ShipAttributes(
+                victim_ship.attributes.shield,
+                victim_ship.attributes.armor,
+                victim_ship.attributes.hull,
+            ),
+            debuffs,
+        )
 
     armor = victim_ship.attributes.armor + min(shield, 0)
     hull = hull_breach(victim_ship.attributes.hull,
         victim_ship.schema.hull, - min(armor, 0))
-    return Ship(victim_ship.schema,
-        ShipAttributes(max(0, shield), max(0, armor), max(0, hull), debuffs))
+    return Ship(
+        victim_ship.schema,
+        ShipAttributes(max(0, shield), max(0, armor), max(0, hull)),
+        debuffs,
+    )
 
 def multishot(attacker_schema, victim_schema):
     """
@@ -174,7 +194,7 @@ def multishot(attacker_schema, victim_schema):
     multishot = attacker_schema.multishot.get(victim_schema.hullclass, 0)
     return multishot > 0 and (multishot - 1.0) / multishot > random.random()
 
-def expand_fleet(fleet, library):
+def expand_fleet(ship_count, library):
     # for the listing of numbers of ship we need to expand to each ship
     # having it's own value for shield, armor, and hull
 
@@ -183,17 +203,17 @@ def expand_fleet(fleet, library):
     #     shield bounce effects work out properly.
 
     ships = []
-    for ship_type in fleet:
+    for ship_type in ship_count:
         schema = library.get_ship_schemata(ship_type)
         ships.extend([Ship(
                 schema,  # it's just a pointer...
-                ShipAttributes(schema.shield, schema.armor, schema.hull, {}),
-            ) for i in range(fleet[ship_type])])
-    return ships
+                ShipAttributes(schema.shield, schema.armor, schema.hull),
+            ) for i in range(ship_count[ship_type])])
+    return Fleet(ships, ship_count)
 
-def prune_fleet(damaged_fleet):
+def prune_fleet(attack_result):
     """
-    Prune a damaged fleet of dead ships and restore shields/armor.
+    Prune an AttackResult of dead ships and restore shields/armor.
     Returns the pruned fleet and a count of ships.
     """
 
@@ -201,30 +221,26 @@ def prune_fleet(damaged_fleet):
     count = {}
     damage_taken = 0
 
-    for ship in damaged_fleet:
+    for ship in attack_result.damaged_fleet:
         if not ship.attributes.hull > 0:
             continue
-
-        updated_debuffs = {}
-        updated_debuffs['active'] = ship.attributes.debuffs.get('inactive', {})
-        # switch the inactive debuffs to active and drop current active ones
 
         fleet.append(Ship(
             ship.schema,
             ShipAttributes(
                 min(ship.schema.shield,
-                    (ship.attributes.shield + ship.schema.shield_recharge)
+                    (ship.attributes.shield + ship.schema.buffs.local_shield_repair)
                 ),
                 min(ship.schema.armor,
-                    (ship.attributes.armor + ship.schema.armor_local_repair)
+                    (ship.attributes.armor + ship.schema.buffs.local_armor_repair)
                 ),
                 ship.attributes.hull,
-                updated_debuffs,
             ),
+            ship.debuffs,
         ))
         count[ship.schema.name] = count.get(ship.schema.name, 0) + 1
 
-    return PrunedFleet(fleet, count)
+    return Fleet(fleet, count)
 
 def logi_subfleet(input_fleet):
     """
@@ -236,12 +252,12 @@ def logi_subfleet(input_fleet):
     logi_shield = []
     logi_armor = []
     for ship in input_fleet:
-        if ship.attributes.debuffs.get('active', {}).get('ECM', 0) != 0:
+        if ship.debuffs.ECM:
         # can't target to apply repairs
             continue
-        if ship.schema.remote_shield:
+        if ship.schema.buffs.remote_shield_repair:
             logi_shield.append(ship)
-        if ship.schema.remote_armor:
+        if ship.schema.buffs.remote_armor_repair:
             logi_armor.append(ship)
         else:
             continue
@@ -277,12 +293,12 @@ def repair_fleet(input_fleet):
                 ShipAttributes(
                     min(input_fleet[rep_target].schema.shield,
                         (input_fleet[rep_target].attributes.shield
-                            + ship.schema.remote_shield)
+                            + ship.schema.buffs.remote_shield_repair)
                     ),
                     input_fleet[rep_target].attributes.armor,
                     input_fleet[rep_target].attributes.hull,
-                    input_fleet[rep_target].attributes.debuffs,
                 ),
+                input_fleet[rep_target].debuffs,
             )
 
     damaged_armor = []
@@ -301,11 +317,11 @@ def repair_fleet(input_fleet):
                     input_fleet[rep_target].attributes.shield,
                     min(input_fleet[rep_target].schema.armor,
                         (input_fleet[rep_target].attributes.armor
-                            + ship.schema.remote_armor)
+                            + ship.schema.buffs.remote_armor_repair)
                     ),
                     input_fleet[rep_target].attributes.hull,
-                    input_fleet[rep_target].attributes.debuffs,
                 ),
+                input_fleet[rep_target].debuffs,
             )
 
     return input_fleet
@@ -321,17 +337,15 @@ def fleet_attack(fleet_a, fleet_b):
     """
 
     # if fleet b is empty
-    if not fleet_b:
-        # nothing for fleet_a to attack, and we are going to get back the
-        # same dumb fleet.
-        return fleet_b
+    if not fleet_b.ships:
+        return AttackResult(fleet_a, fleet_b.ships, 0, 0)
 
     result = []
-    result.extend(fleet_b)
+    result.extend(fleet_b.ships)
     shots = 0
     damage = 0
 
-    for ship in fleet_a:
+    for ship in fleet_a.ships:
         firing = True
         # I kind of wanted to do apply an "attacked_by" attribute to
         # the target, but let's wait for that and just mutate this
@@ -339,8 +353,7 @@ def fleet_attack(fleet_a, fleet_b):
         # complexity when dealing with a list (it's an array).
         while firing:
             target_id = random.randrange(0, len(result))
-            result[target_id] = ship_attack(ship.schema, result[target_id],
-                ship.attributes.debuffs)
+            result[target_id] = ship_attack(ship, result[target_id])
             firing = multishot(ship.schema, result[target_id].schema)
             shots += 1
 
@@ -348,9 +361,9 @@ def fleet_attack(fleet_a, fleet_b):
             (fresh.attributes.shield - damaged.attributes.shield) +
             (fresh.attributes.armor - damaged.attributes.armor) +
             (fresh.attributes.hull - damaged.attributes.hull)
-        for fresh, damaged in zip(fleet_b, result)))
+        for fresh, damaged in zip(fleet_b.ships, result)))
 
-    return AttackResult(fleet_a, result, shots, damage)
+    return AttackResult(fleet_a.ships, result, shots, damage)
 
 
 class Battle(object):
@@ -387,8 +400,8 @@ class Battle(object):
         attacker_repaired = repair_fleet(attacker_damaged.damaged_fleet)
         defender_repaired = repair_fleet(defender_damaged.damaged_fleet)
 
-        defender_results = prune_fleet(defender_repaired)
-        attacker_results = prune_fleet(attacker_repaired)
+        defender_results = prune_fleet(defender_damaged)
+        attacker_results = prune_fleet(attacker_damaged)
 
         # TODO figure out a better way to store round information that
         # can accommodate multiple fleets.
@@ -400,14 +413,14 @@ class Battle(object):
                 defender_damaged.shots_taken, defender_damaged.damage_taken),
         ))
 
-        self.defender_fleet = defender_results.fleet
-        self.attacker_fleet = attacker_results.fleet
+        self.defender_fleet = defender_results
+        self.attacker_fleet = attacker_results
 
     def calculate_battle(self):
         # avoid using round as variable name as it's a predefined method
         # that might be useful when working with numbers.
         for r in xrange(self.rounds):
-            if not (self.defender_fleet and self.attacker_fleet):
+            if not (self.defender_fleet.ships and self.attacker_fleet.ships):
                 break
             self.calculate_round()
 

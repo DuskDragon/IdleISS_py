@@ -32,6 +32,9 @@
             "sensor_strength": 1,
             "size": "Small Cargo",
             "weapon_size": "Espionage Probe",
+            "buffs": {
+                "local_shield_repair": 10
+            },
             "multishot": {
             }
         },
@@ -43,6 +46,9 @@
             "sensor_strength": 1,
             "size": "Light Fighter",
             "weapon_size": "Espionage Probe",
+            "buffs": {
+                "local_shield_repair": 10
+            },
             "multishot": {
             }
         },
@@ -54,6 +60,9 @@
             "sensor_strength": 1,
             "size": "Heavy Fighter",
             "weapon_size": "Espionage Probe",
+            "buffs": {
+                "local_shield_repair": 25
+            },
             "multishot": {
                 "Small Cargo": 3
             }
@@ -66,6 +75,9 @@
             "sensor_strength": 1,
             "size": "Cruiser",
             "weapon_size": "Espionage Probe",
+            "buffs": {
+                "local_shield_repair": 50
+            },
             "multishot": {
                 "Light Fighter": 6
             }

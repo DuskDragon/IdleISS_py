@@ -4,8 +4,12 @@ from os.path import dirname, join
 
 from idleiss import battle
 from idleiss.battle import Battle
+from idleiss.battle import Fleet
+from idleiss.battle import AttackResult
 
+from idleiss import ship
 from idleiss.ship import Ship
+from idleiss.ship import ShipDebuffs
 from idleiss.ship import ShipAttributes
 from idleiss.ship import ShipLibrary
 
@@ -29,6 +33,9 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 1,
                     "size": "ship1",
                     "weapon_size": "ship1",
+                    "buffs": {
+                        "local_shield_repair": 10,
+                    },
                     "multishot": {
                         "ship1": 2,
                     },
@@ -42,6 +49,9 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 1,
                     "size": "ship2",
                     "weapon_size": "ship1",
+                    "buffs": {
+                        "local_shield_repair": 100,
+                    },
                     "multishot": {
                         "ship1": 4,
                         "ship2": 16,
@@ -56,6 +66,8 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 1,
                     "size": "ship3",
                     "weapon_size": "ship1",
+                    "buffs": {
+                    },
                     "multishot": {
                         "ship2": 25,
                     },
@@ -69,33 +81,40 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 1,
                     "size": "ship4",
                     "weapon_size": "ship1",
+                    "buffs": {
+                        "local_shield_repair": 1000000,
+                    },
                     "multishot": {
                     },
                 },
 
                 "local_rep_test": {
                     "shield": 100,
-                    "shield_recharge": 5,
-                    "armor_local_repair": 5,
                     "armor": 100,
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
                     "size": "ship1",
                     "weapon_size": "ship1",
+                    "buffs": {
+                        "local_shield_repair": 5,
+                        "local_armor_repair": 5,
+                    },
                     "multishot": {
                     },
                 },
                 "remote_rep_test": {
                     "shield": 100,
-                    "remote_shield": 10,
-                    "remote_armor": 10,
                     "armor": 100,
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
                     "size": "ship1",
                     "weapon_size": "ship1",
+                    "buffs": {
+                        "remote_shield_repair": 10,
+                        "remote_armor_repair": 10,
+                    },
                     "multishot": {
                     },
                 },
@@ -104,13 +123,15 @@ class ShipLibraryMock(ShipLibrary):
                     "armor": 100,
                     "hull": 100,
                     "firepower": 100,
-                    'target_painter': 0.7,
-                    'tracking_disruption': 1.6,
-                    'ECM': 1,
-                    'web': 0.7,
                     "sensor_strength": 1,
                     "size": "ship1",
                     "weapon_size": "ship1",
+                    "debuffs": {
+                        'target_painter': 0.7,
+                        'tracking_disruption': 1.6,
+                        'ECM': 1,
+                        'web': 0.7,
+                    },
                     "multishot": {
                     },
                 },
@@ -119,10 +140,12 @@ class ShipLibraryMock(ShipLibrary):
                     "armor": 100,
                     "hull": 100,
                     "firepower": 200,
-                    'ECM': 1,
                     "sensor_strength": 1,
                     "size": "ship1",
                     "weapon_size": "ship1",
+                    "debuffs": {
+                        'ECM': 1,
+                    },
                     "multishot": {
                     },
                 },
@@ -153,15 +176,15 @@ class BattleTestCase(TestCase):
             "ship1": 5
         }
         answer = [
-            Ship(schema, ShipAttributes(10, 10, 100, {})),
-            Ship(schema, ShipAttributes(10, 10, 100, {})),
-            Ship(schema, ShipAttributes(10, 10, 100, {})),
-            Ship(schema, ShipAttributes(10, 10, 100, {})),
-            Ship(schema, ShipAttributes(10, 10, 100, {})),
+            Ship(schema, ShipAttributes(10, 10, 100)),
+            Ship(schema, ShipAttributes(10, 10, 100)),
+            Ship(schema, ShipAttributes(10, 10, 100)),
+            Ship(schema, ShipAttributes(10, 10, 100)),
+            Ship(schema, ShipAttributes(10, 10, 100)),
         ]
 
         result = battle.expand_fleet(ship_count, library)
-        self.assertEqual(answer, result)
+        self.assertEqual(answer, result.ships)
 
     def test_prune_fleet(self):
         library = ShipLibraryMock()
@@ -169,21 +192,21 @@ class BattleTestCase(TestCase):
         schema2 = library.get_ship_schemata('ship2')
         schema3 = library.get_ship_schemata('ship3')
 
-        tattered_fleet = [
-            Ship(schema1, ShipAttributes(10, 5, 100, {})),
-            Ship(schema1, ShipAttributes(0, 10, 100, {})),
-            Ship(schema2, ShipAttributes(10, 10, 0, {})),  # how is this possible?
-            Ship(schema2, ShipAttributes(10, 10, 100, {})),
-            Ship(schema2, ShipAttributes(0, 0, 10, {})),
-            Ship(schema3, ShipAttributes(10, 0, 10, {})),
-        ]
+        attack_result = AttackResult([], [
+            Ship(schema1, ShipAttributes(10, 5, 100)),
+            Ship(schema1, ShipAttributes(0, 10, 100)),
+            Ship(schema2, ShipAttributes(10, 10, 0)),  # how is this possible?
+            Ship(schema2, ShipAttributes(10, 10, 100)),
+            Ship(schema2, ShipAttributes(0, 0, 10)),
+            Ship(schema3, ShipAttributes(10, 0, 10)),
+        ], 0, 0)
 
         expected_fleet = [
-            Ship(schema1, ShipAttributes(10, 5, 100, {'active': {}})),
-            Ship(schema1, ShipAttributes(10, 10, 100, {'active': {}})),
-            Ship(schema2, ShipAttributes(100, 10, 100, {'active': {}})),
-            Ship(schema2, ShipAttributes(100, 0, 10, {'active': {}})),
-            Ship(schema3, ShipAttributes(0, 0, 10, {'active': {}})),
+            Ship(schema1, ShipAttributes(10, 5, 100)),
+            Ship(schema1, ShipAttributes(10, 10, 100)),
+            Ship(schema2, ShipAttributes(100, 10, 100)),
+            Ship(schema2, ShipAttributes(100, 0, 10)),
+            Ship(schema3, ShipAttributes(0, 0, 10)),
             # balance is restored.
         ]
 
@@ -193,16 +216,16 @@ class BattleTestCase(TestCase):
             'ship3': 1,
         }
 
-        result = battle.prune_fleet(tattered_fleet)
-        self.assertEqual(result.fleet, expected_fleet)
+        result = battle.prune_fleet(attack_result)
+        self.assertEqual(result.ships, expected_fleet)
         self.assertEqual(result.ship_count, expected_count)
 
     def test_is_alive(self):
         library = ShipLibraryMock()
         schema1 = library.get_ship_schemata('ship1')
-        ship1 = Ship(schema1, ShipAttributes(10, 10, 100, {}))
-        ship2 = Ship(schema1, ShipAttributes(10, 10, 0, {}))
-        ship3 = Ship(schema1, ShipAttributes(10, 10, -1, {}))  # lolwut
+        ship1 = Ship(schema1, ShipAttributes(10, 10, 100))
+        ship2 = Ship(schema1, ShipAttributes(10, 10, 0))
+        ship3 = Ship(schema1, ShipAttributes(10, 10, -1))  # lolwut
 
         self.assertTrue(battle.is_ship_alive(ship1))
         self.assertFalse(battle.is_ship_alive(ship2))
@@ -227,74 +250,37 @@ class BattleTestCase(TestCase):
         self.assertEqual(battle.hull_breach(43, 100, 1), 0) # ~42.05%
         self.assertEqual(battle.hull_breach(27, 100, 1), 26) # ~25.89%
 
+    # XXX weapon_size vs ship_size test needed
     def test_true_damage_no_ewar(self):
         # weapon size less than target_size, exactly same as full damage
-        self.assertEqual(battle.true_damage(100, 1, 2, {}, {}), 100)
+        d = ship._construct_tuple(ShipDebuffs, {})
+        self.assertEqual(battle.true_damage(100, 1, 2, d, d), 100)
 
         # weapon size at target size, ditto.
-        self.assertEqual(battle.true_damage(100, 2, 2, {}, {}), 100)
+        self.assertEqual(battle.true_damage(100, 2, 2, d, d), 100)
 
         # weapon size larget than target size, 44.44% damage rounded up
-        self.assertEqual(battle.true_damage(100, 3, 2, {}, {}), 45)
+        self.assertEqual(battle.true_damage(100, 3, 2, d, d), 45)
 
         # weapon size obscenely huge compared to size, still damaged.
-        self.assertEqual(battle.true_damage(100, 1000, 2, {}, {}), 1)
+        self.assertEqual(battle.true_damage(100, 1000, 2, d, d), 1)
 
         # weapon size just a weee bit larger than target size
-        self.assertEqual(battle.true_damage(100, 10000, 9999, {}, {}), 100)
-
-    def test_ewar_persist(self):
-        library = ShipLibraryMock()
-        schema_holder = library.get_ship_schemata('ship2')
-        tattered_fleet = [
-            Ship(schema_holder, ShipAttributes(100, 100, 100, {
-                'active': {
-                    'target_painter': 1,
-                    'tracking_disruption': 1,
-                    'ECM': 1,
-                    'web': 1
-                },
-                'inactive': {
-                    'target_painter': 2,
-                    'tracking_disruption': 2,
-                    'ECM': 2,
-                    'web': 2
-                }})),
-        ]
-        expected_fleet = [
-            Ship(schema_holder, ShipAttributes(100, 100, 100, {
-                'active': {
-                    'target_painter': 2,
-                    'tracking_disruption': 2,
-                    'ECM': 2,
-                    'web': 2
-                }})),
-        ]
-        result = battle.prune_fleet(tattered_fleet)
-        self.assertEqual(result.fleet, expected_fleet)
+        self.assertEqual(battle.true_damage(100, 10000, 9999, d, d), 100)
 
     def test_ewar_target_painter_effect(self):
-        # make sure inactive doesn't work
         self.assertEqual(
-            battle.true_damage(100, 10, 5, {}, {
-                'inactive': { 'target_painter': 1 } }),
-            25)
-        # make sure active does
-        self.assertEqual(
-            battle.true_damage(100, 10, 5, {}, {
-                'active': { 'target_painter': 1 } }),
+            battle.true_damage(100, 10, 5,
+                ship._construct_tuple(ShipDebuffs, {}),
+                ship._construct_tuple(ShipDebuffs, {'target_painter': 1})),
             100)
 
     def test_ewar_tracking_disruption_effect(self):
-        #make sure inactive doesn't work
         self.assertEqual(
-            battle.true_damage(100, 10, 10, {
-                'inactive': { 'tracking_disruption': 1 } }, {}),
-            100)
-        # make sure active does
-        self.assertEqual(
-            battle.true_damage(100, 10, 10, {
-                'active': { 'tracking_disruption': 1 } }, {}),
+            battle.true_damage(100, 10, 10,
+                ship._construct_tuple(
+                    ShipDebuffs, {'tracking_disruption': 1}),
+                ship._construct_tuple(ShipDebuffs, {})),
             25)
 
     def test_ewar_ecm_effect(self):
@@ -302,31 +288,17 @@ class BattleTestCase(TestCase):
         library = ShipLibraryMock()
         schema3 = library.get_ship_schemata('ship3')
         # ship1 attacks ship2
-        ship1 = Ship(schema3, ShipAttributes(0, 200, 200, {
-            'inactive': { 'ECM': 1 }}))
-        ship2 = Ship(schema3, ShipAttributes(0, 200, 200, {}))
-        ship2_1 = battle.ship_attack(schema3, ship2, ship1.attributes.debuffs)
-        self.assertEqual(ship2_1, Ship(schema3, ShipAttributes(0, 100, 200, {
-            'active': {}, 'inactive': {}})))
+        ship1 = Ship(schema3, ShipAttributes(0, 200, 200))
+        ship2 = Ship(schema3, ShipAttributes(0, 200, 200))
+        ship2_1 = battle.ship_attack(ship1, ship2)
+        self.assertEqual(ship2_1, Ship(schema3, ShipAttributes(0, 100, 200)))
         # make sure active prevents attacking
         # ship1 attacks ship2 again
-        ship1 = Ship(schema3, ShipAttributes(0, 200, 200, {
-            'active': { 'ECM': 1 }}))
-        ship2 = Ship(schema3, ShipAttributes(0, 200, 200, {}))
-        ship2_2 = battle.ship_attack(schema3, ship2, ship1.attributes.debuffs)
-        self.assertEqual(ship2_2, Ship(schema3, ShipAttributes(0, 200, 200, {})))
-
-    def test_ewar_web_effect(self):
-        #make sure inactive doesn't work
-        self.assertEqual(
-            battle.true_damage(100, 10, 5, {}, {
-                'inactive': { 'web': 1 } }),
-            25)
-        # make sure active does
-        self.assertEqual(
-            battle.true_damage(100, 10, 5, {}, {
-                'active': { 'web': 1 } }),
-            100)
+        ship1 = Ship(schema3, ShipAttributes(0, 200, 200),
+            ship._construct_tuple(ShipDebuffs, {'ECM': 1}))
+        ship2 = Ship(schema3, ShipAttributes(0, 200, 200))
+        ship2_2 = battle.ship_attack(ship1, ship2)
+        self.assertEqual(ship2_2, Ship(schema3, ShipAttributes(0, 200, 200)))
 
     def test_ewar_ecm_battle(self):
         # the test target has no sensor strength
@@ -359,58 +331,49 @@ class BattleTestCase(TestCase):
         schema1 = library.get_ship_schemata('ship1')
         schema2 = library.get_ship_schemata('ship2')
         schema3 = library.get_ship_schemata('ship3')
-        ship1 = Ship(schema1, ShipAttributes(10, 10, 100, {}))
-        ship2 = Ship(schema2, ShipAttributes(100, 100, 100, {}))
+        ship1 = Ship(schema1, ShipAttributes(10, 10, 100))
+        ship2 = Ship(schema2, ShipAttributes(100, 100, 100))
+        ship3 = Ship(schema3, ShipAttributes(100, 100, 100))
 
         random.seed(1)
-        ship1_1 = battle.ship_attack(schema2, ship1, {})
+        ship1_1 = battle.ship_attack(ship2, ship1)
         # 1 hp, below hull breach cutoff. but lucky roll, lives
-        self.assertEqual(ship1_1, Ship(schema1, ShipAttributes(0, 0, 69, {
-            'active': {}, 'inactive': {}})))
+        self.assertEqual(ship1_1, Ship(schema1, ShipAttributes(0, 0, 69)))
 
-        ship1_2 = battle.ship_attack(schema2, ship1_1, {})
+        ship1_2 = battle.ship_attack(ship2, ship1_1)
         # 1 hp, below hull breach cutoff. but roll says it dies.
-        self.assertEqual(ship1_2, Ship(schema1, ShipAttributes(0, 0, 0, {
-            'active': {}, 'inactive': {}})))
+        self.assertEqual(ship1_2, Ship(schema1, ShipAttributes(0, 0, 0)))
 
-        ship2_1 = battle.ship_attack(schema2, ship2, {})
-        self.assertEqual(ship2_1, Ship(schema2,
-            ShipAttributes(49, 100, 100, {
-                'active': {}, 'inactive': {}})))
+        ship2_1 = battle.ship_attack(ship2, ship2)
+        self.assertEqual(ship2_1, Ship(schema2, ShipAttributes(49, 100, 100)))
 
-        ship2_2 = battle.ship_attack(schema2, ship2_1, {})
-        self.assertEqual(ship2_2, Ship(schema2,
-            ShipAttributes(0, 98, 100, {
-                'active': {}, 'inactive': {}})))
+        ship2_2 = battle.ship_attack(ship2, ship2_1)
+        self.assertEqual(ship2_2, Ship(schema2, ShipAttributes(0, 98, 100)))
 
-        ship2_2 = battle.ship_attack(schema3, ship2_2, {})
-        self.assertEqual(ship2_2, Ship(schema2,
-            ShipAttributes(0, 0, 98, {
-                'active': {}, 'inactive': {}})))
+        ship2_2 = battle.ship_attack(ship3, ship2_2)
+        self.assertEqual(ship2_2, Ship(schema2, ShipAttributes(0, 0, 98)))
 
-        ship2_3 = battle.ship_attack(schema3, ship2_2, {})
-        self.assertEqual(ship2_3, Ship(schema2,
-            ShipAttributes(0, 0, 0, {
-                'active': {}, 'inactive': {}})))
+        ship2_3 = battle.ship_attack(ship3, ship2_2)
+        self.assertEqual(ship2_3, Ship(schema2, ShipAttributes(0, 0, 0)))
 
     def test_ship_attack_shield_bounce(self):
         library = ShipLibraryMock()
         schema1 = library.get_ship_schemata('ship1')
         schema4 = library.get_ship_schemata('ship4')
-        ship1 = Ship(schema1, ShipAttributes(10, 10, 100, {}))
-        ship4 = Ship(schema4, ShipAttributes(1000000, 0, 50000, {}))
-        ship4b = Ship(schema4, ShipAttributes(1000000, 0, 100, {}))
+        ship1 = Ship(schema1, ShipAttributes(10, 10, 100))
+        ship4 = Ship(schema4, ShipAttributes(1000000, 0, 50000))
+        ship4b = Ship(schema4, ShipAttributes(1000000, 0, 100))
 
         random.seed(1)
-        ship4_1 = battle.ship_attack(schema1, ship4, {})
+        ship4_1 = battle.ship_attack(ship1, ship4)
         # bounced, need 13% to survive, lives with 20%
         self.assertEqual(ship4_1, Ship(schema4, ShipAttributes(
-            1000000, 0, 50000, {'active': {}, 'inactive': {}})))
+            1000000, 0, 50000)))
 
         # bounced, again it should be ignored.
-        ship4b_1 = battle.ship_attack(schema1, ship4b, {})
+        ship4b_1 = battle.ship_attack(ship1, ship4b)
         self.assertEqual(ship4b_1, Ship(schema4, ShipAttributes(
-            1000000, 0, 100, {'active': {}, 'inactive': {}})))
+            1000000, 0, 100)))
 
     def test_multishot(self):
         library = ShipLibraryMock()
@@ -429,20 +392,21 @@ class BattleTestCase(TestCase):
         library = ShipLibraryMock()
         schema1 = library.get_ship_schemata('ship1')
 
+        empty_fleet = battle.expand_fleet({}, library)
+        solo_fleet = battle.expand_fleet({'ship1': 1}, library)
+
         # attacking nothing will have no rounds.
-        result = battle.fleet_attack([], [])
-        self.assertEqual(result, [])
+        result = battle.fleet_attack(empty_fleet, empty_fleet)
+        self.assertEqual(result.damaged_fleet, empty_fleet.ships)
 
         # attacking nothing will have no rounds (for now?).
-        result = battle.fleet_attack(
-            [Ship(schema1, ShipAttributes(10, 0, 70, {})),], [])
-        self.assertEqual(result, [])
+        result = battle.fleet_attack(solo_fleet, empty_fleet)
+        self.assertEqual(result.damaged_fleet, empty_fleet.ships)
 
         # nothing attacking a fleet will still result in a round (for now?).
-        result = battle.fleet_attack(
-            [], [Ship(schema1, ShipAttributes(10, 0, 70, {})),])
+        result = battle.fleet_attack(empty_fleet, solo_fleet)
         self.assertEqual(result.damaged_fleet,
-            [Ship(schema1, ShipAttributes(10, 0, 70, {})),])
+            [Ship(schema1, ShipAttributes(10, 10, 100)),])
 
     def test_fleet_attack(self):
         attacker = {
@@ -466,10 +430,10 @@ class BattleTestCase(TestCase):
         self.assertEqual(attack_result.shots_taken, 8)
         self.assertEqual(attack_result.damage_taken, 340)
 
-        result = battle.prune_fleet(attack_result.damaged_fleet)
-        self.assertEqual(result.fleet, [
-            Ship(schema1, ShipAttributes(10, 0, 70, {'active': {}})),
-            Ship(schema1, ShipAttributes(10, 0, 70, {'active': {}})),
+        result = battle.prune_fleet(attack_result)
+        self.assertEqual(result.ships, [
+            Ship(schema1, ShipAttributes(10, 0, 70)),
+            Ship(schema1, ShipAttributes(10, 0, 70)),
         ])
         self.assertEqual(result.ship_count, {
             'ship1': 2,
@@ -511,7 +475,7 @@ class BattleTestCase(TestCase):
         battle_instance.prepare(library)
         battle_instance.calculate_round()
 
-        self.assertEqual(battle_instance.defender_fleet, [])
+        self.assertEqual(battle_instance.defender_fleet.ships, [])
 
     def test_calculate_battle_stalemate(self):
         # too much shield and shield recharge haha.
@@ -545,19 +509,19 @@ class BattleTestCase(TestCase):
         battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
         schema_rep = library.get_ship_schemata('local_rep_test')
-        tattered_fleet = [
-            Ship(schema_rep, ShipAttributes(100, 100, 100, {})),
-            Ship(schema_rep, ShipAttributes(0, 0, 100, {})),
-            Ship(schema_rep, ShipAttributes(10, 10, 0, {})),
-            Ship(schema_rep, ShipAttributes(10, 10, 100, {})),
-        ]
+        attack_result = AttackResult([], [
+            Ship(schema_rep, ShipAttributes(100, 100, 100)),
+            Ship(schema_rep, ShipAttributes(0, 0, 100)),
+            Ship(schema_rep, ShipAttributes(10, 10, 0)),
+            Ship(schema_rep, ShipAttributes(10, 10, 100)),
+        ], 0, 0)
         expected_fleet = [
-            Ship(schema_rep, ShipAttributes(100, 100, 100, {'active': {}})),
-            Ship(schema_rep, ShipAttributes(5, 5, 100, {'active': {}})),
-            Ship(schema_rep, ShipAttributes(15, 15, 100, {'active': {}})),
+            Ship(schema_rep, ShipAttributes(100, 100, 100)),
+            Ship(schema_rep, ShipAttributes(5, 5, 100)),
+            Ship(schema_rep, ShipAttributes(15, 15, 100)),
         ]
-        result = battle.prune_fleet(tattered_fleet)
-        self.assertEqual(result.fleet, expected_fleet)
+        result = battle.prune_fleet(attack_result)
+        self.assertEqual(result.ships, expected_fleet)
 
     def test_repair_fleet(self):
         random.seed(0)
@@ -567,18 +531,18 @@ class BattleTestCase(TestCase):
         library = ShipLibraryMock()
         schema_remote = library.get_ship_schemata('remote_rep_test')
         tattered_fleet = [
-            Ship(schema_remote, ShipAttributes(100, 100, 100, {})),
-            Ship(schema_remote, ShipAttributes(0, 0, 100, {})),  #0
-            Ship(schema_remote, ShipAttributes(10, 10, 10, {})), #1
-            Ship(schema_remote, ShipAttributes(10, 10, 0, {})),  #2
-            Ship(schema_remote, ShipAttributes(99, 99, 100, {})),#3
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
+            Ship(schema_remote, ShipAttributes(10, 10, 10)), #1
+            Ship(schema_remote, ShipAttributes(10, 10, 0)),  #2
+            Ship(schema_remote, ShipAttributes(99, 99, 100)),#3
         ]
         expected_fleet = [
-            Ship(schema_remote, ShipAttributes(100, 100, 100, {})),
-            Ship(schema_remote, ShipAttributes(0, 0, 100, {})),  #0
-            Ship(schema_remote, ShipAttributes(30, 40, 10, {})), #1
-            Ship(schema_remote, ShipAttributes(20, 20, 0, {})),  #2
-            Ship(schema_remote, ShipAttributes(100, 100, 100, {})),#3
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
+            Ship(schema_remote, ShipAttributes(30, 40, 10)), #1
+            Ship(schema_remote, ShipAttributes(20, 20, 0)),  #2
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),#3
         ]
         result = battle.repair_fleet(tattered_fleet)
         self.assertEqual(result, expected_fleet)
@@ -591,18 +555,18 @@ class BattleTestCase(TestCase):
         library = ShipLibraryMock()
         schema_remote = library.get_ship_schemata('remote_rep_test')
         tattered_fleet = [
-            Ship(schema_remote, ShipAttributes(0, 0, 100, {})),  #0
-            Ship(schema_remote, ShipAttributes(10, 10, 10, {})), #1
-            Ship(schema_remote, ShipAttributes(100, 100, 100, {})),
-            Ship(schema_remote, ShipAttributes(10, 10, 0, {})),  #2
-            Ship(schema_remote, ShipAttributes(99, 99, 100, {})),#3
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
+            Ship(schema_remote, ShipAttributes(10, 10, 10)), #1
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
+            Ship(schema_remote, ShipAttributes(10, 10, 0)),  #2
+            Ship(schema_remote, ShipAttributes(99, 99, 100)),#3
         ]
         expected_fleet = [
-            Ship(schema_remote, ShipAttributes(0, 0, 100, {})),  #0
-            Ship(schema_remote, ShipAttributes(30, 40, 10, {})), #1
-            Ship(schema_remote, ShipAttributes(100, 100, 100, {})),
-            Ship(schema_remote, ShipAttributes(20, 20, 0, {})),  #2
-            Ship(schema_remote, ShipAttributes(100, 100, 100, {})),#3
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
+            Ship(schema_remote, ShipAttributes(30, 40, 10)), #1
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
+            Ship(schema_remote, ShipAttributes(20, 20, 0)),  #2
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),#3
         ]
         result = battle.repair_fleet(tattered_fleet)
         self.assertEqual(result, expected_fleet)
@@ -623,7 +587,7 @@ class BattleTestCase(TestCase):
         battle_instance.prepare(library)
         battle_instance.calculate_battle()
 
-        self.assertEqual(battle_instance.defender_fleet, [])
+        self.assertEqual(battle_instance.defender_fleet.ships, [])
         self.assertEqual(len(battle_instance.round_results), 4)
 
         counts = [(a.ship_count, d.ship_count)
@@ -693,7 +657,7 @@ class SpeedSimTestCase(TestCase, SimBase):
         }
 
         result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(result.defender_fleet.ships, [])
         self.assertEqual(len(result.round_results), 4)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
@@ -717,7 +681,7 @@ class SpeedSimTestCase(TestCase, SimBase):
         }
 
         result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(result.defender_fleet.ships, [])
         self.assertEqual(len(result.round_results), 4)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
@@ -759,7 +723,7 @@ class SpeedSimTestCase(TestCase, SimBase):
         }
 
         result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(result.defender_fleet.ships, [])
         self.assertEqual(len(result.round_results), 5)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
@@ -774,7 +738,7 @@ class SpeedSimTestCase(TestCase, SimBase):
         })
 
         result = self.fight(attacker, defender, 27)
-        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(result.defender_fleet.ships, [])
         self.assertEqual(len(result.round_results), 5)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
@@ -789,7 +753,7 @@ class SpeedSimTestCase(TestCase, SimBase):
         })
 
         result = self.fight(attacker, defender, 128)
-        self.assertEqual(result.defender_fleet, [])
+        self.assertEqual(result.defender_fleet.ships, [])
         self.assertEqual(len(result.round_results), 5)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
@@ -822,7 +786,7 @@ class DucttapeSimTestCase(TestCase, SimBase):
         }
 
         result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.attacker_fleet, [])
+        self.assertEqual(result.attacker_fleet.ships, [])
         self.assertEqual(len(result.round_results), 1)
 
         self.assertEqual(result.round_results[0][0].shots_taken, 8)
@@ -840,7 +804,7 @@ class DucttapeSimTestCase(TestCase, SimBase):
         }
 
         result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.attacker_fleet, [])
+        self.assertEqual(result.attacker_fleet.ships, [])
         self.assertEqual(len(result.round_results), 1)
 
         self.assertEqual(result.round_results[0][0].shots_taken, 935)

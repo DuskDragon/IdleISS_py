@@ -16,6 +16,9 @@
             "sensor_strength": 1,
             "size": "cruiser",
             "weapon_size": "cruiser",
+            "buffs": {
+                "local_shield_repair": 50
+            },
             "multishot": {
                 "not a fighter": 6
             }

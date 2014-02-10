@@ -4,6 +4,15 @@ from unittest import TestCase
 from idleiss import ship
 
 
+class HelperTestCase(TestCase):
+
+    def test_construct_tuple(self):
+        result = ship._construct_tuple(
+            ship.ShipSchema, {'shield': 1, 'not_shield': 1})
+        self.assertEqual(result.shield, 1)
+        self.assertEqual(result.armor, 0)
+
+
 class FleetLibraryTestCase(TestCase):
 
     def setUp(self):
@@ -15,7 +24,10 @@ class FleetLibraryTestCase(TestCase):
         self.library = ship.ShipLibrary(target_path)
         schema = self.library.get_ship_schemata('Small Cargo')
         self.assertEqual(schema, ship.ShipSchema('Small Cargo',
-            10, 0, 200, 0, 3, 1, {}, 1, 'Small Cargo', 10, 0, 0, 0, 0, 0, 0, 0,))
+            10, 0, 200, 0, 3, 1, {}, 1,
+            'Small Cargo',
+            ship.ShipBuffs(10, 0, 0, 0),
+            ship.ShipDebuffs(0, 0, 0, 0)))
 
     def test_load_fail_no_shield(self):
         test_file_name = 'noshield.json'

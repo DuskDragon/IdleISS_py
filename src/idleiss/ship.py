@@ -2,20 +2,49 @@ from collections import namedtuple
 from os.path import join, dirname, abspath
 import json
 
-
 ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
     'weapon_size', 'multishot', 'sensor_strength',]
-ship_optional_fields = ['hullclass', 'shield_recharge', 'armor_local_repair',
-    'remote_shield', 'remote_armor', 'target_painter', 'tracking_disruption',
-    'ECM', 'web',]
-ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
-    ship_optional_fields)
+ship_schema_optional_fields = ['hullclass', 'buffs', 'debuffs']
 
-Ship = namedtuple('Ship', ['schema', 'attributes'])
+buff_effects = ['local_shield_repair', 'local_armor_repair',
+    'remote_shield_repair', 'remote_armor_repair',]
+# XXX damage will become a debuff.
+debuff_effects = ['target_painter', 'tracking_disruption', 'ECM', 'web',]
+
+ShipBuffs = namedtuple('ShipBuffs', buff_effects)
+
+# Dual purpose: in a schema these will be the stats that the ships
+# constructed using this schema can potentially apply to targets.
+# In a ship, these are the actual debuffs that it is suffering.
+ShipDebuffs = namedtuple('ShipDebuffs', debuff_effects)
+
+ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
+    ship_schema_optional_fields)
+
+ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull'])
+
+def _construct_tuple(tuple_cls, kwargs, default_value=0):
+    """
+    Constructs a namedtuple object, using the tuple_cls as the template
+    and kwargs as the supplied keyward arguments, which will be merged
+    with the default keywords and default_value if the required ones are
+    not provided.
+    """
+
+    default_kwargs = {f: kwargs.get(f, default_value)
+        for f in tuple_cls._fields}
+    return tuple_cls(**default_kwargs)
+
+# I don't quite like this method of providing default values, but also
+# don't like overloading the __new__ method...
 # schema - the full schema.
 # attributes - ShipAttributes
-
-ShipAttributes = namedtuple('ShipAttributes', ['shield', 'armor', 'hull', 'debuffs',])
+# debuffs - debuffs.
+_Ship = namedtuple('Ship', ['schema', 'attributes', 'debuffs'])
+def Ship(schema, attributes, debuffs=None):
+    if not debuffs:
+        debuffs = ShipDebuffs(*([False] * len(debuff_effects)))
+    return _Ship(schema, attributes, debuffs)
 
 
 def ship_size_sort_key(obj):
@@ -66,24 +95,27 @@ class ShipLibrary(object):
                 raise ValueError("%s does not have %s attribute" % (
                     ship_name, ', '.join(missing)))
 
-            data['size'] = type(data['size']) != int and \
-                                self.size_data[data['size']] or \
-                           data['size']
-            data['weapon_size'] = self.size_data[data['weapon_size']]
+            updates = {}
 
-            #going to want to depreciate these in the future
-            data['hullclass'] = data.get('hullclass', ship_name)
-            data['shield_recharge'] = data.get('shield_recharge', data['shield'])
-            data['armor_local_repair'] = data.get('armor_local_repair', 0)
-            data['remote_shield'] = data.get('remote_shield', 0)
-            data['remote_armor'] = data.get('remote_shield', 0)
-            data['target_painter'] = data.get('target_painter', 0)
-            data['tracking_disruption'] = data.get('tracking_disruption', 0)
-            data['ECM'] = data.get('ECM', 0)
-            data['web'] = data.get('web', 0)
+            updates['size'] = self.size_data[data['size']]
+            updates['weapon_size'] = self.size_data[data['weapon_size']]
 
-            self.ship_data[ship_name] = ShipSchema(ship_name, **data)
+            updates['hullclass'] = data.get('hullclass', ship_name)
 
+            updates['buffs'] = _construct_tuple(
+                ShipBuffs, data.get('buffs', {}))
+            updates['debuffs'] = _construct_tuple(
+                ShipDebuffs, data.get('debuffs', {}))
+
+            updates['name'] = ship_name
+
+            # finally merge the updated fields here before constructing
+            # final schema object to limit side effects.
+            data.update(updates)
+
+            self.ship_data[ship_name] = _construct_tuple(ShipSchema, data)
+
+            # validation for multishot target.
             multishot_list = data['multishot']
             for multishot_target in multishot_list:
                 if multishot_target not in raw_ship_hullclasses:
