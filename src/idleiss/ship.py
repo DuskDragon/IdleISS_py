@@ -100,7 +100,7 @@ class ShipLibrary(object):
             updates['size'] = self.size_data[data['size']]
             updates['weapon_size'] = self.size_data[data['weapon_size']]
 
-            updates['hullclass'] = self.size_data.get('hullclass', ship_name)
+            updates['hullclass'] = data.get('hullclass', ship_name)
 
             updates['buffs'] = _construct_tuple(
                 ShipBuffs, data.get('buffs', {}))
