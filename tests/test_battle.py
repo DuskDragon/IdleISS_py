@@ -19,10 +19,10 @@ class ShipLibraryMock(ShipLibrary):
     def __init__(self):
         self._load({
             'sizes': {
-                "one": 1,
-                "two": 2,
-                "three": 3,
-                "four": 4,
+                "ship1": 1,
+                "ship2": 2,
+                "ship3": 3,
+                "ship4": 4,
             },
             'ships': {
                 "ship1": {
@@ -31,8 +31,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 50,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 10,
                     },
@@ -47,8 +47,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 51,
                     "sensor_strength": 1,
-                    "size": "two",
-                    "weapon_size": "one",
+                    "size": "ship2",
+                    "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 100,
                     },
@@ -64,8 +64,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 200,
                     "firepower": 100,
                     "sensor_strength": 1,
-                    "size": "three",
-                    "weapon_size": "one",
+                    "size": "ship3",
+                    "weapon_size": "ship1",
                     "buffs": {
                     },
                     "multishot": {
@@ -79,8 +79,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 250000,
                     "firepower": 250000,
                     "sensor_strength": 1,
-                    "size": "four",
-                    "weapon_size": "one",
+                    "size": "ship4",
+                    "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 1000000,
                     },
@@ -94,8 +94,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 5,
                         "local_armor_repair": 5,
@@ -109,8 +109,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "buffs": {
                         "remote_shield_repair": 10,
                         "remote_armor_repair": 10,
@@ -124,8 +124,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "debuffs": {
                         'target_painter': 0.7,
                         'tracking_disruption': 1.6,
@@ -141,8 +141,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 200,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "debuffs": {
                         'ECM': 1,
                     },
@@ -155,8 +155,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 200,
                     "sensor_strength": 0,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "multishot": {
                     },
                 },

@@ -3,8 +3,8 @@ from os.path import join, dirname, abspath
 import json
 
 ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
-    'weapon_size', 'multishot', 'sensor_strength']
-ship_schema_optional_fields = ['buffs', 'debuffs']
+    'weapon_size', 'multishot', 'sensor_strength',]
+ship_schema_optional_fields = ['hullclass', 'buffs', 'debuffs']
 
 buff_effects = ['local_shield_repair', 'local_armor_repair',
     'remote_shield_repair', 'remote_armor_repair',]
@@ -86,7 +86,7 @@ class ShipLibrary(object):
         self.size_data = {}
         self.size_data.update(raw_data['sizes'])
 
-        raw_ship_names = raw_data['ships'].keys()
+        raw_ship_hullclasses = raw_data['sizes'].keys()
         self.ship_data = {}
 
         for ship_name, data in raw_data['ships'].items():
@@ -99,6 +99,8 @@ class ShipLibrary(object):
 
             updates['size'] = self.size_data[data['size']]
             updates['weapon_size'] = self.size_data[data['weapon_size']]
+
+            updates['hullclass'] = self.size_data.get('hullclass', ship_name)
 
             updates['buffs'] = _construct_tuple(
                 ShipBuffs, data.get('buffs', {}))
@@ -116,8 +118,8 @@ class ShipLibrary(object):
             # validation for multishot target.
             multishot_list = data['multishot']
             for multishot_target in multishot_list:
-                if multishot_target not in raw_ship_names:
-                    raise ValueError(multishot_target + " does not exist as a shiptype")
+                if multishot_target not in raw_ship_hullclasses:
+                    raise ValueError(multishot_target + " does not exist as a hullclass")
 
         self.ordered_ship_data = sorted(self.ship_data.values(),
             key=ship_size_sort_key)

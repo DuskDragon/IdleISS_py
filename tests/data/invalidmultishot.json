@@ -1,6 +1,6 @@
 {
     "sizes": {
-        "fighter": 50,
+        "light fighter": 50,
         "frigate": 60,
         "cruiser": 100,
         "hauler": 150,
@@ -20,7 +20,7 @@
                 "local_shield_repair": 50
             },
             "multishot": {
-                "light fighter": 6
+                "not a fighter": 6
             }
         }
     }

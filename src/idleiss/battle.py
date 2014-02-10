@@ -191,7 +191,7 @@ def multishot(attacker_schema, victim_schema):
     Calculate multishot result based on the schemas.
     """
 
-    multishot = attacker_schema.multishot.get(victim_schema.name, 0)
+    multishot = attacker_schema.multishot.get(victim_schema.hullclass, 0)
     return multishot > 0 and (multishot - 1.0) / multishot > random.random()
 
 def expand_fleet(ship_count, library):

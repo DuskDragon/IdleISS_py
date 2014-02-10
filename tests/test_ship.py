@@ -22,9 +22,10 @@ class FleetLibraryTestCase(TestCase):
         test_file_name = 'validload.json'
         target_path = join(dirname(__file__), 'data', test_file_name)
         self.library = ship.ShipLibrary(target_path)
-        schema = self.library.get_ship_schemata('small hauler')
-        self.assertEqual(schema, ship.ShipSchema('small hauler',
-            10, 0, 200, 0, 160, 50, {}, 1,
+        schema = self.library.get_ship_schemata('Small Cargo')
+        self.assertEqual(schema, ship.ShipSchema('Small Cargo',
+            10, 0, 200, 0, 3, 1, {}, 1,
+            'Small Cargo',
             ship.ShipBuffs(10, 0, 0, 0),
             ship.ShipDebuffs(0, 0, 0, 0)))
 
@@ -59,8 +60,8 @@ class FleetLibraryTestCase(TestCase):
                     "sensor_strength": 9.6,
                     "weapon_size": "frigate",
                     "multishot": {
-                        "stabber": 3,
-                        "tempest": 30,
+                        "cruiser": 3,
+                        "battleship": 30,
                     },
                 },
 
@@ -73,8 +74,8 @@ class FleetLibraryTestCase(TestCase):
                     "sensor_strength": 13,
                     "weapon_size": "cruiser",
                     "multishot": {
-                        "rifter": 9,
-                        "tempest": 10,
+                        "frigate": 9,
+                        "battleship": 10,
                     },
                 },
 
@@ -87,8 +88,8 @@ class FleetLibraryTestCase(TestCase):
                     "sensor_strength": 22.4,
                     "weapon_size": "battleship",
                     "multishot": {
-                        "stabber": 25,
-                        "tempest": 2,
+                        "cruiser": 25,
+                        "battleship": 2,
                     },
                 },
 
