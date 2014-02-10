@@ -5,7 +5,7 @@ import json
 
 ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
     'weapon_size', 'multishot', 'sensor_strength',]
-ship_optional_fields = ['shield_recharge', 'armor_local_repair',
+ship_optional_fields = ['hullclass', 'shield_recharge', 'armor_local_repair',
     'remote_shield', 'remote_armor', 'target_painter', 'tracking_disruption',
     'ECM', 'web',]
 ShipSchema = namedtuple('ShipSchema', ['name'] + ship_schema_fields +
@@ -57,7 +57,7 @@ class ShipLibrary(object):
         self.size_data = {}
         self.size_data.update(raw_data['sizes'])
 
-        raw_ship_names = raw_data['ships'].keys()
+        raw_ship_hullclasses = raw_data['sizes'].keys()
         self.ship_data = {}
 
         for ship_name, data in raw_data['ships'].items():
@@ -66,10 +66,13 @@ class ShipLibrary(object):
                 raise ValueError("%s does not have %s attribute" % (
                     ship_name, ', '.join(missing)))
 
-            data['size'] = self.size_data[data['size']]
+            data['size'] = type(data['size']) != int and \
+                                self.size_data[data['size']] or \
+                           data['size']
             data['weapon_size'] = self.size_data[data['weapon_size']]
 
             #going to want to depreciate these in the future
+            data['hullclass'] = data.get('hullclass', ship_name)
             data['shield_recharge'] = data.get('shield_recharge', data['shield'])
             data['armor_local_repair'] = data.get('armor_local_repair', 0)
             data['remote_shield'] = data.get('remote_shield', 0)
@@ -83,8 +86,8 @@ class ShipLibrary(object):
 
             multishot_list = data['multishot']
             for multishot_target in multishot_list:
-                if multishot_target not in raw_ship_names:
-                    raise ValueError(multishot_target + " does not exist as a shiptype")
+                if multishot_target not in raw_ship_hullclasses:
+                    raise ValueError(multishot_target + " does not exist as a hullclass")
 
         self.ordered_ship_data = sorted(self.ship_data.values(),
             key=ship_size_sort_key)

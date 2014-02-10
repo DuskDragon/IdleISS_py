@@ -15,10 +15,10 @@ class ShipLibraryMock(ShipLibrary):
     def __init__(self):
         self._load({
             'sizes': {
-                "one": 1,
-                "two": 2,
-                "three": 3,
-                "four": 4,
+                "ship1": 1,
+                "ship2": 2,
+                "ship3": 3,
+                "ship4": 4,
             },
             'ships': {
                 "ship1": {
@@ -27,8 +27,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 50,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "multishot": {
                         "ship1": 2,
                     },
@@ -40,8 +40,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 51,
                     "sensor_strength": 1,
-                    "size": "two",
-                    "weapon_size": "one",
+                    "size": "ship2",
+                    "weapon_size": "ship1",
                     "multishot": {
                         "ship1": 4,
                         "ship2": 16,
@@ -54,8 +54,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 200,
                     "firepower": 100,
                     "sensor_strength": 1,
-                    "size": "three",
-                    "weapon_size": "one",
+                    "size": "ship3",
+                    "weapon_size": "ship1",
                     "multishot": {
                         "ship2": 25,
                     },
@@ -67,8 +67,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 250000,
                     "firepower": 250000,
                     "sensor_strength": 1,
-                    "size": "four",
-                    "weapon_size": "one",
+                    "size": "ship4",
+                    "weapon_size": "ship1",
                     "multishot": {
                     },
                 },
@@ -81,8 +81,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "multishot": {
                     },
                 },
@@ -94,8 +94,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 100,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "multishot": {
                     },
                 },
@@ -109,8 +109,8 @@ class ShipLibraryMock(ShipLibrary):
                     'ECM': 1,
                     'web': 0.7,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "multishot": {
                     },
                 },
@@ -121,8 +121,8 @@ class ShipLibraryMock(ShipLibrary):
                     "firepower": 200,
                     'ECM': 1,
                     "sensor_strength": 1,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "multishot": {
                     },
                 },
@@ -132,8 +132,8 @@ class ShipLibraryMock(ShipLibrary):
                     "hull": 100,
                     "firepower": 200,
                     "sensor_strength": 0,
-                    "size": "one",
-                    "weapon_size": "one",
+                    "size": "ship1",
+                    "weapon_size": "ship1",
                     "multishot": {
                     },
                 },

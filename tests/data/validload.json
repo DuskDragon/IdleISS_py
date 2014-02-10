@@ -1,57 +1,73 @@
 {
     "sizes": {
-        "fighter": 50,
-        "frigate": 50,
-        "cruiser": 150,
-        "hauler": 160,
-        "battlecruiser": 500,
-        "battleship": 600
+        "Espionage Probe": 1,
+        "Solar Sat.": 2,
+        "Small Cargo": 3,
+        "Large Cargo": 4,
+        "Light Fighter": 5,
+        "Heavy Fighter": 6,
+        "Cruiser": 7,
+        "Battleship": 8,
+        "Battlecruiser": 9,
+        "Colony Ship": 10,
+        "Recycler": 11,
+        "Bomber": 12,
+        "Destroyer": 13,
+        "Deathstar": 14,
+        "Rocket Launcher": 15,
+        "Light Laser": 16,
+        "Heavy Laser": 17,
+        "Ion Cannon": 18,
+        "Gauss Cannon": 19,
+        "Plasma Turret": 20,
+        "Small Shield": 21,
+        "Large Shield": 22
     },
     "ships": {
-        "small hauler": {
+        "Small Cargo": {
             "shield": 10,
             "armor": 0,
             "hull": 200,
             "firepower": 0,
             "sensor_strength": 1,
-            "size": "hauler",
-            "weapon_size": "fighter",
+            "size": "Small Cargo",
+            "weapon_size": "Espionage Probe",
             "multishot": {
             }
         },
-        "light fighter": {
+        "Light Fighter": {
             "shield": 10,
             "armor": 10,
             "hull": 400,
             "firepower": 50,
             "sensor_strength": 1,
-            "size": "fighter",
-            "weapon_size": "fighter",
+            "size": "Light Fighter",
+            "weapon_size": "Espionage Probe",
             "multishot": {
             }
         },
-        "heavy fighter": {
+        "Heavy Fighter": {
             "shield": 25,
             "armor": 10,
             "hull": 1000,
             "firepower": 150,
             "sensor_strength": 1,
-            "size": "fighter",
-            "weapon_size": "fighter",
+            "size": "Heavy Fighter",
+            "weapon_size": "Espionage Probe",
             "multishot": {
-                "small hauler": 3
+                "Small Cargo": 3
             }
         },
-        "cruiser": {
+        "Cruiser": {
             "shield": 50,
             "armor": 20,
             "hull": 2700,
             "firepower": 400,
             "sensor_strength": 1,
-            "size": "cruiser",
-            "weapon_size": "cruiser",
+            "size": "Cruiser",
+            "weapon_size": "Espionage Probe",
             "multishot": {
-                "light fighter": 6
+                "Light Fighter": 6
             }
         }
     }

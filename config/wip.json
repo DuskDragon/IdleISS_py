@@ -1,7 +1,7 @@
 {
     "sizes": {
-        "frigate": 35,
-        "destroyer": 35,
+        "frigate": 220,
+        "destroyer": 380,
         "cruiser": 100,
         "battlecruiser": 250,
         "battleship": 360
@@ -9,25 +9,23 @@
 
     "ships": {
         "rifter": {
+			"hullclass": "frigate",
             "shield": 2680,
             "armor": 833,
             "hull": 350,
-            "shield_recharge": 7
-            "armor_local_repair": 0
+            "shield_recharge": 7,
+            "armor_local_repair": 0,
             "sensor_strength": 9.6,
-            "firepower": 400,
-            "size": "frigate",
+            "firepower": 3900,
+            "size": 250,
             "weapon_size": "frigate",
             "multishot": {
-                "rifter": 2,
-                "thrasher": 2,
-                "stabber": 4,
-                "hurricane": 3,
-                "tempest": 9
+                "frigate": 2
             }
         },
 
         "thrasher": {
+			"hullclass": "destroyer",
             "shield": 800,
             "armor": 750,
             "hull": 750,
@@ -36,15 +34,16 @@
             "size": "destroyer",
             "weapon_size": "frigate",
             "multishot": {
-                "rifter": 9,
-                "thrasher": 3,
-                "stabber": 4,
-                "hurricane": 3,
-                "tempest": 2
+                "frigate": 9,
+                "destroyer": 3,
+                "cruiser": 4,
+                "battlecruiser": 3,
+                "battleship": 2
             }
         },
 
         "stabber": {
+			"hullclass": "cruiser",
             "shield": 1600,
             "armor": 1300,
             "hull": 1300,
@@ -53,15 +52,16 @@
             "sensor_strength": 13.0,
             "weapon_size": "cruiser",
             "multishot": {
-                "rifter": 4,
-                "thrasher": 9,
-                "stabber": 4,
-                "hurricane": 4,
-                "tempest": 3
+                "frigate": 4,
+                "destroyer": 9,
+                "cruiser": 4,
+                "battlecruiser": 4,
+                "battleship": 3
             }
         },
 
         "hurricane": {
+			"hullclass": "battlecruiser",
             "shield": 4250,
             "armor": 4500,
             "hull": 3500,
@@ -70,15 +70,16 @@
             "size": "battlecruiser",
             "weapon_size": "cruiser",
             "multishot": {
-                "rifter": 2,
-                "thrasher": 4,
-                "stabber": 16,
-                "hurricane": 9,
-                "tempest": 25
+                "frigate": 2,
+                "destroyer": 4,
+                "cruiser": 16,
+                "battlecruiser": 9,
+                "battleship": 25
             }
         },
 
         "tempest": {
+			"hullclass": "battleship",
             "shield": 6300,
             "armor": 7000,
             "hull": 6800,
@@ -87,9 +88,9 @@
             "size": "battleship",
             "weapon_size": "battleship",
             "multishot": {
-                "stabber": 2,
-                "hurricane": 5,
-                "tempest": 2
+                "cruiser": 2,
+                "battlecruiser": 5,
+                "battleship": 2
             }
         }
     }
