@@ -16,7 +16,7 @@
             "shield_recharge": 7,
             "armor_local_repair": 0,
             "sensor_strength": 9.6,
-            "firepower": 3900,
+            "firepower": 3000,
             "size": 250,
             "weapon_size": "frigate",
             "multishot": {

@@ -97,7 +97,9 @@ class ShipLibrary(object):
 
             updates = {}
 
-            updates['size'] = self.size_data[data['size']]
+            updates['size'] = type(data['size']) != int and \
+                                  self.size_data[data['size']] or \
+                              data['size']
             updates['weapon_size'] = self.size_data[data['weapon_size']]
 
             updates['hullclass'] = data.get('hullclass', ship_name)
