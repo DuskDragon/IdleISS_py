@@ -408,6 +408,9 @@ class BattleTestCase(TestCase):
         self.assertEqual(result.damaged_fleet,
             [Ship(schema1, ShipAttributes(10, 10, 100)),])
 
+    def test_size_unity_factor(self):
+        self.assertEqual(battle.size_damage_factor(2,2), 1.0)
+
     def test_fleet_attack(self):
         attacker = {
             "ship1": 5,

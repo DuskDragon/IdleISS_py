@@ -1,10 +1,10 @@
 {
     "sizes": {
-        "frigate": 220,
-        "destroyer": 380,
-        "cruiser": 100,
-        "battlecruiser": 250,
-        "battleship": 360
+        "frigate": 40,
+        "destroyer": 85,
+        "cruiser": 135,
+        "battlecruiser": 275,
+        "battleship": 420
     },
 
     "ships": {

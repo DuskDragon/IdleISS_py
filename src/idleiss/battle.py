@@ -57,9 +57,9 @@ def size_damage_factor(weapon_size, target_size):
     """
 
     if weapon_size <= target_size:
-        return damage
+        return 1.0
 
-    return (target_size ** 2) / (weapon_size ** 2)
+    return (float(target_size) ** 2) / (float(weapon_size) ** 2)
 
 def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
     """
