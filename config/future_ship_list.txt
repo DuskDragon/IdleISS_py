@@ -2,7 +2,7 @@ Frigates
 --------
 Crucifier - Tracking Disruptiion
 Griffin - ECM
-Maulus - Sensor Dampener
+Maulus - Web
 Vigil - Target Painter
 
 Executioner - Tackle
@@ -41,7 +41,7 @@ Cruiser
 -------
 Arbitrator - Tracking Disruption
 Blackbird - ECM
-Celestis - Sensor Dampener
+Celestis - Web
 Bellicose - Target Painter
 
 Augoror - Logistic
