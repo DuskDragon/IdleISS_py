@@ -108,7 +108,7 @@ then let's say max battle length is 10 minutes
 thus: max rounds is 20
 
 1 v 1 frigates get a kill in a single round
-destroyers kill 2-3 frigates per round - 5 frigates might kill a destroyer
+destroyers kill 2-3 frigates per round - 1 frigate might kill a destroyer
 3 rounds for a frigate to kill a cruiser, but the cruiser would kill 3 frigates in that time
 5 frigates kill a battlecruiser in about 3 rounds, but those frigates would likely all die
 10 frigates kill a battleship in about 3 rounds, and the battleship might kill one (drones?)
