@@ -71,7 +71,7 @@ def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
 
     # target_debuffs: target painter, web
     target_painter = 1 + target_debuff.target_painter
-    web = 1 - target_debuff.web
+    web = max(1 - target_debuff.web, 0)
 
     # painters gives > 1 multiplier to the target_size against target
     # reason - painters expand the target to make it easier to hit.
@@ -79,11 +79,11 @@ def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
     # webbers give < 1 multiplier to the weapon_size against target
     # reason - weapons can focus more damage on a webbed target
 
-    if web == 0 or weapon_size / web * tracking_disrupt <=  \
+    if weapon_size * web * tracking_disrupt <=  \
             target_size * target_painter:
         return damage
 
-    true_weapon_size = (weapon_size / web) * tracking_disrupt
+    true_weapon_size = (weapon_size * web) * tracking_disrupt
     true_target_size = target_size * target_painter
     damage_factor = size_damage_factor(true_weapon_size, true_target_size)
     return int(math.ceil(damage_factor * damage))
