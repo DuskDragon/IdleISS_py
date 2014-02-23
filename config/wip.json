@@ -14,7 +14,7 @@
             "armor": 871,
             "hull": 875,
             "buffs": {
-                "local_shield_repair": 7
+                "local_shield_repair": 210
             },
             "sensor_strength": 16.8,
             "firepower": 45,
@@ -32,7 +32,7 @@
             "armor": 1669,
             "hull": 313,
             "buffs": {
-                "local_shield_repair": 2
+                "local_shield_repair": 60
             },
             "sensor_strength": 20.4,
             "firepower": 0,
@@ -55,7 +55,7 @@
             "armor": 3219,
             "hull": 1250,
             "buffs": {
-                "local_shield_repair": 2
+                "local_shield_repair": 60
             },
             "sensor_strength": 19.2,
             "firepower": 0,
@@ -73,7 +73,7 @@
             "armor": 654,
             "hull": 938,
             "buffs": {
-                "local_shield_repair": 11
+                "local_shield_repair": 330
             },
             "sensor_strength": 14.4,
             "firepower": 0,
@@ -96,7 +96,7 @@
             "armor": 3267,
             "hull": 1093,
             "buffs": {
-                "local_shield_repair": 1
+                "local_shield_repair": 30
             },
             "sensor_strength": 9.6,
             "firepower": 3510,
@@ -114,7 +114,7 @@
             "armor": 463,
             "hull": 313,
             "buffs": {
-                "local_shield_repair": 15
+                "local_shield_repair": 450
             },
             "sensor_strength": 10.8,
             "firepower": 2133,
@@ -132,7 +132,7 @@
             "armor": 556,
             "hull": 375,
             "buffs": {
-                "local_shield_repair": 12,
+                "local_shield_repair": 360,
             },
             "sensor_strength": 8.4,
             "firepower": 2400,
@@ -150,7 +150,7 @@
             "armor": 3389,
             "hull": 1250,
             "buffs": {
-                "local_shield_repair": 1
+                "local_shield_repair": 30
             },
             "sensor_strength": 9.6,
             "firepower": 4000,
@@ -168,7 +168,7 @@
             "armor": 969,
             "hull": 1041,
             "buffs": {
-                "local_shield_repair": 8
+                "local_shield_repair": 240
             },
             "sensor_strength": 9.6,
             "firepower": 3900,
@@ -188,7 +188,7 @@
             "armor": 3883,
             "hull": 1250,
             "buffs": {
-                "local_shield_repair": 1
+                "local_shield_repair": 30
             },
             "sensor_strength": 10.8,
             "firepower": 3500,
@@ -208,7 +208,7 @@
             "armor": 648,
             "hull": 500,
             "buffs": {
-                "local_shield_repair": 15
+                "local_shield_repair": 450
             },
             "sensor_strength": 13.2,
             "firepower": 2400,
@@ -228,7 +228,7 @@
             "armor": 3549,
             "hull": 813,
             "buffs": {
-                "local_shield_repair": 1
+                "local_shield_repair": 30
             },
             "sensor_strength": 10.8,
             "firepower": 3480,
@@ -248,7 +248,7 @@
             "armor": 5905,
             "hull": 1339,
             "buffs": {
-                "local_shield_repair": 1
+                "local_shield_repair": 30
             },
             "sensor_strength": 10.8,
             "firepower": 3510,
@@ -263,7 +263,7 @@
             "armor": 754,
             "hull": 1190,
             "buffs": {
-                "local_shield_repair": 19
+                "local_shield_repair": 570
             },
             "sensor_strength": 13.2,
             "firepower": 4200,
@@ -278,7 +278,7 @@
             "armor": 4520,
             "hull": 625,
             "buffs": {
-                "local_shield_repair": 1,
+                "local_shield_repair": 30,
                 "local_armor_repair": 3270
             },
             "sensor_strength": 10.8,
@@ -313,7 +313,7 @@
             "size": 34,
             "weapon_size": "frigate",
             "buffs": {
-                "local_shield_repair": 1,
+                "local_shield_repair": 30,
                 "remote_armor_repair": 4320
             },
             "multishot": {
@@ -329,7 +329,7 @@
             "size": 44,
             "weapon_size": "frigate",
             "buffs": {
-                "local_shield_repair": 1,
+                "local_shield_repair": 30,
                 "remote_shield_repair": 4800
             },
             "multishot": {
@@ -341,7 +341,7 @@
             "armor": 5333,
             "hull": 419,
             "buffs": {
-                "local_shield_repair": 1,
+                "local_shield_repair": 30,
                 "remote_armor_repair": 4800
             },
             "sensor_strength": 13.2,
@@ -361,7 +361,7 @@
             "size": 44,
             "weapon_size": "frigate",
             "buffs": {
-                "local_shield_repair": 1,
+                "local_shield_repair": 30,
                 "remote_shield_repair": 4800
             },
             "multishot": {
@@ -373,7 +373,7 @@
             "armor": 2443,
             "hull": 1000,
             "buffs": {
-                "local_shield_repair": 3
+                "local_shield_repair": 90
             },
             "sensor_strength": 12,
             "firepower": 4500,
@@ -393,7 +393,7 @@
             "armor": 1525,
             "hull": 2187,
             "buffs": {
-                "local_shield_repair": 15
+                "local_shield_repair": 450
             },
             "sensor_strength": 14.4,
             "firepower": 4005,
@@ -413,7 +413,7 @@
             "armor": 1742,
             "hull": 2812,
             "buffs": {
-                "local_shield_repair": 5
+                "local_shield_repair": 150
             },
             "sensor_strength": 13.2,
             "firepower": 4820,
@@ -433,7 +433,7 @@
             "armor": 1388,
             "hull": 938,
             "buffs": {
-                "local_shield_repair": 15
+                "local_shield_repair": 450
             },
             "sensor_strength": 10.8,
             "firepower": 5400,
@@ -453,7 +453,7 @@
             "armor": 3612,
             "hull": 1062,
             "buffs": {
-                "local_shield_repair": 4
+                "local_shield_repair": 120
             },
             "sensor_strength": 12.0,
             "firepower": 5800,
@@ -476,7 +476,7 @@
             "armor": 1388,
             "hull": 938,
             "buffs": {
-                "local_shield_repair": 16
+                "local_shield_repair": 480
             },
             "sensor_strength": 14.4,
             "firepower": 2000,
@@ -496,7 +496,7 @@
             "armor": 3404,
             "hull": 2827,
             "buffs": {
-                "local_shield_repair": 4
+                "local_shield_repair": 120
             },
             "sensor_strength": 13.2,
             "firepower": 2550,
@@ -516,7 +516,7 @@
             "armor": 1481,
             "hull": 1000,
             "buffs": {
-                "local_shield_repair": 15
+                "local_shield_repair": 450
             },
             "sensor_strength": 10.8,
             "firepower": 7650,
@@ -536,7 +536,7 @@
             "armor": 29760,
             "hull": 5000,
             "buffs": {
-                "local_shield_repair": 3
+                "local_shield_repair": 90
             },
             "debuffs": {
                 "tracking_disruption": 0.8,
@@ -559,7 +559,7 @@
             "armor": 10000,
             "hull": 1750,
             "buffs": {
-                "local_shield_repair": 3
+                "local_shield_repair": 90
             },
             "debuffs": {
                 "ECM": 10,
@@ -582,7 +582,7 @@
             "armor": 25666,
             "hull": 5312,
             "buffs": {
-                "local_shield_repair": 3
+                "local_shield_repair": 90
             },
             "debuffs": {
                 "web": 0.8,
@@ -605,7 +605,7 @@
             "armor": 2614,
             "hull": 4687,
             "buffs": {
-                "local_shield_repair": 30
+                "local_shield_repair": 900
             },
             "debuffs": {
                 "target_painter": 0.5,
@@ -628,7 +628,7 @@
             "armor": 18293,
             "hull": 419,
             "buffs": {
-                "local_shield_repair": 3,
+                "local_shield_repair": 90,
                 "remote_armor_repair": 18720
             },
             "sensor_strength": 15.6,
@@ -644,7 +644,7 @@
             "armor": 1851,
             "hull": 1812,
             "buffs": {
-                "local_shield_repair": 26,
+                "local_shield_repair": 780,
                 "remote_shield_repair": 18720
             },
             "sensor_strength": 15.6,
@@ -660,7 +660,7 @@
             "armor": 33000,
             "hull": 5000,
             "buffs": {
-                "local_shield_repair": 2,
+                "local_shield_repair": 60,
                 "remote_armor_repair": 12180
             },
             "sensor_strength": 15.6,
@@ -676,7 +676,7 @@
             "armor": 2396,
             "hull": 4062,
             "buffs": {
-                "local_shield_repair": 36,
+                "local_shield_repair": 1080,
                 "remote_shield_repair": 12180
             },
             "sensor_strength": 14.4,
