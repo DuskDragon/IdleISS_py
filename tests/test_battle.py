@@ -160,6 +160,17 @@ class ShipLibraryMock(ShipLibrary):
                     "multishot": {
                     },
                 },
+                "ewar_test_target2": {
+                    "shield": 100,
+                    "armor": 100,
+                    "hull": 100,
+                    "firepower": 200,
+                    "sensor_strength": 0.1,
+                    "size": "ship1",
+                    "weapon_size": "ship1",
+                    "multishot": {
+                    },
+                },
             },
         })
 
@@ -311,6 +322,33 @@ class BattleTestCase(TestCase):
         }
         defender = {
             "ewar_test_target": 1,
+        }
+        rounds = 6
+        battle_instance = Battle(attacker, defender, rounds)
+        library = ShipLibraryMock()
+        schema_test = library.get_ship_schemata('ewar_ecm_test')
+        schema_target = library.get_ship_schemata('ewar_test_target')
+
+        battle_instance.prepare(library)
+        battle_instance.calculate_battle()
+
+        self.assertEqual(battle_instance.attacker_result, {
+            'ewar_ecm_test': 1,
+        })
+        self.assertEqual(battle_instance.defender_result, {})
+
+    def test_ewar_ecm_battle2(self):
+        # the test target has low sensor strength
+        # so it will be perma-jammed
+        # on round one it will nuke off all the armor of the attacker
+        # but it will not be able to make a killing blow on round 2
+        # because it will be permajammed
+        random.seed(1)
+        attacker = {
+            "ewar_ecm_test": 1,
+        }
+        defender = {
+            "ewar_test_target2": 1,
         }
         rounds = 6
         battle_instance = Battle(attacker, defender, rounds)
@@ -769,7 +807,6 @@ class SpeedSimTestCase(TestCase, SimBase):
             'Deathstar': 10,        # 10
             'Battlecruiser': 477,   # 475 - 480
         })
-
 
 class DucttapeSimTestCase(TestCase, SimBase):
     """

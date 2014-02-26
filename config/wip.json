@@ -6,7 +6,6 @@
         "battlecruiser": 275,
         "battleship": 420
     },
-
     "ships": {
         "crucifier": {
             "hullclass": "frigate",
@@ -21,7 +20,7 @@
             "size": 47,
             "weapon_size": "frigate",
             "debuffs": {
-                "tracking_disruption": 1.2,
+                "tracking_disruption": 1.2
             },
             "multishot": {
             }
@@ -132,7 +131,7 @@
             "armor": 556,
             "hull": 375,
             "buffs": {
-                "local_shield_repair": 360,
+                "local_shield_repair": 360
             },
             "sensor_strength": 8.4,
             "firepower": 2400,
@@ -460,7 +459,7 @@
             "size": 66,
             "weapon_size": "frigate",
             "debuffs": {
-                "tracking_disruption": .35,
+                "tracking_disruption": 0.35
             },
             "multishot": {
                 "frigate": 2,
@@ -539,7 +538,7 @@
                 "local_shield_repair": 90
             },
             "debuffs": {
-                "tracking_disruption": 0.8,
+                "tracking_disruption": 0.8
             },
             "sensor_strength": 18.0,
             "firepower": 4365,
@@ -562,7 +561,7 @@
                 "local_shield_repair": 90
             },
             "debuffs": {
-                "ECM": 10,
+                "ECM": 10
             },
             "sensor_strength": 24,
             "firepower": 400,
@@ -585,7 +584,7 @@
                 "local_shield_repair": 90
             },
             "debuffs": {
-                "web": 0.8,
+                "web": 0.8
             },
             "sensor_strength": 21.6,
             "firepower": 2190,
@@ -608,7 +607,7 @@
                 "local_shield_repair": 900
             },
             "debuffs": {
-                "target_painter": 0.5,
+                "target_painter": 0.5
             },
             "sensor_strength": 16.8,
             "firepower": 4160,
@@ -695,7 +694,7 @@
                 "local_shield_repair": 75
             },
             "debuffs": {
-                "web": 0.6,
+                "web": 0.6
             },
             "sensor_strength": 16.0,
             "firepower": 1000,
@@ -734,7 +733,7 @@
                 "local_shield_repair": 150
             },
             "debuffs": {
-                "web": 0.3,
+                "web": 0.3
             },
             "sensor_strength": 19.2,
             "firepower": 6280,
@@ -858,9 +857,9 @@
             "size": 210,
             "weapon_size": "battleship",
             "multishot": {
-                "frigate": 7,
-                "destroyer": 7,
-                "cruiser": 7,
+                "frigate": 9,
+                "destroyer": 9,
+                "cruiser": 9,
                 "battlecruiser": 9,
                 "battleship": 9
             }
@@ -878,9 +877,9 @@
             "size": 320,
             "weapon_size": "battleship",
             "multishot": {
-                "frigate": 7,
-                "destroyer": 7,
-                "cruiser": 7,
+                "frigate": 9,
+                "destroyer": 9,
+                "cruiser": 9,
                 "battlecruiser": 9,
                 "battleship": 9
             }
@@ -894,15 +893,15 @@
                 "local_shield_repair": 600
             },
             "sensor_strength": 22.4,
-            "firepower": 3602,
+            "firepower": 3802,
             "size": 320,
             "weapon_size": 220,
             "multishot": {
-                "frigate": 8,
-                "destroyer": 8,
-                "cruiser": 8,
-                "battlecruiser": 8,
-                "battleship": 8
+                "frigate": 7,
+                "destroyer": 7,
+                "cruiser": 7,
+                "battlecruiser": 7,
+                "battleship": 9
             }
         },
         "tornado": {
@@ -916,13 +915,13 @@
             "sensor_strength": 19.0,
             "firepower": 2553,
             "size": 259,
-            "weapon_size": 250,
+            "weapon_size": "battleship",
             "multishot": {
                 "frigate": 9,
                 "destroyer": 9,
                 "cruiser": 9,
                 "battlecruiser": 9,
-                "battleship": 11
+                "battleship": 9
             }
         },
 

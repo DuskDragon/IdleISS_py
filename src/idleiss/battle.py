@@ -118,7 +118,7 @@ def grab_debuffs(attacker_ship, victim_ship):
     if new_debuffs.ECM and not current_debuffs.ECM:
         if (victim_ship.schema.sensor_strength == 0 or
                 random.random() < (float(
-                    source.ECM) / victim_ship.schema.sensor_strength)):
+                    attacker_ship.schema.debuffs.ECM) / victim_ship.schema.sensor_strength)):
             ecm = new_debuffs.ECM
 
     web = max(new_debuffs.web, current_debuffs.web)
