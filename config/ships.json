@@ -1,0 +1,279 @@
+{
+    "sizes": {
+        "Scout": 1,
+        "Small Cargo": 2,
+        "Large Cargo": 3,
+        "Light Fighter": 4,
+        "Heavy Fighter": 5,
+        "Cruiser": 6,
+        "Battleship": 7,
+        "Battlecruiser": 8,
+        "Colony Ship": 9,
+        "Recycler": 10,
+        "Bomber": 11,
+        "Destroyer": 12,
+        "Deathstar": 13,
+        "Rocket Launcher": 14,
+        "Light Laser": 15,
+        "Heavy Laser": 16,
+        "Ion Cannon": 17,
+        "Gauss Cannon": 18,
+        "Plasma Turret": 19,
+        "Small Shield": 20,
+        "Large Shield": 21
+    },
+    "ships": {
+        "Rocket Launcher": {
+            "shield": 20,
+            "armor": 0,
+            "hull": 200,
+            "firepower": 80,
+            "size": "Rocket Launcher",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Light Laser": {
+            "shield": 25,
+            "armor": 0,
+            "hull": 200,
+            "firepower": 100,
+            "size": "Light Laser",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Heavy Laser": {
+            "shield": 100,
+            "armor": 0,
+            "hull": 800,
+            "firepower": 250,
+            "size": "Heavy Laser",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Ion Cannon": {
+            "shield": 500,
+            "armor": 0,
+            "hull": 800,
+            "firepower": 150,
+            "size": "Ion Cannon",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Gauss Cannon": {
+            "shield": 200,
+            "armor": 0,
+            "hull": 3500,
+            "firepower": 1100,
+            "size": "Gauss Cannon",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Plasma Turret": {
+            "shield": 300,
+            "armor": 0,
+            "hull": 10000,
+            "firepower": 3000,
+            "size": "Plasma Turret",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Small Shield": {
+            "shield": 2000,
+            "armor": 0,
+            "hull": 2000,
+            "firepower": 1,
+            "size": "Small Shield",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Large Shield": {
+            "shield": 10000,
+            "armor": 0,
+            "hull": 10000,
+            "firepower": 1,
+            "size": "Large Shield",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Scout": {
+            "shield": 0,
+            "armor": 0,
+            "hull": 100,
+            "firepower": 0,
+            "size": "Scout",
+            "weapon_size": "Scout",
+            "multishot": {
+            }
+        },
+        "Small Cargo": {
+            "shield": 10,
+            "armor": 0,
+            "hull": 400,
+            "firepower": 5,
+            "size": "Small Cargo",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+            }
+        },
+        "Large Cargo": {
+            "shield": 25,
+            "armor": 0,
+            "hull": 1200,
+            "firepower": 5,
+            "size": "Scout",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+            }
+        },
+        "Light Fighter": {
+            "shield": 10,
+            "armor": 0,
+            "hull": 400,
+            "firepower": 50,
+            "size": "Scout",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+            }
+        },
+        "Heavy Fighter": {
+            "shield": 25,
+            "armor": 0,
+            "hull": 1000,
+            "firepower": 150,
+            "size": "Heavy Fighter",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+                "Small Cargo": 3
+            }
+        },
+        "Cruiser": {
+            "shield": 50,
+            "armor": 0,
+            "hull": 2700,
+            "firepower": 400,
+            "size": "Cruiser",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+                "Light Fighter": 6,
+                "Rocket Launcher": 10
+            }
+        },
+        "Battleship": {
+            "shield": 200,
+            "armor": 0,
+            "hull": 6000,
+            "firepower": 1000,
+            "size": "Battleship",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+            }
+        },
+        "Battlecruiser": {
+            "shield": 400,
+            "armor": 0,
+            "hull": 7000,
+            "firepower": 700,
+            "size": "Scout",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+                "Small Cargo": 3,
+                "Large Cargo": 3,
+                "Heavy Fighter": 4,
+                "Cruiser": 4,
+                "Battleship": 7
+            }
+        },
+        "Colony Ship": {
+            "shield": 100,
+            "armor": 0,
+            "hull": 300,
+            "firepower": 50,
+            "size": "Colony Ship",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+            }
+        },
+        "Recycler": {
+            "shield": 10,
+            "armor": 0,
+            "hull": 1600,
+            "firepower": 1,
+            "size": "Recycler",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+            }
+        },
+        "Bomber": {
+            "shield": 500,
+            "armor": 0,
+            "hull": 7500,
+            "firepower": 1000,
+            "size": "Bomber",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+                "Rocket Launcher": 20,
+                "Light Laser": 20,
+                "Heavy Laser": 10,
+                "Ion Cannon": 10
+            }
+        },
+        "Destroyer": {
+            "shield": 500,
+            "armor": 0,
+            "hull": 11000,
+            "firepower": 2000,
+            "size": "Destroyer",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5
+                "Battlecruiser": 2,
+                "Light Laser": 10
+            }
+        },
+        "Deathstar": {
+            "shield": 50000,
+            "armor": 0,
+            "hull": 900000,
+            "firepower": 200000,
+            "size": "Deathstar",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 1250
+                "Small Cargo": 250,
+                "Large Cargo": 250,
+                "Light Fighter": 200,
+                "Heavy Fighter": 100,
+                "Cruiser": 33,
+                "Battleship": 30,
+                "Colony Ship": 250,
+                "Recycler": 250,
+                "Bomber": 25,
+                "Destroyer": 5,
+                "Battlecruiser": 15,
+                "Rocket Launcher": 200,
+                "Light Laser": 200,
+                "Heavy Laser": 100,
+                "Ion Cannon": 100,
+                "Gauss Cannon": 50
+            }
+        }
+    }
+}
