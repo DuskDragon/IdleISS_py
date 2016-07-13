@@ -1,107 +1,115 @@
 {
     "sizes": {
         "Scout": 1,
-        "Small Cargo": 2,
-        "Large Cargo": 3,
-        "Light Fighter": 4,
-        "Heavy Fighter": 5,
+        "Light Industrial": 2,
+        "Heavy Industrial": 3,
+        "Frigate": 4,
+        "Destroyer": 5,
         "Cruiser": 6,
-        "Battleship": 7,
-        "Battlecruiser": 8,
-        "Colony Ship": 9,
-        "Recycler": 10,
-        "Bomber": 11,
-        "Destroyer": 12,
-        "Deathstar": 13,
-        "Rocket Launcher": 14,
-        "Light Laser": 15,
-        "Heavy Laser": 16,
-        "Ion Cannon": 17,
-        "Gauss Cannon": 18,
-        "Plasma Turret": 19,
-        "Small Shield": 20,
-        "Large Shield": 21
+        "Battlecruiser": 7,
+        "Battleship": 8,
+        "Structure Gantry": 9,
+        "Noctis": 10,
+        "Dreadnought": 11,
+        "High-Angle Dreadnought": 12,
+        "Titan": 13,
+        "Small Projectile Battery": 14,
+        "Small Laser Battery": 15,
+        "Small Hybrid Battery": 16,
+        "Large Projectile Battery": 17,
+        "Large Laser Battery": 18,
+        "Large Hybrid Battery": 19,
+        "Structure Shield Extender": 20,
+        "Citadel Shield Extender": 21
     },
     "ships": {
-        "Rocket Launcher": {
+        "Small Projectile Battery": {
             "shield": 20,
             "armor": 0,
             "hull": 200,
             "firepower": 80,
-            "size": "Rocket Launcher",
+            "size": "Small Projectile Battery",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 2000,
+            "Materials": 0
         },
-        "Light Laser": {
+        "Small Laser Battery": {
             "shield": 25,
             "armor": 0,
             "hull": 200,
             "firepower": 100,
-            "size": "Light Laser",
+            "size": "Small Laser Battery",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 1500,
+            "Materials": 500
         },
-        "Heavy Laser": {
+        "Small Hybrid Battery": {
             "shield": 100,
             "armor": 0,
             "hull": 800,
             "firepower": 250,
-            "size": "Heavy Laser",
+            "size": "Small Hybrid Battery",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 6000,
+            "Materials": 2000
         },
-        "Ion Cannon": {
+        "Large Projectile Battery": {
             "shield": 500,
             "armor": 0,
             "hull": 800,
             "firepower": 150,
-            "size": "Ion Cannon",
+            "size": "Large Projectile Battery",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 2000,
+            "Materials": 6000
         },
-        "Gauss Cannon": {
+        "Large Laser Battery": {
             "shield": 200,
             "armor": 0,
             "hull": 3500,
             "firepower": 1100,
-            "size": "Gauss Cannon",
+            "size": "Large Laser Battery",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 22000,
+            "Materials": 15000
         },
-        "Plasma Turret": {
+        "Large Hybrid Battery": {
             "shield": 300,
             "armor": 0,
             "hull": 10000,
             "firepower": 3000,
-            "size": "Plasma Turret",
+            "size": "Large Hybrid Battery",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 75000,
+            "Materials": 55000
         },
-        "Small Shield": {
+        "Structure Shield Extender": {
             "shield": 2000,
             "armor": 0,
             "hull": 2000,
             "firepower": 1,
-            "size": "Small Shield",
+            "size": "Structure Shield Extender",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 10000,
+            "Materials": 10000
         },
-        "Large Shield": {
+        "Citadel Shield Extender": {
             "shield": 10000,
             "armor": 0,
             "hull": 10000,
             "firepower": 1,
-            "size": "Large Shield",
+            "size": "Citadel Shield Extender",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 50000,
+            "Materials": 50000
         },
         "Scout": {
             "shield": 0,
@@ -110,21 +118,24 @@
             "firepower": 0,
             "size": "Scout",
             "weapon_size": "Scout",
-            "multishot": {
-            }
+            "multishot": {},
+            "Cost": 0,
+            "Materials": 1000
         },
-        "Small Cargo": {
+        "Light Industrial": {
             "shield": 10,
             "armor": 0,
             "hull": 400,
             "firepower": 5,
-            "size": "Small Cargo",
+            "size": "Light Industrial",
             "weapon_size": "Scout",
             "multishot": {
                 "Scout": 5
-            }
+            },
+            "Cost": 2000,
+            "Materials": 2000
         },
-        "Large Cargo": {
+        "Heavy Industrial": {
             "shield": 25,
             "armor": 0,
             "hull": 1200,
@@ -133,9 +144,11 @@
             "weapon_size": "Scout",
             "multishot": {
                 "Scout": 5
-            }
+            },
+            "Cost": 6000,
+            "Materials": 6000
         },
-        "Light Fighter": {
+        "Frigate": {
             "shield": 10,
             "armor": 0,
             "hull": 400,
@@ -144,19 +157,23 @@
             "weapon_size": "Scout",
             "multishot": {
                 "Scout": 5
-            }
+            },
+            "Cost": 3000,
+            "Materials": 1000
         },
-        "Heavy Fighter": {
+        "Destroyer": {
             "shield": 25,
             "armor": 0,
             "hull": 1000,
             "firepower": 150,
-            "size": "Heavy Fighter",
+            "size": "Destroyer",
             "weapon_size": "Scout",
             "multishot": {
-                "Scout": 5
-                "Small Cargo": 3
-            }
+                "Scout": 5,
+                "Light Industrial": 3
+            },
+            "Cost": 6000,
+            "Materials": 4000
         },
         "Cruiser": {
             "shield": 50,
@@ -166,23 +183,27 @@
             "size": "Cruiser",
             "weapon_size": "Scout",
             "multishot": {
-                "Scout": 5
-                "Light Fighter": 6,
-                "Rocket Launcher": 10
-            }
+                "Scout": 5,
+                "Frigate": 6,
+                "Small Projectile Battery": 10
+            },
+            "Cost": 21000,
+            "Materials": 8000
         },
-        "Battleship": {
+        "Battlecruiser": {
             "shield": 200,
             "armor": 0,
             "hull": 6000,
             "firepower": 1000,
-            "size": "Battleship",
+            "size": "Battlecruiser",
             "weapon_size": "Scout",
             "multishot": {
                 "Scout": 5
-            }
+            },
+            "Cost": 45000,
+            "Materials": 15000
         },
-        "Battlecruiser": {
+        "Battleship": {
             "shield": 400,
             "armor": 0,
             "hull": 7000,
@@ -190,90 +211,102 @@
             "size": "Scout",
             "weapon_size": "Scout",
             "multishot": {
-                "Scout": 5
-                "Small Cargo": 3,
-                "Large Cargo": 3,
-                "Heavy Fighter": 4,
+                "Scout": 5,
+                "Light Industrial": 3,
+                "Heavy Industrial": 3,
+                "Destroyer": 4,
                 "Cruiser": 4,
-                "Battleship": 7
-            }
+                "Battlecruiser": 7
+            },
+            "Cost": 45000,
+            "Materials": 45000
         },
-        "Colony Ship": {
+        "Structure Gantry": {
             "shield": 100,
             "armor": 0,
             "hull": 300,
             "firepower": 50,
-            "size": "Colony Ship",
+            "size": "Structure Gantry",
             "weapon_size": "Scout",
             "multishot": {
                 "Scout": 5
-            }
+            },
+            "Cost": 20000,
+            "Materials": 30000
         },
-        "Recycler": {
+        "Noctis": {
             "shield": 10,
             "armor": 0,
             "hull": 1600,
             "firepower": 1,
-            "size": "Recycler",
+            "size": "Noctis",
             "weapon_size": "Scout",
             "multishot": {
                 "Scout": 5
-            }
+            },
+            "Cost": 12000,
+            "Materials": 6000
         },
-        "Bomber": {
-            "shield": 500,
-            "armor": 0,
-            "hull": 7500,
-            "firepower": 1000,
-            "size": "Bomber",
-            "weapon_size": "Scout",
-            "multishot": {
-                "Scout": 5
-                "Rocket Launcher": 20,
-                "Light Laser": 20,
-                "Heavy Laser": 10,
-                "Ion Cannon": 10
-            }
-        },
-        "Destroyer": {
+        "Dreadnought": {
             "shield": 500,
             "armor": 0,
             "hull": 11000,
             "firepower": 2000,
-            "size": "Destroyer",
+            "size": "Dreadnought",
             "weapon_size": "Scout",
             "multishot": {
-                "Scout": 5
-                "Battlecruiser": 2,
-                "Light Laser": 10
-            }
+                "Scout": 5,
+                "Small Projectile Battery": 20,
+                "Small Laser Battery": 20,
+                "Small Hybrid Battery": 10,
+                "Large Projectile Battery": 10
+            },
+            "Cost": 60000,
+            "Materials": 50000
         },
-        "Deathstar": {
+        "High-Angle Dreadnought": {
+            "shield": 500,
+            "armor": 0,
+            "hull": 11000,
+            "firepower": 2000,
+            "size": "High-Angle Dreadnought",
+            "weapon_size": "Scout",
+            "multishot": {
+                "Scout": 5,
+                "Battleship": 2,
+                "Small Laser Battery": 10
+            },
+            "Cost": 60000,
+            "Materials": 50000
+        },
+        "Titan": {
             "shield": 50000,
             "armor": 0,
             "hull": 900000,
             "firepower": 200000,
-            "size": "Deathstar",
+            "size": "Titan",
             "weapon_size": "Scout",
             "multishot": {
-                "Scout": 1250
-                "Small Cargo": 250,
-                "Large Cargo": 250,
-                "Light Fighter": 200,
-                "Heavy Fighter": 100,
+                "Scout": 1250,
+                "Light Industrial": 250,
+                "Heavy Industrial": 250,
+                "Frigate": 200,
+                "Destroyer": 100,
                 "Cruiser": 33,
-                "Battleship": 30,
-                "Colony Ship": 250,
-                "Recycler": 250,
-                "Bomber": 25,
-                "Destroyer": 5,
-                "Battlecruiser": 15,
-                "Rocket Launcher": 200,
-                "Light Laser": 200,
-                "Heavy Laser": 100,
-                "Ion Cannon": 100,
-                "Gauss Cannon": 50
-            }
+                "Battlecruiser": 30,
+                "Structure Gantry": 250,
+                "Noctis": 250,
+                "Dreadnought": 25,
+                "High-Angle Dreadnought": 5,
+                "Battleship": 15,
+                "Small Projectile Battery": 200,
+                "Small Laser Battery": 200,
+                "Small Hybrid Battery": 100,
+                "Large Projectile Battery": 100,
+                "Large Laser Battery": 50
+            },
+            "Cost": 5500000,
+            "Materials": 4500000
         }
     }
 }
