@@ -26,20 +26,4 @@ class GameEngineEvent(Event):
     that are meant to be consumed by the engine when the world updates.
     """
 
-    def construct_citadel():
-        """
-        Citadels will function as money generators (mission hubs)
-        """
-        pass
 
-    def construct_drilling_platform():
-        """
-        Drilling Platforms will function as basic material generators
-        """
-        pass
-
-    def construct_industrial_array():
-        """
-        Industrial Arrays will produce ships and structures
-        """
-        pass

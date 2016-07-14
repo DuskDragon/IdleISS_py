@@ -221,7 +221,18 @@
             "Cost": 45000,
             "Materials": 45000
         },
-        "Structure Gantry": {
+        "Small Structure Gantry": {
+            "shield": 0,
+            "armor": 0,
+            "hull": 100,
+            "firepower": 0,
+            "size": "Structure Gantry",
+            "weapon_size": "Scout",
+            "multishot": {},
+            "Cost": 90,
+            "Materials": 30
+        },
+        "Large Structure Gantry": {
             "shield": 100,
             "armor": 0,
             "hull": 300,
