@@ -21,7 +21,15 @@ class ResourceManager(object):
         self.money_income = 0
         self.income_sources = {}
         #income sources are a nested dict of
-        # {key:system, value:{key:location, value:[type (moon, station, belt, or other), basic_income, adv_income, money income]
+        # {starsystem:{
+        #       location:
+        #           [type (moon, station, belt, or other),
+        #           basic_income,
+        #           adv_income,
+        #           money income
+        #       ]
+        #   }
+        #}
         #example:
         #{"START SYSTEM": {
         #   "ISS": ["station", 2, 1, 1]
@@ -35,6 +43,9 @@ class ResourceManager(object):
 
     def add_income_source(self, system, location, source_type, basic_income,
                           adv_income, money_income):
+        if basic_income < 0 or adv_income < 0 or money_income < 0:
+            raise ValueError("Income for an income source cannot be negative")
+
         self.basic_materials_income += basic_income
         self.advanced_materials_income += adv_income
         self.money_income += money_income
@@ -62,3 +73,14 @@ class ResourceManager(object):
                 raise Location_Does_Not_Exist(str(location)+"@"+str(system)+" does not exist.")
         else:
             raise Location_Does_Not_Exist(str(location)+"@"+str(system)+" does not exist.")
+
+    def update_income_source(self, system, location, basic_income, adv_income, money_income):
+        if basic_income < 0 or adv_income < 0 or money_income < 0:
+            raise ValueError("Income for an income source cannot be negative")
+
+        if system in self.income_sources:
+            if location in self.income_sources[system]:
+                type, b_i, a_i, m_i = self.income_sources[system][location]
+                self.basic_materials_income += basic_income - b_i
+                self.advanced_materials_income += adv_income - a_i
+                self.money_income += money_income - m_i

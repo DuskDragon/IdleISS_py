@@ -61,3 +61,11 @@ class ResourceTestCase(TestCase):
         with self.assertRaises(ValueError) as context:
             resources.remove_income_source("Sol", "Earth")
         self.assertEqual(str(context.exception), "Income is negative after removing income source Earth@Sol: -50 -50 -100")
+
+    def test_update_source_income(self):
+        resources = resource.ResourceManager()
+        resources.add_income_source("Sol1", "P1", "planet", 50, 50, 100)
+        resources.update_income_source("Sol1", "P1", 50, 25, 200)
+        self.assertEqual(resources.basic_materials_income, 50)
+        self.assertEqual(resources.advanced_materials_income, 25)
+        self.assertEqual(resources.money_income, 200)
