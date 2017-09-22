@@ -178,6 +178,7 @@ class ShipLibraryMock(ShipLibrary):
 class BattleTestCase(TestCase):
 
     def setUp(self):
+        random.seed(0)
         pass
 
     def test_expand_fleet(self):
@@ -450,6 +451,7 @@ class BattleTestCase(TestCase):
         self.assertEqual(battle.size_damage_factor(2,2), 1.0)
 
     def test_fleet_attack(self):
+        random.seed(0)
         attacker = {
             "ship1": 5,
         }
@@ -468,19 +470,20 @@ class BattleTestCase(TestCase):
             battle_instance.defender_fleet,
         )
 
-        self.assertEqual(attack_result.shots_taken, 8)
-        self.assertEqual(attack_result.damage_taken, 340)
+        self.assertEqual(attack_result.shots_taken, 7)
+        self.assertEqual(attack_result.damage_taken, 290)
 
         result = battle.prune_fleet(attack_result)
         self.assertEqual(result.ships, [
             Ship(schema1, ShipAttributes(10, 0, 70)),
-            Ship(schema1, ShipAttributes(10, 0, 70)),
+            Ship(schema1, ShipAttributes(10, 10, 100)),
         ])
         self.assertEqual(result.ship_count, {
             'ship1': 2,
         })
 
     def test_fleet_attack_damage_limited_by_hp(self):
+        random.seed(0)
         attacker = {
             "ship4": 1,
         }
@@ -501,9 +504,10 @@ class BattleTestCase(TestCase):
         self.assertEqual(attack_result.damage_taken, 120)
 
     def test_calculate_round(self):
+        random.seed(0)
         attacker = {
             "ship1": 15,
-            "ship2": 5,
+            "ship2": 1000,
         }
         defender = {
             "ship1": 8,  # they look pretty dead.
@@ -519,6 +523,7 @@ class BattleTestCase(TestCase):
         self.assertEqual(battle_instance.defender_fleet.ships, [])
 
     def test_calculate_battle_stalemate(self):
+        random.seed(0)
         # too much shield and shield recharge haha.
         stalemates = {
             "ship4": 3,
@@ -540,6 +545,7 @@ class BattleTestCase(TestCase):
             self.assertEqual(d.damage_taken, 750000)
 
     def test_local_rep(self):
+        random.seed(0)
         attacker = {
             "local_rep_test": 10,
         }
@@ -566,59 +572,54 @@ class BattleTestCase(TestCase):
 
     def test_repair_fleet(self):
         random.seed(0)
-        # rep orders
-        # shield: 3, 3, 1, 1, 2,
-        # armor: 1, 3, 1, 1, 2
         library = ShipLibraryMock()
         schema_remote = library.get_ship_schemata('remote_rep_test')
         tattered_fleet = [
             Ship(schema_remote, ShipAttributes(100, 100, 100)),
-            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
-            Ship(schema_remote, ShipAttributes(10, 10, 10)), #1
-            Ship(schema_remote, ShipAttributes(10, 10, 0)),  #2
-            Ship(schema_remote, ShipAttributes(99, 99, 100)),#3
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),
+            Ship(schema_remote, ShipAttributes(10, 10, 10)),
+            Ship(schema_remote, ShipAttributes(10, 10, 0)),
+            Ship(schema_remote, ShipAttributes(99, 99, 100)),
         ]
         expected_fleet = [
             Ship(schema_remote, ShipAttributes(100, 100, 100)),
-            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
-            Ship(schema_remote, ShipAttributes(30, 40, 10)), #1
-            Ship(schema_remote, ShipAttributes(20, 20, 0)),  #2
-            Ship(schema_remote, ShipAttributes(100, 100, 100)),#3
+            Ship(schema_remote, ShipAttributes(10, 0, 100)),
+            Ship(schema_remote, ShipAttributes(10, 20, 10)),
+            Ship(schema_remote, ShipAttributes(20, 30, 0)),
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
         ]
         result = battle.repair_fleet(tattered_fleet)
         self.assertEqual(result, expected_fleet)
 
     def test_repair_fleet_does_not_scramble(self):
         random.seed(0)
-        # rep orders
-        # shield: 3, 3, 1, 1, 2,
-        # armor: 1, 3, 1, 1, 2
         library = ShipLibraryMock()
         schema_remote = library.get_ship_schemata('remote_rep_test')
         tattered_fleet = [
-            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
-            Ship(schema_remote, ShipAttributes(10, 10, 10)), #1
+            Ship(schema_remote, ShipAttributes(0, 0, 100)),
+            Ship(schema_remote, ShipAttributes(10, 10, 10)),
             Ship(schema_remote, ShipAttributes(100, 100, 100)),
-            Ship(schema_remote, ShipAttributes(10, 10, 0)),  #2
-            Ship(schema_remote, ShipAttributes(99, 99, 100)),#3
+            Ship(schema_remote, ShipAttributes(10, 10, 0)),
+            Ship(schema_remote, ShipAttributes(99, 99, 100)),
         ]
         expected_fleet = [
-            Ship(schema_remote, ShipAttributes(0, 0, 100)),  #0
-            Ship(schema_remote, ShipAttributes(30, 40, 10)), #1
+            Ship(schema_remote, ShipAttributes(10, 0, 100)),
+            Ship(schema_remote, ShipAttributes(10, 20, 10)),
             Ship(schema_remote, ShipAttributes(100, 100, 100)),
-            Ship(schema_remote, ShipAttributes(20, 20, 0)),  #2
-            Ship(schema_remote, ShipAttributes(100, 100, 100)),#3
+            Ship(schema_remote, ShipAttributes(20, 30, 0)),
+            Ship(schema_remote, ShipAttributes(100, 100, 100)),
         ]
         result = battle.repair_fleet(tattered_fleet)
         self.assertEqual(result, expected_fleet)
 
     def test_calculate_battle(self):
+        random.seed(0)
         attacker = {
             "ship1": 45,
             "ship2": 25,
         }
         defender = {
-            "ship1": 120,  # they look pretty dead.  ship2 too stonk
+            "ship1": 120,  # they look pretty dead.  ship2 too stronk
         }
         rounds = 6
         battle_instance = Battle(attacker, defender, rounds)
@@ -629,37 +630,33 @@ class BattleTestCase(TestCase):
         battle_instance.calculate_battle()
 
         self.assertEqual(battle_instance.defender_fleet.ships, [])
-        self.assertEqual(len(battle_instance.round_results), 4)
+        self.assertEqual(len(battle_instance.round_results), 3)
 
         counts = [(a.ship_count, d.ship_count)
             for a, d in battle_instance.round_results]
         self.assertEqual(counts, [
-            ({'ship1': 15, 'ship2': 23},
-                {'ship1': 60}),
-            ({'ship1': 4, 'ship2': 21},
-                {'ship1': 21}),
-            ({'ship1': 1, 'ship2': 20},
-                {'ship1': 2}),
-            ({'ship1': 1, 'ship2': 20},
+            ({'ship1': 14, 'ship2': 23},
+                {'ship1': 72}),
+            ({'ship1': 3, 'ship2': 21},
+                {'ship1': 26}),
+            ({'ship1': 3, 'ship2': 20},
                 {}),
         ])
 
         shots = [(a.shots_taken, d.shots_taken)
             for a, d in battle_instance.round_results]
         self.assertEqual(shots, [
-            (185, 198),
-            (73, 111),
-            (22, 63),
-            (2, 70),
+            (168, 173),
+            (87, 112),
+            (26, 110)
         ])
 
         damage = [(a.damage_taken, d.damage_taken)
             for a, d in battle_instance.round_results]
         self.assertEqual(damage, [
-            (7850, 9013),
-            (3260, 4022),
-            (1090, 1656),
-            (100, 109),
+            (7370, 8535),
+            (3660, 4451),
+            (1300, 2004)
         ])
 
 
@@ -687,8 +684,10 @@ class SpeedSimTestCase(TestCase, SimBase):
 
     def setUp(self):
         self.set_library('validgamesim.json')
+        random.seed(0)
 
     def test_battle_1(self):
+        random.seed(0)
         attacker = {
             'Light Fighter': 100,
         }
@@ -699,13 +698,14 @@ class SpeedSimTestCase(TestCase, SimBase):
 
         result = self.fight(attacker, defender, 1)
         self.assertEqual(result.defender_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 4)
+        self.assertEqual(len(result.round_results), 3)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 95,
+            'Light Fighter': 98,
         })
 
     def test_battle_2(self):
+        random.seed(0)
         attacker = {
             'Light Fighter': 100,
             'Heavy Fighter': 60,
@@ -726,13 +726,14 @@ class SpeedSimTestCase(TestCase, SimBase):
         self.assertEqual(len(result.round_results), 4)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 33,  # 33 - 35
-            'Heavy Fighter': 54,  # 52 - 53
-            'Cruiser': 40,        # 39 - 40
+            'Light Fighter': 40,  # 33 - 35
+            'Heavy Fighter': 51,  # 52 - 53
+            'Cruiser': 39,        # 39 - 40
             'Battleship': 10,
         })
 
     def test_battle_3(self):
+        random.seed(0)
         attacker = {
             'Light Fighter': 2000,
             'Heavy Fighter': 500,
@@ -768,14 +769,14 @@ class SpeedSimTestCase(TestCase, SimBase):
         self.assertEqual(len(result.round_results), 5)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 804,  # 752 - 782
-            'Heavy Fighter': 315,   # 294 - 302
-            'Cruiser': 919,        # 936 - 953
-            'Battleship': 280,      # 274 - 280
-            'Bomber': 99,          # 95 - 97
-            'Destroyer': 378,       # 387 - 391
+            'Light Fighter': 812,  # 752 - 782
+            'Heavy Fighter': 313,   # 294 - 302
+            'Cruiser': 956,        # 936 - 953
+            'Battleship': 268,      # 274 - 280
+            'Bomber': 98,          # 95 - 97
+            'Destroyer': 388,       # 387 - 391
             'Deathstar': 10,        # 10
-            'Battlecruiser': 475,   # 475 - 480
+            'Battlecruiser': 479,   # 475 - 480
         })
 
         result = self.fight(attacker, defender, 27)
@@ -783,14 +784,14 @@ class SpeedSimTestCase(TestCase, SimBase):
         self.assertEqual(len(result.round_results), 5)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 782,  # 752 - 782
-            'Heavy Fighter': 302,   # 294 - 302
-            'Cruiser': 916,        # 936 - 953
-            'Battleship': 272,      # 274 - 280
-            'Bomber': 97,          # 95 - 97
+            'Light Fighter': 793,  # 752 - 782
+            'Heavy Fighter': 294,   # 294 - 302
+            'Cruiser': 951,        # 936 - 953
+            'Battleship': 277,      # 274 - 280
+            'Bomber': 98,          # 95 - 97
             'Destroyer': 390,       # 387 - 391
             'Deathstar': 10,        # 10
-            'Battlecruiser': 476,   # 475 - 480
+            'Battlecruiser': 486,   # 475 - 480
         })
 
         result = self.fight(attacker, defender, 128)
@@ -798,14 +799,14 @@ class SpeedSimTestCase(TestCase, SimBase):
         self.assertEqual(len(result.round_results), 5)
 
         self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 782,  # 752 - 782
-            'Heavy Fighter': 308,   # 294 - 302
-            'Cruiser': 946,        # 936 - 953
-            'Battleship': 283,      # 274 - 280
-            'Bomber': 98,          # 95 - 97
-            'Destroyer': 388,       # 387 - 391
+            'Light Fighter': 803,  # 752 - 782
+            'Heavy Fighter': 316,   # 294 - 302
+            'Cruiser': 973,        # 936 - 953
+            'Battleship': 282,      # 274 - 280
+            'Bomber': 96,          # 95 - 97
+            'Destroyer': 392,       # 387 - 391
             'Deathstar': 10,        # 10
-            'Battlecruiser': 477,   # 475 - 480
+            'Battlecruiser': 479,   # 475 - 480
         })
 
 class DucttapeSimTestCase(TestCase, SimBase):
@@ -817,6 +818,7 @@ class DucttapeSimTestCase(TestCase, SimBase):
         self.set_library('og_minmatar.json')
 
     def test_battle_1(self):
+        random.seed(0)
         attacker = {
             'rifter': 1,
         }
@@ -829,12 +831,13 @@ class DucttapeSimTestCase(TestCase, SimBase):
         self.assertEqual(result.attacker_fleet.ships, [])
         self.assertEqual(len(result.round_results), 1)
 
-        self.assertEqual(result.round_results[0][0].shots_taken, 8)
+        self.assertEqual(result.round_results[0][0].shots_taken, 9)
         self.assertEqual(result.round_results[0][1].ship_count, {
             'thrasher': 1,
         })
 
     def test_battle_2(self):
+        random.seed(0)
         attacker = {
             'rifter': 100,
         }
@@ -845,14 +848,15 @@ class DucttapeSimTestCase(TestCase, SimBase):
 
         result = self.fight(attacker, defender, 1)
         self.assertEqual(result.attacker_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 1)
+        self.assertEqual(len(result.round_results), 2)
 
-        self.assertEqual(result.round_results[0][0].shots_taken, 935)
+        self.assertEqual(result.round_results[0][0].shots_taken, 840)
         self.assertEqual(result.round_results[0][1].ship_count, {
-            'thrasher': 94,
+            'thrasher': 97,
         })
 
     def test_battle_3(self):
+        random.seed(0)
         attacker = {
             'rifter': 1,
         }
@@ -877,6 +881,7 @@ class DucttapeSimTestCase(TestCase, SimBase):
         self.assertEqual(result.round_results[-1][1].ship_count, defender)
 
     def test_battle_3(self):
+        random.seed(0)
         attacker = {
             'rifter': 1,
             'thrasher': 1,
@@ -924,6 +929,7 @@ class DucttapeSimTestCase(TestCase, SimBase):
         self.assertEqual(result.round_results[-1][1].ship_count, {})
 
     def test_battle_3(self):
+        random.seed(0)
         attacker = {
             'hurricane': 256,
         }
@@ -935,12 +941,10 @@ class DucttapeSimTestCase(TestCase, SimBase):
 
         result = self.fight(attacker, defender, rounds=6)
 
-        # hurricanes are waaaay too OP.
-        self.assertEqual(len(result.round_results), 2)
-        self.assertEqual(result.round_results[0][0].ship_count, {
-            'hurricane': 40,
-        })
+        # hurricanes have been nerfed.
+        self.assertEqual(len(result.round_results), 1)
+        self.assertEqual(result.round_results[0][0].ship_count, {})
         self.assertEqual(result.round_results[0][1].ship_count, {
-            'tempest': 1,
+            'tempest': 29,
         })
         # I don't think we need to think about what happened next.

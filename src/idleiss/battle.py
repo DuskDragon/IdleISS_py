@@ -281,7 +281,7 @@ def repair_fleet(input_fleet):
     # and a ship might get over repped, but that's actually intended
 
     # shield first
-    for x in xrange(len(input_fleet)):
+    for x in range(len(input_fleet)):
         if input_fleet[x].attributes.shield != input_fleet[x].schema.shield:
             damaged_shield.append(x)
 
@@ -304,7 +304,7 @@ def repair_fleet(input_fleet):
     damaged_armor = []
 
     #armor second
-    for x in xrange(len(input_fleet)):
+    for x in range(len(input_fleet)):
         if input_fleet[x].attributes.armor != input_fleet[x].schema.armor:
             damaged_armor.append(int(x))
 
@@ -419,7 +419,7 @@ class Battle(object):
     def calculate_battle(self):
         # avoid using round as variable name as it's a predefined method
         # that might be useful when working with numbers.
-        for r in xrange(self.rounds):
+        for r in range(self.rounds):
             if not (self.defender_fleet.ships and self.attacker_fleet.ships):
                 break
             self.calculate_round()

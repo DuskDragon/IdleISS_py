@@ -1,5 +1,5 @@
-from fleet import FleetManager
-from resource import ResourceManager
+from .fleet import FleetManager
+from .resource import ResourceManager
 
 class User(object):
     def __init__(self, user_id, *a, **kw):
