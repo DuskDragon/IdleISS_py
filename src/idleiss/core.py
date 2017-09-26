@@ -48,13 +48,7 @@ class GameEngine(object):
 
         self._engine_events.append(GameEngineEvent(event_type, **kw))
 
-    # Honestly I'm not even sure if I want to penalize messages ... hmmm
     # it's classic to penalize messages in IdleRPG, but we will be different
-    #def user_room_message(self, user_id, message, timestamp):
-        #however penalties are not yet implemented
-    #    if user_id not in self.users:
-    #        raise ValueError
-    #    self.users[user_id].last_active = timestamp
 
     def user_logged_in(self, user_id, timestamp):
         if user_id not in self.users:
@@ -84,7 +78,8 @@ class GameEngine(object):
         modification between this engine and the outside world.
         Every tick (chosen by the controller program) the controller must
         send the current timestamp along with the current user list and any commands
-        such as "fleet engage <enemy player>"
+        possible example: "fleet engage <enemy player>"
+        (direct control by user may never be implemented, but may be automatic)
         """
         if timestamp == self.world_timestamp:
             return []

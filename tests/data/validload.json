@@ -23,8 +23,33 @@
         "Small Shield": 21,
         "Large Shield": 22
     },
+    "hullclasses": [
+        "Espionage Probe",
+        "Solar Sat.",
+        "Small Cargo",
+        "Large Cargo",
+        "Light Fighter",
+        "Heavy Fighter",
+        "Cruiser",
+        "Battleship",
+        "Battlecruiser",
+        "Colony Ship",
+        "Recycler",
+        "Bomber",
+        "Destroyer",
+        "Deathstar",
+        "Rocket Launcher",
+        "Light Laser",
+        "Heavy Laser",
+        "Ion Cannon",
+        "Gauss Cannon",
+        "Plasma Turret",
+        "Small Shield",
+        "Large Shield"
+    ],
     "ships": {
         "Small Cargo": {
+            "hullclass": "Small Cargo",
             "shield": 10,
             "armor": 0,
             "hull": 200,
@@ -35,10 +60,11 @@
             "buffs": {
                 "local_shield_repair": 10
             },
-            "multishot": {
-            }
+            "priority_targets": [
+            ]
         },
         "Light Fighter": {
+            "hullclass": "Light Fighter",
             "shield": 10,
             "armor": 10,
             "hull": 400,
@@ -49,10 +75,11 @@
             "buffs": {
                 "local_shield_repair": 10
             },
-            "multishot": {
-            }
+            "priority_targets": [
+            ]
         },
         "Heavy Fighter": {
+            "hullclass": "Heavy Fighter",
             "shield": 25,
             "armor": 10,
             "hull": 1000,
@@ -63,11 +90,12 @@
             "buffs": {
                 "local_shield_repair": 25
             },
-            "multishot": {
-                "Small Cargo": 3
-            }
+            "priority_targets": [
+                ["Small Cargo"]
+            ]
         },
         "Cruiser": {
+            "hullclass": "Cruiser",
             "shield": 50,
             "armor": 20,
             "hull": 2700,
@@ -78,9 +106,9 @@
             "buffs": {
                 "local_shield_repair": 50
             },
-            "multishot": {
-                "Light Fighter": 6
-            }
+            "priority_targets": [
+                ["Light Fighter"]
+            ]
         }
     }
 }

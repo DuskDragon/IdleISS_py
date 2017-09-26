@@ -15,7 +15,7 @@
             "sensor_strength": 1,
             "size": "hauler",
             "weapon_size": "fighter",
-            "multishot": {
+            "priority_target": {
             }
         }
     }

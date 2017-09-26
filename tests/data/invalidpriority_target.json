@@ -7,8 +7,12 @@
         "battlecruiser": 300,
         "battleship": 600
     },
+    "hullclasses": [
+        "cruiser"
+    ],
     "ships": {
         "cruiser": {
+            "hullclass": "cruiser",
             "shield": 50,
             "armor": 20,
             "hull": 2700,
@@ -19,9 +23,9 @@
             "buffs": {
                 "local_shield_repair": 50
             },
-            "multishot": {
-                "not a fighter": 6
-            }
+            "priority_targets": [
+                ["not a fighter"]
+            ]
         }
     }
 }

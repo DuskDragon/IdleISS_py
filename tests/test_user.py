@@ -7,8 +7,12 @@ class LibraryStub(object):
         self.size_data = [
             "one"
         ]
+        self.hullclasses = [
+            "generic"
+        ]
         self.ship_data = {
             "ship1": {
+                "hullclass": "generic",
                 "shield": 10,
                 "armor": 10,
                 "hull": 100,

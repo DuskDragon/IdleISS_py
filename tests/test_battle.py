@@ -23,9 +23,18 @@ class ShipLibraryMock(ShipLibrary):
                 "ship2": 2,
                 "ship3": 3,
                 "ship4": 4,
+                "priority_test_ship": 5,
+                "priority_test_not_target": 6,
+                "priority_test_target": 7
             },
+            'hullclasses': [
+                "generic",
+                "priority_test_not_target",
+                "priority_test_target"
+            ],
             'ships': {
                 "ship1": {
+                    "hullclass": "generic",
                     "shield": 10,
                     "armor": 10,
                     "hull": 100,
@@ -36,29 +45,26 @@ class ShipLibraryMock(ShipLibrary):
                     "buffs": {
                         "local_shield_repair": 10,
                     },
-                    "multishot": {
-                        "ship1": 2,
-                    },
+                    "priority_targets": [],
                 },
 
                 "ship2": {
+                    "hullclass": "generic",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 51,
+                    "firepower": 500,
                     "sensor_strength": 1,
                     "size": "ship2",
                     "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 100,
                     },
-                    "multishot": {
-                        "ship1": 4,
-                        "ship2": 16,
-                    },
+                    "priority_targets": [],
                 },
 
                 "ship3": {
+                    "hullclass": "generic",
                     "shield": 0,
                     "armor": 200,
                     "hull": 200,
@@ -68,12 +74,13 @@ class ShipLibraryMock(ShipLibrary):
                     "weapon_size": "ship1",
                     "buffs": {
                     },
-                    "multishot": {
-                        "ship2": 25,
-                    },
+                    "priority_targets": [
+                        ["generic",],
+                    ],
                 },
 
                 "ship4": {
+                    "hullclass": "generic",
                     "shield": 1000000,
                     "armor": 200,
                     "hull": 250000,
@@ -84,11 +91,12 @@ class ShipLibraryMock(ShipLibrary):
                     "buffs": {
                         "local_shield_repair": 1000000,
                     },
-                    "multishot": {
-                    },
+                    "priority_targets": [
+                    ],
                 },
 
                 "local_rep_test": {
+                    "hullclass": "local_rep_test",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
@@ -100,10 +108,11 @@ class ShipLibraryMock(ShipLibrary):
                         "local_shield_repair": 5,
                         "local_armor_repair": 5,
                     },
-                    "multishot": {
-                    },
+                    "priority_targets": [
+                    ],
                 },
                 "remote_rep_test": {
+                    "hullclass": "remote_rep_test",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
@@ -115,10 +124,11 @@ class ShipLibraryMock(ShipLibrary):
                         "remote_shield_repair": 10,
                         "remote_armor_repair": 10,
                     },
-                    "multishot": {
-                    },
+                    "priority_targets": [
+                    ],
                 },
                 "ewar_test": {
+                    "hullclass": "ewar_test",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
@@ -132,10 +142,11 @@ class ShipLibraryMock(ShipLibrary):
                         'ECM': 1,
                         'web': 0.7,
                     },
-                    "multishot": {
-                    },
+                    "priority_targets": [
+                    ],
                 },
                 "ewar_ecm_test": {
+                    "hullclass": "ewar_ecm_test",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
@@ -146,10 +157,11 @@ class ShipLibraryMock(ShipLibrary):
                     "debuffs": {
                         'ECM': 1,
                     },
-                    "multishot": {
-                    },
+                    "priority_targets": [
+                    ],
                 },
                 "ewar_test_target": {
+                    "hullclass": "ewar_test_target",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
@@ -157,10 +169,11 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 0,
                     "size": "ship1",
                     "weapon_size": "ship1",
-                    "multishot": {
-                    },
+                    "priority_targets": [
+                    ],
                 },
                 "ewar_test_target2": {
+                    "hullclass": "ewar_test_target2",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
@@ -168,8 +181,46 @@ class ShipLibraryMock(ShipLibrary):
                     "sensor_strength": 0.1,
                     "size": "ship1",
                     "weapon_size": "ship1",
-                    "multishot": {
-                    },
+                    "priority_targets": [
+                    ],
+                },
+                "priority_test_ship": {
+                    "hullclass": "generic",
+                    "shield": 100,
+                    "armor": 100,
+                    "hull": 100,
+                    "firepower": 300,
+                    "sensor_strength": 0.1,
+                    "size": "ship1",
+                    "weapon_size": "ship1",
+                    "priority_targets": [
+                        ["priority_test_target",],
+                        ["priority_test_not_target",],
+                    ],
+                },
+                "priority_test_not_target": {
+                    "hullclass": "priority_test_not_target",
+                    "shield": 100,
+                    "armor": 100,
+                    "hull": 100,
+                    "firepower": 0,
+                    "sensor_strength": 0.1,
+                    "size": "priority_test_not_target",
+                    "weapon_size": "ship1",
+                    "priority_targets": [
+                    ],
+                },
+                "priority_test_target": {
+                    "hullclass": "priority_test_target",
+                    "shield": 100,
+                    "armor": 100,
+                    "hull": 100,
+                    "firepower": 0,
+                    "sensor_strength": 0.1,
+                    "size": "priority_test_target",
+                    "weapon_size": "ship1",
+                    "priority_targets": [
+                    ],
                 },
             },
         })
@@ -242,25 +293,6 @@ class BattleTestCase(TestCase):
         self.assertTrue(battle.is_ship_alive(ship1))
         self.assertFalse(battle.is_ship_alive(ship2))
         self.assertFalse(battle.is_ship_alive(ship3))
-
-    def test_shield_bounce(self):
-        # less than default threshold, bounces off.
-        self.assertEqual(battle.shield_bounce(101, 200, 1), 101)
-        # not less than default threshold, punches through.
-        self.assertEqual(battle.shield_bounce(99, 200, 1), 98)
-        self.assertEqual(battle.shield_bounce(1, 200, 2), -1)
-
-    def test_hull_breach(self):
-        # no number is rolled for this one as it is over cutoff.
-        random.seed(0)
-        self.assertEqual(battle.hull_breach(72, 100, 1), 71)
-        self.assertEqual(battle.hull_breach(1, 100, 1), 0) # need 84.4%
-        # Doesn't matter if 0 damage, because armor or shield could have
-        # taken some and send shockwave down to the weakened hull.
-        # Think warp core breaches in ST:TNG.
-        self.assertEqual(battle.hull_breach(69, 100, 0), 0) # ~75.8%
-        self.assertEqual(battle.hull_breach(43, 100, 1), 0) # ~42.05%
-        self.assertEqual(battle.hull_breach(27, 100, 1), 26) # ~25.89%
 
     # XXX weapon_size vs ship_size test needed
     def test_true_damage_no_ewar(self):
@@ -375,57 +407,15 @@ class BattleTestCase(TestCase):
         ship3 = Ship(schema3, ShipAttributes(100, 100, 100))
 
         random.seed(1)
+        #ship_attack(attacker, victim)
         ship1_1 = battle.ship_attack(ship2, ship1)
-        # 1 hp, below hull breach cutoff. but lucky roll, lives
-        self.assertEqual(ship1_1, Ship(schema1, ShipAttributes(0, 0, 69)))
+        self.assertEqual(ship1_1, Ship(schema1, ShipAttributes(0, 0, 0)))
 
-        ship1_2 = battle.ship_attack(ship2, ship1_1)
-        # 1 hp, below hull breach cutoff. but roll says it dies.
-        self.assertEqual(ship1_2, Ship(schema1, ShipAttributes(0, 0, 0)))
+        ship2_1 = battle.ship_attack(ship1, ship2)
+        self.assertEqual(ship2_1, Ship(schema2, ShipAttributes(50, 100, 100)))
 
-        ship2_1 = battle.ship_attack(ship2, ship2)
-        self.assertEqual(ship2_1, Ship(schema2, ShipAttributes(49, 100, 100)))
-
-        ship2_2 = battle.ship_attack(ship2, ship2_1)
-        self.assertEqual(ship2_2, Ship(schema2, ShipAttributes(0, 98, 100)))
-
-        ship2_2 = battle.ship_attack(ship3, ship2_2)
-        self.assertEqual(ship2_2, Ship(schema2, ShipAttributes(0, 0, 98)))
-
-        ship2_3 = battle.ship_attack(ship3, ship2_2)
-        self.assertEqual(ship2_3, Ship(schema2, ShipAttributes(0, 0, 0)))
-
-    def test_ship_attack_shield_bounce(self):
-        library = ShipLibraryMock()
-        schema1 = library.get_ship_schemata('ship1')
-        schema4 = library.get_ship_schemata('ship4')
-        ship1 = Ship(schema1, ShipAttributes(10, 10, 100))
-        ship4 = Ship(schema4, ShipAttributes(1000000, 0, 50000))
-        ship4b = Ship(schema4, ShipAttributes(1000000, 0, 100))
-
-        random.seed(1)
-        ship4_1 = battle.ship_attack(ship1, ship4)
-        # bounced, need 13% to survive, lives with 20%
-        self.assertEqual(ship4_1, Ship(schema4, ShipAttributes(
-            1000000, 0, 50000)))
-
-        # bounced, again it should be ignored.
-        ship4b_1 = battle.ship_attack(ship1, ship4b)
-        self.assertEqual(ship4b_1, Ship(schema4, ShipAttributes(
-            1000000, 0, 100)))
-
-    def test_multishot(self):
-        library = ShipLibraryMock()
-        schema1 = library.get_ship_schemata('ship1')
-        schema2 = library.get_ship_schemata('ship2')
-        schema3 = library.get_ship_schemata('ship3')
-        random.seed(0)
-        # schema1 can't multishoot schema2
-        self.assertFalse(battle.multishot(schema1, schema2))
-        # not high enough roll to go against chance.
-        self.assertFalse(battle.multishot(schema1, schema1))
-        # high enough roll.
-        self.assertTrue(battle.multishot(schema3, schema2))
+        ship2_2 = battle.ship_attack(ship1, ship2_1)
+        self.assertEqual(ship2_2, Ship(schema2, ShipAttributes(0, 100, 100)))
 
     def test_fleet_attack_empty(self):
         library = ShipLibraryMock()
@@ -451,6 +441,9 @@ class BattleTestCase(TestCase):
         self.assertEqual(battle.size_damage_factor(2,2), 1.0)
 
     def test_fleet_attack(self):
+        # Test the result of the attacking fleet firing once on the defenders.
+        # Check that the damage on the defenders is accurate to only being
+        # fired on once.
         random.seed(0)
         attacker = {
             "ship1": 5,
@@ -465,22 +458,68 @@ class BattleTestCase(TestCase):
 
         random.seed(1)
         battle_instance.prepare(library)
-        attack_result = battle.fleet_attack(
+        result = battle.fleet_attack(
             battle_instance.attacker_fleet,
             battle_instance.defender_fleet,
         )
 
-        self.assertEqual(attack_result.shots_taken, 7)
-        self.assertEqual(attack_result.damage_taken, 290)
+        self.assertEqual(result.hits_taken, 5)
+        self.assertEqual(result.damage_taken, 250)
 
-        result = battle.prune_fleet(attack_result)
+        result = battle.prune_fleet(result)
         self.assertEqual(result.ships, [
+            Ship(schema1, ShipAttributes(10, 0, 20)),
             Ship(schema1, ShipAttributes(10, 0, 70)),
-            Ship(schema1, ShipAttributes(10, 10, 100)),
+            Ship(schema1, ShipAttributes(10, 0, 70)),
+            Ship(schema1, ShipAttributes(10, 0, 70)),
         ])
         self.assertEqual(result.ship_count, {
-            'ship1': 2,
+            'ship1': 4,
         })
+
+    def test_priority_targets(self):
+        random.seed(1)
+        attacker = {
+            "priority_test_ship": 1,
+        }
+        defender = {
+            "priority_test_not_target": 1,
+            "priority_test_target": 1
+        }
+        rounds = 2
+        battle_instance = Battle(attacker, defender, rounds)
+        library = ShipLibraryMock()
+
+        battle_instance.prepare(library)
+        battle_instance.calculate_battle()
+
+        self.assertEqual(battle_instance.defender_fleet.ships, [])
+        self.assertEqual(len(battle_instance.round_results), 2)
+
+        counts = [(a.ship_count, d.ship_count)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(counts, [
+            ({'priority_test_ship': 1}, {'priority_test_not_target': 1}),
+            ({'priority_test_ship': 1}, {})
+        ])
+
+        shots = [(a.hits_taken, d.hits_taken)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(shots, [
+            (0, 1),
+            (0, 1)
+        ])
+
+        damage = [(a.damage_taken, d.damage_taken)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(damage, [
+            (0, 300),
+            (0, 300)
+        ])
+
+    def test_multiple_weapons(self):
+        #TODO: implement multiple weapons
+        pass
 
     def test_fleet_attack_damage_limited_by_hp(self):
         random.seed(0)
@@ -500,7 +539,7 @@ class BattleTestCase(TestCase):
             battle_instance.defender_fleet,
         )
 
-        self.assertEqual(attack_result.shots_taken, 1)
+        self.assertEqual(attack_result.hits_taken, 1)
         self.assertEqual(attack_result.damage_taken, 120)
 
     def test_calculate_round(self):
@@ -537,11 +576,11 @@ class BattleTestCase(TestCase):
         self.assertEqual(len(battle_instance.round_results), 6)
         for a, d in battle_instance.round_results:
             self.assertEqual(a.ship_count, stalemates)
-            self.assertEqual(a.shots_taken, 3)
+            self.assertEqual(a.hits_taken, 3)
             self.assertEqual(a.damage_taken, 750000)
 
             self.assertEqual(d.ship_count, stalemates)
-            self.assertEqual(d.shots_taken, 3)
+            self.assertEqual(d.hits_taken, 3)
             self.assertEqual(d.damage_taken, 750000)
 
     def test_local_rep(self):
@@ -615,14 +654,13 @@ class BattleTestCase(TestCase):
     def test_calculate_battle(self):
         random.seed(0)
         attacker = {
-            "ship1": 45,
             "ship2": 25,
         }
         defender = {
-            "ship1": 120,  # they look pretty dead.  ship2 too stronk
+            "ship1": 25,  # they look pretty dead.  ship2 too stronk
         }
-        rounds = 6
-        battle_instance = Battle(attacker, defender, rounds)
+        max_rounds = 6
+        battle_instance = Battle(attacker, defender, max_rounds)
         library = ShipLibraryMock()
 
         random.seed(0)
@@ -630,34 +668,40 @@ class BattleTestCase(TestCase):
         battle_instance.calculate_battle()
 
         self.assertEqual(battle_instance.defender_fleet.ships, [])
-        self.assertEqual(len(battle_instance.round_results), 3)
+        self.assertEqual(len(battle_instance.round_results), 2)
 
         counts = [(a.ship_count, d.ship_count)
             for a, d in battle_instance.round_results]
         self.assertEqual(counts, [
-            ({'ship1': 14, 'ship2': 23},
-                {'ship1': 72}),
-            ({'ship1': 3, 'ship2': 21},
-                {'ship1': 26}),
-            ({'ship1': 3, 'ship2': 20},
-                {}),
+            ({'ship2': 25}, {'ship1': 9}),
+            ({'ship2': 25}, {})
         ])
 
-        shots = [(a.shots_taken, d.shots_taken)
+        shots = [(a.hits_taken, d.hits_taken)
             for a, d in battle_instance.round_results]
         self.assertEqual(shots, [
-            (168, 173),
-            (87, 112),
-            (26, 110)
+            (25, 25),
+            (9, 25)
         ])
 
         damage = [(a.damage_taken, d.damage_taken)
             for a, d in battle_instance.round_results]
         self.assertEqual(damage, [
-            (7370, 8535),
-            (3660, 4451),
-            (1300, 2004)
+            (1250, 1920),
+            (450, 1080)
         ])
+
+    def test_generate_summary_data(self):
+        pass
+        #TODO: collect:
+        #    shots from attackers, defenders
+        #    damage dealt to/by attackers, defenders
+        #    resulting ship counts for both attackers, defenders
+        #    ships started with for both attackers, defenders (and ships destroyed)
+
+    def test_generate_summary_text(self):
+        pass
+        #TODO: spit out a text block (with ASCII style newlines/formatting) to show summary
 
 
 class SimBase(object):
@@ -672,279 +716,3 @@ class SimBase(object):
         result.prepare(self.library)
         result.calculate_battle()
         return result
-
-
-class SpeedSimTestCase(TestCase, SimBase):
-    """
-    Based on a certain game's speedsim.
-
-    Test result data should match as close as possible to real results.
-    Note down descrepencies if no suitable seed can generate one.
-    """
-
-    def setUp(self):
-        self.set_library('validgamesim.json')
-        random.seed(0)
-
-    def test_battle_1(self):
-        random.seed(0)
-        attacker = {
-            'Light Fighter': 100,
-        }
-
-        defender = {
-            'Light Fighter': 50,
-        }
-
-        result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.defender_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 3)
-
-        self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 98,
-        })
-
-    def test_battle_2(self):
-        random.seed(0)
-        attacker = {
-            'Light Fighter': 100,
-            'Heavy Fighter': 60,
-            'Cruiser': 40,
-            'Battleship': 10,
-        }
-
-        defender = {
-            'Light Fighter': 400,
-            'Rocket Launcher': 50,
-            'Light Laser': 10,
-            'Heavy Laser': 5,
-            'Gauss Cannon': 1,
-        }
-
-        result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.defender_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 4)
-
-        self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 40,  # 33 - 35
-            'Heavy Fighter': 51,  # 52 - 53
-            'Cruiser': 39,        # 39 - 40
-            'Battleship': 10,
-        })
-
-    def test_battle_3(self):
-        random.seed(0)
-        attacker = {
-            'Light Fighter': 2000,
-            'Heavy Fighter': 500,
-            'Cruiser': 1200,
-            'Battleship': 300,
-            'Bomber': 100,
-            'Destroyer': 400,
-            'Deathstar': 10,
-            'Battlecruiser': 500,
-        }
-
-        defender = {
-            'Light Fighter': 4000,
-            'Heavy Fighter': 1000,
-            'Cruiser': 200,
-            'Battleship': 200,
-            'Recycler': 200,
-            'Bomber': 50,
-            'Destroyer': 100,
-            'Deathstar': 1,
-            'Battlecruiser': 50,
-            'Rocket Launcher': 500,
-            'Light Laser': 100,
-            'Heavy Laser': 60,
-            'Gauss Cannon': 50,
-            'Plasma Turret': 20,
-            'Small Shield': 1,
-            'Large Shield': 1,
-        }
-
-        result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.defender_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 5)
-
-        self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 812,  # 752 - 782
-            'Heavy Fighter': 313,   # 294 - 302
-            'Cruiser': 956,        # 936 - 953
-            'Battleship': 268,      # 274 - 280
-            'Bomber': 98,          # 95 - 97
-            'Destroyer': 388,       # 387 - 391
-            'Deathstar': 10,        # 10
-            'Battlecruiser': 479,   # 475 - 480
-        })
-
-        result = self.fight(attacker, defender, 27)
-        self.assertEqual(result.defender_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 5)
-
-        self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 793,  # 752 - 782
-            'Heavy Fighter': 294,   # 294 - 302
-            'Cruiser': 951,        # 936 - 953
-            'Battleship': 277,      # 274 - 280
-            'Bomber': 98,          # 95 - 97
-            'Destroyer': 390,       # 387 - 391
-            'Deathstar': 10,        # 10
-            'Battlecruiser': 486,   # 475 - 480
-        })
-
-        result = self.fight(attacker, defender, 128)
-        self.assertEqual(result.defender_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 5)
-
-        self.assertEqual(result.round_results[-1][0].ship_count, {
-            'Light Fighter': 803,  # 752 - 782
-            'Heavy Fighter': 316,   # 294 - 302
-            'Cruiser': 973,        # 936 - 953
-            'Battleship': 282,      # 274 - 280
-            'Bomber': 96,          # 95 - 97
-            'Destroyer': 392,       # 387 - 391
-            'Deathstar': 10,        # 10
-            'Battlecruiser': 479,   # 475 - 480
-        })
-
-class DucttapeSimTestCase(TestCase, SimBase):
-    """
-    Based on duct tape ships.
-    """
-
-    def setUp(self):
-        self.set_library('og_minmatar.json')
-
-    def test_battle_1(self):
-        random.seed(0)
-        attacker = {
-            'rifter': 1,
-        }
-
-        defender = {
-            'thrasher': 1,
-        }
-
-        result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.attacker_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 1)
-
-        self.assertEqual(result.round_results[0][0].shots_taken, 9)
-        self.assertEqual(result.round_results[0][1].ship_count, {
-            'thrasher': 1,
-        })
-
-    def test_battle_2(self):
-        random.seed(0)
-        attacker = {
-            'rifter': 100,
-        }
-
-        defender = {
-            'thrasher': 100,
-        }
-
-        result = self.fight(attacker, defender, 1)
-        self.assertEqual(result.attacker_fleet.ships, [])
-        self.assertEqual(len(result.round_results), 2)
-
-        self.assertEqual(result.round_results[0][0].shots_taken, 840)
-        self.assertEqual(result.round_results[0][1].ship_count, {
-            'thrasher': 97,
-        })
-
-    def test_battle_3(self):
-        random.seed(0)
-        attacker = {
-            'rifter': 1,
-        }
-
-        defender = {
-            'tempest': 1,
-        }
-
-        result = self.fight(attacker, defender, rounds=6)
-        self.assertEqual(len(result.round_results), 6)
-
-        # first round of shots fired and damage
-        self.assertEqual(result.round_results[0][0].shots_taken, 1)
-        self.assertEqual(result.round_results[0][1].shots_taken, 9)
-        # battleship can barely land a damage on a frigate...
-        self.assertEqual(result.round_results[0][0].damage_taken, 76)
-        # but who knew frigates can harass a battleship so much more.
-        self.assertEqual(result.round_results[0][1].damage_taken, 3600)
-
-        # stalemate, ofc.
-        self.assertEqual(result.round_results[-1][0].ship_count, attacker)
-        self.assertEqual(result.round_results[-1][1].ship_count, defender)
-
-    def test_battle_3(self):
-        random.seed(0)
-        attacker = {
-            'rifter': 1,
-            'thrasher': 1,
-            'stabber': 1,
-            'hurricane': 1,
-            'tempest': 1,
-        }
-
-        defender = {
-            'rifter': 1,
-            'thrasher': 1,
-            'stabber': 1,
-            'hurricane': 1,
-            'tempest': 1,
-        }
-
-        result = self.fight(attacker, defender, rounds=6)
-        self.assertEqual(len(result.round_results), 5)
-
-        # first round of shots fired and damage
-        self.assertEqual(result.round_results[0][0].shots_taken, 10)
-        self.assertEqual(result.round_results[0][1].shots_taken, 10)
-        # even if same amount of shots fired, depends who got hit.
-        self.assertEqual(result.round_results[0][0].damage_taken, 7228)
-        self.assertEqual(result.round_results[0][1].damage_taken, 12084)
-        self.assertEqual(result.round_results[0][0].ship_count, {
-            'rifter': 1,
-            'thrasher': 1,
-            'hurricane': 1,
-            'tempest': 1,
-        })
-        self.assertEqual(result.round_results[0][1].ship_count, {
-            'rifter': 1,
-            'hurricane': 1,
-            'stabber': 1,
-            'tempest': 1,
-        })
-
-        # I guess the hurricane did die, but not after it killed all
-        # the things.
-        self.assertEqual(result.round_results[-1][0].ship_count, {
-            'rifter': 1,
-            'tempest': 1,
-        })
-        self.assertEqual(result.round_results[-1][1].ship_count, {})
-
-    def test_battle_3(self):
-        random.seed(0)
-        attacker = {
-            'hurricane': 256,
-        }
-
-        defender = {
-            'stabber': 128,
-            'tempest': 256,
-        }
-
-        result = self.fight(attacker, defender, rounds=6)
-
-        # hurricanes have been nerfed.
-        self.assertEqual(len(result.round_results), 1)
-        self.assertEqual(result.round_results[0][0].ship_count, {})
-        self.assertEqual(result.round_results[0][1].ship_count, {
-            'tempest': 29,
-        })
-        # I don't think we need to think about what happened next.

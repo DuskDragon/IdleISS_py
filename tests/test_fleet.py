@@ -20,9 +20,9 @@ class ShipLibraryMock(ShipLibrary):
                 "sensor_strength": 1,
                 "size": "one",
                 "weapon_size": "one",
-                "multishot": {
-                    "ship1": 2
-                }
+                "priority_target": [
+                    ["ship1",],
+                ]
             }
         }
 

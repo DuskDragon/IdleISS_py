@@ -9,45 +9,45 @@ from idleiss.ship import ShipDebuffs
 from idleiss.ship import ShipAttributes
 from idleiss.ship import ShipLibrary
 
-SHIELD_BOUNCE_ZONE = 0.01  # max percentage damage to shield for bounce.
-HULL_DANGER_ZONE = 0.70  # percentage remaining.
+#SHIELD_BOUNCE_ZONE = 0.01  # max percentage damage to shield for bounce.
+#HULL_DANGER_ZONE = 0.70  # percentage remaining.
 
 AttackResult = namedtuple('AttackResult',
-    ['attacker_fleet', 'damaged_fleet', 'shots_taken', 'damage_taken'])
+    ['attacker_fleet', 'damaged_fleet', 'hits_taken', 'damage_taken'])
 Fleet = namedtuple('Fleet',
     ['ships', 'ship_count'])
 RoundResult = namedtuple('RoundResult',
-    ['ship_count', 'shots_taken', 'damage_taken'])
+    ['ship_count', 'hits_taken', 'damage_taken'])
 
 
-def hull_breach(hull, max_hull, damage,
-        hull_danger_zone=HULL_DANGER_ZONE):
-    """
-    Hull has a chance of being breached if less than the dangerzone.
-    Chance of survival is determined by how much % hull remains.
-    Returns input hull amount if RNG thinks it should, otherwise 0.
-    """
+# def hull_breach(hull, max_hull, damage,
+        # hull_danger_zone=HULL_DANGER_ZONE):
+    # """
+    # Hull has a chance of being breached if less than the dangerzone.
+    # Chance of survival is determined by how much % hull remains.
+    # Returns input hull amount if RNG thinks it should, otherwise 0.
+    # """
 
-    damaged_hull = hull - damage
-    chance_of_survival = damaged_hull / max_hull
-    return not (chance_of_survival < hull_danger_zone and
-        chance_of_survival < random.random()) and damaged_hull or 0
+    # damaged_hull = hull - damage
+    # chance_of_survival = damaged_hull / max_hull
+    # return not (chance_of_survival < hull_danger_zone and
+        # chance_of_survival < random.random()) and damaged_hull or 0
 
-def shield_bounce(shield, max_shield, damage,
-        shield_bounce_zone=SHIELD_BOUNCE_ZONE):
-    """
-    Check whether the damage has enough power to damage the shield or
-    just harmlessly bounce off it, only if there is a shield available.
-    Shield will be returned if the above conditions are not met,
-    otherwise the current shield less damage taken will be returned.
+# def shield_bounce(shield, max_shield, damage,
+        # shield_bounce_zone=SHIELD_BOUNCE_ZONE):
+    # """
+    # Check whether the damage has enough power to damage the shield or
+    # just harmlessly bounce off it, only if there is a shield available.
+    # Shield will be returned if the above conditions are not met,
+    # otherwise the current shield less damage taken will be returned.
 
-    Returns the new shield value.
-    """
+    # Returns the new shield value.
+    # """
 
-    # really, shield can't become negative unless some external factors
-    # hacked it into one.
-    return ((damage < shield * shield_bounce_zone) and shield > 0 and
-        shield or shield - damage)
+    # # really, shield can't become negative unless some external factors
+    # # hacked it into one.
+    # return ((damage < shield * shield_bounce_zone) and shield > 0 and
+        # shield or shield - damage)
 
 def size_damage_factor(weapon_size, target_size):
     """
@@ -161,12 +161,8 @@ def ship_attack(attacker_ship, victim_ship):
         attacker_ship.debuffs,
         victim_ship.debuffs
     )
-
-    shield = shield_bounce(victim_ship.attributes.shield,
-        victim_ship.schema.shield, damage)
-    if shield == victim_ship.attributes.shield:
-        # it glanced off, don't need to worry about hull breaches when
-        # the weapon didn't even hit
+    if damage <= 0:
+    #if damage modfiers change damage to 0 then victim takes no damage
         return Ship(
             victim_ship.schema,
             ShipAttributes(
@@ -177,22 +173,14 @@ def ship_attack(attacker_ship, victim_ship):
             debuffs,
         )
 
+    shield = victim_ship.attributes.shield - damage
     armor = victim_ship.attributes.armor + min(shield, 0)
-    hull = hull_breach(victim_ship.attributes.hull,
-        victim_ship.schema.hull, - min(armor, 0))
+    hull = victim_ship.attributes.hull + min(armor, 0)
     return Ship(
         victim_ship.schema,
         ShipAttributes(max(0, shield), max(0, armor), max(0, hull)),
         debuffs,
     )
-
-def multishot(attacker_schema, victim_schema):
-    """
-    Calculate multishot result based on the schemas.
-    """
-
-    multishot = attacker_schema.multishot.get(victim_schema.hullclass, 0)
-    return multishot > 0 and (multishot - 1.0) / multishot > random.random()
 
 def expand_fleet(ship_count, library):
     # for the listing of numbers of ship we need to expand to each ship
@@ -263,6 +251,19 @@ def logi_subfleet(input_fleet):
             continue
     return [logi_shield, logi_armor]
 
+def priority_target_list(input_fleet, priority):
+    """
+    returns a list of numbers which correspond to the input_fleet positions
+    which have the same hullclass as passed in parameter priority
+    """
+    subfleet = []
+    for x in range(len(input_fleet)):
+        if input_fleet[x].schema.hullclass in priority:
+            subfleet.append(x)
+        else:
+            continue
+    return subfleet
+
 def repair_fleet(input_fleet):
     """
     Have logistics ships do their job and repair other ships in the fleet
@@ -332,7 +333,7 @@ def fleet_attack(fleet_a, fleet_b):
 
     Send an attack from fleet_a to fleet_b.
 
-    Appends the hit_by attribute on the victim ship in fleet_b for
+    TODO?: Appends the hit_by attribute on the victim ship in fleet_b for
     each ship in fleet_a.
     """
 
@@ -346,17 +347,42 @@ def fleet_attack(fleet_a, fleet_b):
     damage = 0
 
     for ship in fleet_a.ships:
-        firing = True
-        # I kind of wanted to do apply an "attacked_by" attribute to
+        # Wanted to do apply an "attacked_by" attribute to
         # the target, but let's wait for that and just mutate this
         # into the new ship.  Something something hidden running
         # complexity when dealing with a list (it's an array).
-        while firing:
-            target_id = random.randrange(0, len(result))
-            result[target_id] = ship_attack(ship, result[target_id])
-            firing = multishot(ship.schema, result[target_id].schema)
+
+        #TODO: implement priority targets
+        #TODO: implement multiple weapons
+
+        #TODO: FOR WEAPON IN WEAPONLIST:
+        # some ships may not have damaging weapons, just debuffs. They don't increment "shots"
+        if(ship.schema.firepower > 0):
             shots += 1
 
+        # check if there are priority targets
+        if ship.schema.priority_targets != []:
+            target_found = False
+            for possible_target in ship.schema.priority_targets:
+                #for each priority level
+                target_list = priority_target_list(result, possible_target)
+                if target_list == []:
+                    continue
+                else: #target found
+                    target_id = random.choice(target_list)
+                    result[target_id] = ship_attack(ship, result[target_id])
+                    target_found = True
+                    break # only can shoot once per round per weapon
+            if target_found == False: # no priority targets found shoot anything
+                target_id = random.randrange(0, len(result))
+                result[target_id] = ship_attack(ship, result[target_id])
+        else: # if ship.priority_targets == {}
+            target_id = random.randrange(0, len(result))
+            result[target_id] = ship_attack(ship, result[target_id])
+
+
+
+    # here all the ships have taken their shots and we sum for this round
     damage = sum((
             (fresh.attributes.shield - damaged.attributes.shield) +
             (fresh.attributes.armor - damaged.attributes.armor) +
@@ -375,8 +401,8 @@ class Battle(object):
     one for the two respective sides.  Prune them separately for results.
     """
 
-    def __init__(self, attacker, defender, rounds, *a, **kw):
-        self.rounds = rounds
+    def __init__(self, attacker, defender, max_rounds, *a, **kw):
+        self.max_rounds = max_rounds
         # attacker and defender are dictionaries with "ship_type": number
         self.attacker_count = attacker
         self.defender_count = defender
@@ -408,9 +434,9 @@ class Battle(object):
 
         self.round_results.append((
             RoundResult(attacker_results.ship_count,
-                attacker_damaged.shots_taken, attacker_damaged.damage_taken),
+                attacker_damaged.hits_taken, attacker_damaged.damage_taken),
             RoundResult(defender_results.ship_count,
-                defender_damaged.shots_taken, defender_damaged.damage_taken),
+                defender_damaged.hits_taken, defender_damaged.damage_taken),
         ))
 
         self.defender_fleet = defender_results
@@ -419,7 +445,7 @@ class Battle(object):
     def calculate_battle(self):
         # avoid using round as variable name as it's a predefined method
         # that might be useful when working with numbers.
-        for r in range(self.rounds):
+        for r in range(self.max_rounds):
             if not (self.defender_fleet.ships and self.attacker_fleet.ships):
                 break
             self.calculate_round()
@@ -427,3 +453,15 @@ class Battle(object):
         # when/if we implement more than 1v1 then this will need to change
         self.attacker_result = self.round_results[-1][0].ship_count
         self.defender_result = self.round_results[-1][1].ship_count
+
+    def generate_summary_data(self):
+        """
+        TODO: Generate all the data (see test)
+        """
+        pass
+
+    def generate_summary_text(self):
+        """
+        TODO: Generate ASCII style text output
+        """
+        pass

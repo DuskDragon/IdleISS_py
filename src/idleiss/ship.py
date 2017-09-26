@@ -2,13 +2,13 @@ from collections import namedtuple
 from os.path import join, dirname, abspath
 import json
 
-ship_schema_fields = ['shield', 'armor', 'hull', 'firepower', 'size',
-    'weapon_size', 'multishot', 'sensor_strength',]
-ship_schema_optional_fields = ['hullclass', 'buffs', 'debuffs']
+ship_schema_fields = ['hullclass', 'shield', 'armor', 'hull', 'firepower', 'size',
+    'weapon_size', 'priority_targets', 'sensor_strength',]
+ship_schema_optional_fields = ['buffs', 'debuffs']
 
 buff_effects = ['local_shield_repair', 'local_armor_repair',
     'remote_shield_repair', 'remote_armor_repair',]
-# XXX damage will become a debuff.
+# XXX damage may become a debuff.
 debuff_effects = ['target_painter', 'tracking_disruption', 'ECM', 'web',]
 
 ShipBuffs = namedtuple('ShipBuffs', buff_effects)
@@ -54,7 +54,7 @@ def ship_size_sort_key(obj):
 class ShipLibrary(object):
 
     _required_keys = {
-        '': ['sizes', 'ships',],  # top level keys
+        '': ['sizes', 'hullclasses', 'ships',],  # top level keys
         'ships': ship_schema_fields,
     }
 
@@ -86,7 +86,7 @@ class ShipLibrary(object):
         self.size_data = {}
         self.size_data.update(raw_data['sizes'])
 
-        raw_ship_hullclasses = raw_data['sizes'].keys()
+        raw_ship_hullclasses = raw_data['hullclasses']
         self.ship_data = {}
 
         for ship_name, data in raw_data['ships'].items():
@@ -104,7 +104,7 @@ class ShipLibrary(object):
                                       self.size_data[data['weapon_size']] or \
                                      data['weapon_size']
 
-            updates['hullclass'] = data.get('hullclass', ship_name)
+            #updates['hullclass'] = data['hullclass']
 
             updates['buffs'] = _construct_tuple(
                 ShipBuffs, data.get('buffs', {}))
@@ -119,11 +119,16 @@ class ShipLibrary(object):
 
             self.ship_data[ship_name] = _construct_tuple(ShipSchema, data)
 
-            # validation for multishot target.
-            multishot_list = data['multishot']
-            for multishot_target in multishot_list:
-                if multishot_target not in raw_ship_hullclasses:
-                    raise ValueError(multishot_target + " does not exist as a hullclass")
+            # validation for priority targets.
+            priority_list = data['priority_targets']
+            if type(priority_list) != list:
+                raise ValueError(priority_list + " is not a list")
+            for priority_level in priority_list:
+                if priority_level == []:
+                    raise ValueError(ship_name + "cannot have empty level in priority_list array")
+                for priority_target in priority_level:
+                    if priority_target not in raw_ship_hullclasses:
+                        raise ValueError(ship_name+": "+str(priority_target)+" does not exist as a hullclass")
 
         self.ordered_ship_data = sorted(self.ship_data.values(),
             key=ship_size_sort_key)
