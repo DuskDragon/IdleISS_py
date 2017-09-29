@@ -86,6 +86,8 @@ def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
     true_weapon_size = (weapon_size * web) * tracking_disrupt
     true_target_size = target_size * target_painter
     damage_factor = size_damage_factor(true_weapon_size, true_target_size)
+    if damage_factor * damage < 0:
+        return 0
     return int(math.ceil(damage_factor * damage))
 
 def is_ship_alive(ship):
@@ -143,8 +145,8 @@ def ship_attack(attacker_ship, victim_ship):
 
     debuffs = grab_debuffs(attacker_ship, victim_ship)
 
-    if attacker_ship.schema.firepower <= 0:
-    # damage doesn't need to be calculated, but debuffs do
+    if len(attacker_ship.schema.weapons) <= 0:
+    # no weapons: damage doesn't need to be calculated, but debuffs do
         return Ship(
             victim_ship.schema,
             ShipAttributes(
@@ -155,12 +157,15 @@ def ship_attack(attacker_ship, victim_ship):
             debuffs,
         )
 
-    damage = true_damage(attacker_ship.schema.firepower,
-        attacker_ship.schema.weapon_size,
-        victim_ship.schema.size,
-        attacker_ship.debuffs,
-        victim_ship.debuffs
-    )
+    damage = 0
+
+    for weapon in attacker_ship.schema.weapons:
+        damage += true_damage(weapon['firepower'],
+            weapon['weapon_size'],
+            victim_ship.schema.size,
+            attacker_ship.debuffs,
+            victim_ship.debuffs
+        )
     if damage <= 0:
     #if damage modfiers change damage to 0 then victim takes no damage
         return Ship(
@@ -356,9 +361,8 @@ def fleet_attack(fleet_a, fleet_b):
         #TODO: implement multiple weapons
 
         #TODO: FOR WEAPON IN WEAPONLIST:
-        # some ships may not have damaging weapons, just debuffs. They don't increment "shots"
-        if(ship.schema.firepower > 0):
-            shots += 1
+        # ships with weapons increment shots by 1 for each weapon per round
+        shots += len(ship.schema.weapons)
 
         # check if there are priority targets
         if ship.schema.priority_targets != []:

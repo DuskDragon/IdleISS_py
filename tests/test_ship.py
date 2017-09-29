@@ -24,7 +24,7 @@ class FleetLibraryTestCase(TestCase):
         self.library = ship.ShipLibrary(target_path)
         schema = self.library.get_ship_schemata('Small Cargo')
         self.assertEqual(schema, ship.ShipSchema('Small Cargo', 'Small Cargo',
-            10, 0, 200, 0, 3, 1, [], 1,
+            10, 0, 200, [], 3, [], 1,
             ship.ShipBuffs(10, 0, 0, 0),
             ship.ShipDebuffs(0, 0, 0, 0)))
 
@@ -65,10 +65,15 @@ class FleetLibraryTestCase(TestCase):
                     "shield": 391,
                     "armor": 351,
                     "hull": 336,
-                    "firepower": 120,
+                    "weapons": [
+                        {
+                            "weapon_name": "autocannons",
+                            "weapon_size": "frigate",
+                            "firepower": 120,
+                        }
+                    ],
                     "size": "frigate",
                     "sensor_strength": 9.6,
-                    "weapon_size": "frigate",
                     "priority_targets": [
                         ["cruiser",],
                         ["battleship",],
@@ -80,10 +85,15 @@ class FleetLibraryTestCase(TestCase):
                     "shield": 600,  # 1600
                     "armor": 1300,
                     "hull": 1300,
-                    "firepower": 330,
+                    "weapons": [
+                        {
+                            "weapon_name": "autocannons",
+                            "weapon_size": "cruiser",
+                            "firepower": 330,
+                        }
+                    ],
                     "size": "cruiser",
                     "sensor_strength": 13,
-                    "weapon_size": "cruiser",
                     "priority_targets": [
                         ["frigate",],
                         ["battleship",],
@@ -95,10 +105,15 @@ class FleetLibraryTestCase(TestCase):
                     "shield": 1300,  # 6300
                     "armor": 7000,
                     "hull": 6800,
-                    "firepower": 650,
+                    "weapons": [
+                        {
+                            "weapon_name": "artillery",
+                            "weapon_size": "battleship",
+                            "firepower": 650,
+                        }
+                    ],
                     "size": "battleship",
                     "sensor_strength": 22.4,
-                    "weapon_size": "battleship",
                     "priority_targets": [
                         ["battleship",],
                         ["cruiser",],

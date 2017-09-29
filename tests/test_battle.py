@@ -38,10 +38,15 @@ class ShipLibraryMock(ShipLibrary):
                     "shield": 10,
                     "armor": 10,
                     "hull": 100,
-                    "firepower": 50,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun1",
+                            "weapon_size": "ship1",
+                            "firepower": 50,
+                        }
+                    ],
                     "sensor_strength": 1,
                     "size": "ship1",
-                    "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 10,
                     },
@@ -53,10 +58,15 @@ class ShipLibraryMock(ShipLibrary):
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 500,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun2",
+                            "weapon_size": "ship1",
+                            "firepower": 500,
+                        }
+                    ],
                     "sensor_strength": 1,
                     "size": "ship2",
-                    "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 100,
                     },
@@ -68,10 +78,15 @@ class ShipLibraryMock(ShipLibrary):
                     "shield": 0,
                     "armor": 200,
                     "hull": 200,
-                    "firepower": 100,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun3",
+                            "weapon_size": "ship1",
+                            "firepower": 100,
+                        },
+                    ],
                     "sensor_strength": 1,
                     "size": "ship3",
-                    "weapon_size": "ship1",
                     "buffs": {
                     },
                     "priority_targets": [
@@ -84,15 +99,19 @@ class ShipLibraryMock(ShipLibrary):
                     "shield": 1000000,
                     "armor": 200,
                     "hull": 250000,
-                    "firepower": 250000,
+                    "weapons": [
+                        {
+                            "weapon_name": "BFG",
+                            "weapon_size": "ship1",
+                            "firepower": 250000,
+                        }
+                    ],
                     "sensor_strength": 1,
                     "size": "ship4",
-                    "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 1000000,
                     },
-                    "priority_targets": [
-                    ],
+                    "priority_targets": [],
                 },
 
                 "local_rep_test": {
@@ -100,99 +119,128 @@ class ShipLibraryMock(ShipLibrary):
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 100,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun",
+                            "weapon_size": "ship1",
+                            "firepower": 100,
+                        }
+                    ],
                     "sensor_strength": 1,
                     "size": "ship1",
-                    "weapon_size": "ship1",
                     "buffs": {
                         "local_shield_repair": 5,
                         "local_armor_repair": 5,
                     },
-                    "priority_targets": [
-                    ],
+                    "priority_targets": [],
                 },
                 "remote_rep_test": {
                     "hullclass": "remote_rep_test",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 100,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun",
+                            "weapon_size": "ship1",
+                            "firepower": 100,
+                        }
+                    ],
                     "sensor_strength": 1,
                     "size": "ship1",
-                    "weapon_size": "ship1",
                     "buffs": {
                         "remote_shield_repair": 10,
                         "remote_armor_repair": 10,
                     },
-                    "priority_targets": [
-                    ],
+                    "priority_targets": [],
                 },
                 "ewar_test": {
                     "hullclass": "ewar_test",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 100,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun",
+                            "weapon_size": "ship1",
+                            "firepower": 100,
+                        }
+                    ],
                     "sensor_strength": 1,
                     "size": "ship1",
-                    "weapon_size": "ship1",
                     "debuffs": {
                         'target_painter': 0.7,
                         'tracking_disruption': 1.6,
                         'ECM': 1,
                         'web': 0.7,
                     },
-                    "priority_targets": [
-                    ],
+                    "priority_targets": [],
                 },
                 "ewar_ecm_test": {
                     "hullclass": "ewar_ecm_test",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 200,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun",
+                            "weapon_size": "ship1",
+                            "firepower": 200,
+                        }
+                    ],
                     "sensor_strength": 1,
                     "size": "ship1",
-                    "weapon_size": "ship1",
                     "debuffs": {
                         'ECM': 1,
                     },
-                    "priority_targets": [
-                    ],
+                    "priority_targets": [],
                 },
                 "ewar_test_target": {
                     "hullclass": "ewar_test_target",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 200,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun",
+                            "weapon_size": "ship1",
+                            "firepower": 200,
+                        }
+                    ],
                     "sensor_strength": 0,
                     "size": "ship1",
-                    "weapon_size": "ship1",
-                    "priority_targets": [
-                    ],
+                    "priority_targets": [],
                 },
                 "ewar_test_target2": {
                     "hullclass": "ewar_test_target2",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 200,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun",
+                            "weapon_size": "ship1",
+                            "firepower": 200,
+                        }
+                    ],
                     "sensor_strength": 0.1,
                     "size": "ship1",
-                    "weapon_size": "ship1",
-                    "priority_targets": [
-                    ],
+                    "priority_targets": [],
                 },
                 "priority_test_ship": {
                     "hullclass": "generic",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 300,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun",
+                            "weapon_size": "ship1",
+                            "firepower": 300,
+                        }
+                    ],
                     "sensor_strength": 0.1,
                     "size": "ship1",
-                    "weapon_size": "ship1",
                     "priority_targets": [
                         ["priority_test_target",],
                         ["priority_test_not_target",],
@@ -203,24 +251,46 @@ class ShipLibraryMock(ShipLibrary):
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 0,
+                    "weapons": [],
                     "sensor_strength": 0.1,
                     "size": "priority_test_not_target",
-                    "weapon_size": "ship1",
-                    "priority_targets": [
-                    ],
+                    "priority_targets": [],
                 },
                 "priority_test_target": {
                     "hullclass": "priority_test_target",
                     "shield": 100,
                     "armor": 100,
                     "hull": 100,
-                    "firepower": 0,
+                    "weapons": [],
                     "sensor_strength": 0.1,
                     "size": "priority_test_target",
-                    "weapon_size": "ship1",
-                    "priority_targets": [
+                    "priority_targets": [],
+                },
+                "multiple_weapon_test": {
+                    "hullclass": "generic",
+                    "shield": 100,
+                    "armor": 100,
+                    "hull": 100,
+                    "weapons": [
+                        {
+                            "weapon_name": "gun1",
+                            "weapon_size": "ship1",
+                            "firepower": 100,
+                        },
+                        {
+                            "weapon_name": "gun2",
+                            "weapon_size": "ship1",
+                            "firepower": 100,
+                        },
+                        {
+                            "weapon_name": "gun3",
+                            "weapon_size": "ship1",
+                            "firepower": 100,
+                        },
                     ],
+                    "sensor_strength": 1,
+                    "size": "ship1",
+                    "priority_targets": [],
                 },
             },
         })
@@ -518,8 +588,25 @@ class BattleTestCase(TestCase):
         ])
 
     def test_multiple_weapons(self):
-        #TODO: implement multiple weapons
-        pass
+        # one ship has 3 weapons with 100 damage each
+        # the other has 1 weapon with 500 damage
+        # both ships should destroy each other
+        random.seed(0)
+        attacker = {
+            "multiple_weapon_test": 1,
+        }
+        defender = {
+            "ship2": 1,
+        }
+        rounds = 1
+        battle_instance = Battle(attacker, defender, rounds)
+        library = ShipLibraryMock()
+
+        battle_instance.prepare(library)
+        battle_instance.calculate_round()
+
+        self.assertEqual(battle_instance.defender_fleet.ships, [])
+        self.assertEqual(battle_instance.attacker_fleet.ships, [])
 
     def test_fleet_attack_damage_limited_by_hp(self):
         random.seed(0)

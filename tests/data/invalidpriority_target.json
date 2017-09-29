@@ -16,10 +16,14 @@
             "shield": 50,
             "armor": 20,
             "hull": 2700,
-            "firepower": 400,
+            "weapons": [
+                "Pulse Laser": {
+                    "weapon_size": "Espionage Probe",
+                    "firepower": 400
+                }
+            ],
             "sensor_strength": 1,
             "size": "cruiser",
-            "weapon_size": "cruiser",
             "buffs": {
                 "local_shield_repair": 50
             },

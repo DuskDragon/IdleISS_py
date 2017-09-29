@@ -16,10 +16,15 @@ class ShipLibraryMock(ShipLibrary):
                 "shield": 10,
                 "armor": 10,
                 "hull": 100,
-                "firepower": 50,
+                "weapons": [
+                    {
+                        "weapon_name": "gun",
+                        "weapon_size": "one",
+                        "firepower": 50
+                    }
+                ],
                 "sensor_strength": 1,
                 "size": "one",
-                "weapon_size": "one",
                 "priority_target": [
                     ["ship1",],
                 ]

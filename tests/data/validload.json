@@ -53,7 +53,7 @@
             "shield": 10,
             "armor": 0,
             "hull": 200,
-            "firepower": 0,
+            "weapons": [],
             "sensor_strength": 1,
             "size": "Small Cargo",
             "weapon_size": "Espionage Probe",
@@ -68,10 +68,15 @@
             "shield": 10,
             "armor": 10,
             "hull": 400,
-            "firepower": 50,
+            "weapons": [
+                {
+                    "weapon_name": "autocannons",
+                    "weapon_size": "Espionage Probe",
+                    "firepower": 50
+                }
+            ],
             "sensor_strength": 1,
             "size": "Light Fighter",
-            "weapon_size": "Espionage Probe",
             "buffs": {
                 "local_shield_repair": 10
             },
@@ -83,10 +88,15 @@
             "shield": 25,
             "armor": 10,
             "hull": 1000,
-            "firepower": 150,
+            "weapons": [
+                {
+                    "weapon_name": "artillery",
+                    "weapon_size": "Espionage Probe",
+                    "firepower": 150
+                }
+            ],
             "sensor_strength": 1,
             "size": "Heavy Fighter",
-            "weapon_size": "Espionage Probe",
             "buffs": {
                 "local_shield_repair": 25
             },
@@ -99,10 +109,15 @@
             "shield": 50,
             "armor": 20,
             "hull": 2700,
-            "firepower": 400,
+            "weapons": [
+                {
+                    "weapon_name": "pulse lasers",
+                    "weapon_size": "Espionage Probe",
+                    "firepower": 400
+                }
+            ],
             "sensor_strength": 1,
             "size": "Cruiser",
-            "weapon_size": "Espionage Probe",
             "buffs": {
                 "local_shield_repair": 50
             },
