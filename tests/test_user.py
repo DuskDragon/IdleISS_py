@@ -20,14 +20,14 @@ class LibraryStub(object):
                     {
                         "weapon_name": "gun",
                         "weapon_size": "one",
-                        "firepower": 50
-                    }
+                        "firepower": 50,
+                        "priority_targets": [
+                            ["ship1",],
+                        ],
+                    },
                 ],
                 "sensor_strength": 1,
                 "size": "one",
-                "priority_targets": [
-                    ["ship1",],
-                ]
             }
         }
 

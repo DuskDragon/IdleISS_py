@@ -61,13 +61,13 @@ def size_damage_factor(weapon_size, target_size):
 
     return (float(target_size) ** 2) / (float(weapon_size) ** 2)
 
-def true_damage(damage, weapon_size, target_size, source_debuff, target_debuff):
+def true_damage(damage, weapon_size, target_size, attacker_debuffs, target_debuff):
     """
     Calculates true damage based on parameters.
     """
 
     # source_debuffs: tracking disruption
-    tracking_disrupt = 1 + source_debuff.tracking_disruption
+    tracking_disrupt = 1 + attacker_debuffs.tracking_disruption
 
     # target_debuffs: target painter, web
     target_painter = 1 + target_debuff.target_painter
@@ -99,35 +99,35 @@ def is_ship_alive(ship):
     # be applied to make this check more hilarious.
     return ship.attributes.hull > 0  # though it can't be < 0
 
-def grab_debuffs(attacker_ship, victim_ship):
+def grab_debuffs(attacker_weapon, victim_ship):
     """
     Debuff calculator.
 
     Returns a new ShipDebuffs tuple with the calculated values.
     """
 
-    new_debuffs = attacker_ship.schema.debuffs
+    new_debuffs = attacker_weapon.get('debuffs',{})
     current_debuffs = victim_ship.debuffs
 
     target_painter = max(
-        new_debuffs.target_painter, current_debuffs.target_painter)
+        new_debuffs.get('target_painter',0), current_debuffs.target_painter)
 
     tracking_disruption = max(
-        new_debuffs.tracking_disruption, current_debuffs.tracking_disruption)
+        new_debuffs.get('tracking_disruption',0), current_debuffs.tracking_disruption)
 
     # XXX break this out into its function as it's more complicated.
     ecm = 0
-    if new_debuffs.ECM and not current_debuffs.ECM:
+    if new_debuffs.get('ECM',0) != 0 and not current_debuffs.ECM:
         if (victim_ship.schema.sensor_strength == 0 or
                 random.random() < (float(
-                    attacker_ship.schema.debuffs.ECM) / victim_ship.schema.sensor_strength)):
-            ecm = new_debuffs.ECM
+                    new_debuffs['ECM']) / victim_ship.schema.sensor_strength)):
+            ecm = new_debuffs['ECM']
 
-    web = max(new_debuffs.web, current_debuffs.web)
+    web = max(new_debuffs.get('web',0), current_debuffs.web)
 
     return ShipDebuffs(target_painter, tracking_disruption, ecm, web)
 
-def ship_attack(attacker_ship, victim_ship):
+def ship_attack(attacker_weapon, attacker_debuffs, victim_ship):
     """
     Do a ship attack.
 
@@ -136,16 +136,12 @@ def ship_attack(attacker_ship, victim_ship):
     """
 
     if not is_ship_alive(victim_ship):
-        # save us some time, it should be the same dead ship.
+        # save us some time, it could be the same dead ship.
         return victim_ship
 
-    if attacker_ship.debuffs.ECM:
-        # attacker is jammed can't attack or apply debuffs
-        return victim_ship
+    debuffs = grab_debuffs(attacker_weapon, victim_ship)
 
-    debuffs = grab_debuffs(attacker_ship, victim_ship)
-
-    if len(attacker_ship.schema.weapons) <= 0:
+    if attacker_weapon['firepower'] <= 0:
     # no weapons: damage doesn't need to be calculated, but debuffs do
         return Ship(
             victim_ship.schema,
@@ -157,15 +153,12 @@ def ship_attack(attacker_ship, victim_ship):
             debuffs,
         )
 
-    damage = 0
-
-    for weapon in attacker_ship.schema.weapons:
-        damage += true_damage(weapon['firepower'],
-            weapon['weapon_size'],
-            victim_ship.schema.size,
-            attacker_ship.debuffs,
-            victim_ship.debuffs
-        )
+    damage = true_damage(attacker_weapon['firepower'],
+        attacker_weapon['weapon_size'],
+        victim_ship.schema.size,
+        attacker_debuffs,
+        victim_ship.debuffs
+    )
     if damage <= 0:
     #if damage modfiers change damage to 0 then victim takes no damage
         return Ship(
@@ -357,32 +350,36 @@ def fleet_attack(fleet_a, fleet_b):
         # into the new ship.  Something something hidden running
         # complexity when dealing with a list (it's an array).
 
-        #TODO: implement priority targets
-        #TODO: implement multiple weapons
+        if ship.debuffs.ECM:
+            # attacker is jammed can't attack or apply debuffs
+            continue
 
         #TODO: FOR WEAPON IN WEAPONLIST:
-        # ships with weapons increment shots by 1 for each weapon per round
-        shots += len(ship.schema.weapons)
+        for weapon in ship.schema.weapons:
+        
+            # weapons increment shots by 1 if the weapon firepower is > 0
+            if weapon['firepower'] > 0:
+                shots += 1
 
-        # check if there are priority targets
-        if ship.schema.priority_targets != []:
-            target_found = False
-            for possible_target in ship.schema.priority_targets:
-                #for each priority level
-                target_list = priority_target_list(result, possible_target)
-                if target_list == []:
-                    continue
-                else: #target found
-                    target_id = random.choice(target_list)
-                    result[target_id] = ship_attack(ship, result[target_id])
-                    target_found = True
-                    break # only can shoot once per round per weapon
-            if target_found == False: # no priority targets found shoot anything
+            # check if there are priority targets
+            if weapon['priority_targets'] != []:
+                target_found = False
+                for possible_target in weapon['priority_targets']:
+                    #for each priority level
+                    target_list = priority_target_list(result, possible_target)
+                    if target_list == []:
+                        continue
+                    else: #target found
+                        target_id = random.choice(target_list)
+                        result[target_id] = ship_attack(weapon, ship.debuffs, result[target_id])
+                        target_found = True
+                        break # only can shoot once per round per weapon
+                if target_found == False: # no priority targets found shoot anything
+                    target_id = random.randrange(0, len(result))
+                    result[target_id] = ship_attack(weapon, ship.debuffs, result[target_id])
+            else: # this means: weapon['priority_targets'] is [] (empty)
                 target_id = random.randrange(0, len(result))
-                result[target_id] = ship_attack(ship, result[target_id])
-        else: # if ship.priority_targets == {}
-            target_id = random.randrange(0, len(result))
-            result[target_id] = ship_attack(ship, result[target_id])
+                result[target_id] = ship_attack(weapon, ship.debuffs, result[target_id])
 
 
 

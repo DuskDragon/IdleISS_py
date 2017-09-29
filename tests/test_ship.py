@@ -24,7 +24,7 @@ class FleetLibraryTestCase(TestCase):
         self.library = ship.ShipLibrary(target_path)
         schema = self.library.get_ship_schemata('Small Cargo')
         self.assertEqual(schema, ship.ShipSchema('Small Cargo', 'Small Cargo',
-            10, 0, 200, [], 3, [], 1,
+            10, 0, 200, [], 3, 1,
             ship.ShipBuffs(10, 0, 0, 0),
             ship.ShipDebuffs(0, 0, 0, 0)))
 
@@ -70,14 +70,14 @@ class FleetLibraryTestCase(TestCase):
                             "weapon_name": "autocannons",
                             "weapon_size": "frigate",
                             "firepower": 120,
+                            "priority_targets": [
+                                ["cruiser",],
+                                ["battleship",],
+                            ],
                         }
                     ],
                     "size": "frigate",
                     "sensor_strength": 9.6,
-                    "priority_targets": [
-                        ["cruiser",],
-                        ["battleship",],
-                    ],
                 },
 
                 "stabber": {
@@ -90,14 +90,14 @@ class FleetLibraryTestCase(TestCase):
                             "weapon_name": "autocannons",
                             "weapon_size": "cruiser",
                             "firepower": 330,
+                            "priority_targets": [
+                                ["frigate",],
+                                ["battleship",],
+                            ],
                         }
                     ],
                     "size": "cruiser",
                     "sensor_strength": 13,
-                    "priority_targets": [
-                        ["frigate",],
-                        ["battleship",],
-                    ],
                 },
 
                 "tempest": {
@@ -110,14 +110,14 @@ class FleetLibraryTestCase(TestCase):
                             "weapon_name": "artillery",
                             "weapon_size": "battleship",
                             "firepower": 650,
+                            "priority_targets": [
+                                ["battleship",],
+                                ["cruiser",],
+                            ],
                         }
                     ],
                     "size": "battleship",
                     "sensor_strength": 22.4,
-                    "priority_targets": [
-                        ["battleship",],
-                        ["cruiser",],
-                    ],
                 },
 
             },

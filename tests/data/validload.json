@@ -56,12 +56,9 @@
             "weapons": [],
             "sensor_strength": 1,
             "size": "Small Cargo",
-            "weapon_size": "Espionage Probe",
             "buffs": {
                 "local_shield_repair": 10
-            },
-            "priority_targets": [
-            ]
+            }
         },
         "Light Fighter": {
             "hullclass": "Light Fighter",
@@ -72,16 +69,15 @@
                 {
                     "weapon_name": "autocannons",
                     "weapon_size": "Espionage Probe",
-                    "firepower": 50
+                    "firepower": 50,
+                    "priority_targets": []
                 }
             ],
             "sensor_strength": 1,
             "size": "Light Fighter",
             "buffs": {
                 "local_shield_repair": 10
-            },
-            "priority_targets": [
-            ]
+            }
         },
         "Heavy Fighter": {
             "hullclass": "Heavy Fighter",
@@ -92,17 +88,17 @@
                 {
                     "weapon_name": "artillery",
                     "weapon_size": "Espionage Probe",
-                    "firepower": 150
+                    "firepower": 150,
+                    "priority_targets": [
+                        ["Small Cargo"]
+                    ]
                 }
             ],
             "sensor_strength": 1,
             "size": "Heavy Fighter",
             "buffs": {
                 "local_shield_repair": 25
-            },
-            "priority_targets": [
-                ["Small Cargo"]
-            ]
+            }
         },
         "Cruiser": {
             "hullclass": "Cruiser",
@@ -113,17 +109,17 @@
                 {
                     "weapon_name": "pulse lasers",
                     "weapon_size": "Espionage Probe",
-                    "firepower": 400
+                    "firepower": 400,
+                    "priority_targets": [
+                        ["Light Fighter"]
+                    ]
                 }
             ],
             "sensor_strength": 1,
             "size": "Cruiser",
             "buffs": {
                 "local_shield_repair": 50
-            },
-            "priority_targets": [
-                ["Light Fighter"]
-            ]
+            }
         }
     }
 }
