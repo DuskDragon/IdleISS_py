@@ -98,11 +98,15 @@ class ShipLibrary(object):
             #apply weapon_size adjustment to each weapon
             updates['weapons'] = []
             for x in range(len(data['weapons'])):
+                weapon = data['weapons'][x]
                 updates['weapons'].append(data['weapons'][x])
                 size_of_weapon = updates['weapons'][x]['weapon_size']
                 weapon_size_type = type(size_of_weapon)
                 updates['weapons'][x]['weapon_size'] = size_of_weapon if weapon_size_type is \
                                                        int else self.size_data[size_of_weapon]
+                # include optional values: area_of_effect and cycle_time
+                updates['weapons'][x]['area_of_effect'] = weapon.get('area_of_effect', 1)
+                updates['weapons'][x]['cycle_time'] = weapon.get('cycle_time', 1)
             #updates['hullclass'] = data['hullclass']
 
             size_type = type(data['size'])
@@ -124,9 +128,13 @@ class ShipLibrary(object):
                     raise ValueError(ship_name+" weapon_name in weapon_list has invalid name")
                 weapon_name = weapon['weapon_name']
                 if type(weapon['weapon_size']) != int:
-                    raise ValueError(ship_name+" weapon_size in weapon_list is invalid")
+                    raise ValueError(ship_name+": "+weapon_name+": weapon_size in weapon_list is invalid")
                 if type(weapon['firepower']) != int:
-                    raise ValueError(ship_name+" firepower in weapon_list is invalid")
+                    raise ValueError(ship_name+": "+weapon_name+": firepower in weapon_list is invalid")
+                if type(weapon.get('area_of_effect',1)) != int or weapon.get('area_of_effect',1) < 1:
+                    raise ValueError(ship_name+": "+weapon_name+" area_of_effect is invalid (not an integer or less than 1)")
+                if type(weapon['cycle_time']) != int or weapon.get('cycle_time',1) < 1:
+                    raise ValueError(ship_name+": "+weapon_name+" cycle_time is invalid (not an integer or less than 1)")
                 # validation for priority targets.
                 priority_list = weapon.get('priority_targets', 0)
                 if type(priority_list) != list:

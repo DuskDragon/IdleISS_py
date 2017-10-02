@@ -9,45 +9,12 @@ from idleiss.ship import ShipDebuffs
 from idleiss.ship import ShipAttributes
 from idleiss.ship import ShipLibrary
 
-#SHIELD_BOUNCE_ZONE = 0.01  # max percentage damage to shield for bounce.
-#HULL_DANGER_ZONE = 0.70  # percentage remaining.
-
 AttackResult = namedtuple('AttackResult',
     ['attacker_fleet', 'damaged_fleet', 'hits_taken', 'damage_taken'])
 Fleet = namedtuple('Fleet',
     ['ships', 'ship_count'])
 RoundResult = namedtuple('RoundResult',
     ['ship_count', 'hits_taken', 'damage_taken'])
-
-
-# def hull_breach(hull, max_hull, damage,
-        # hull_danger_zone=HULL_DANGER_ZONE):
-    # """
-    # Hull has a chance of being breached if less than the dangerzone.
-    # Chance of survival is determined by how much % hull remains.
-    # Returns input hull amount if RNG thinks it should, otherwise 0.
-    # """
-
-    # damaged_hull = hull - damage
-    # chance_of_survival = damaged_hull / max_hull
-    # return not (chance_of_survival < hull_danger_zone and
-        # chance_of_survival < random.random()) and damaged_hull or 0
-
-# def shield_bounce(shield, max_shield, damage,
-        # shield_bounce_zone=SHIELD_BOUNCE_ZONE):
-    # """
-    # Check whether the damage has enough power to damage the shield or
-    # just harmlessly bounce off it, only if there is a shield available.
-    # Shield will be returned if the above conditions are not met,
-    # otherwise the current shield less damage taken will be returned.
-
-    # Returns the new shield value.
-    # """
-
-    # # really, shield can't become negative unless some external factors
-    # # hacked it into one.
-    # return ((damage < shield * shield_bounce_zone) and shield > 0 and
-        # shield or shield - damage)
 
 def size_damage_factor(weapon_size, target_size):
     """
@@ -274,9 +241,7 @@ def repair_fleet(input_fleet):
 
     damaged_shield = []
 
-    # I have a bad feeling that this function won't last longer
-    # than a single commit :ohdear:
-    # also this has a slight bug that ships can rep themselves
+    # this has a slight bug that ships can rep themselves
     # and a ship might get over repped, but that's actually intended
 
     # shield first
@@ -325,11 +290,13 @@ def repair_fleet(input_fleet):
 
     return input_fleet
 
-def fleet_attack(fleet_a, fleet_b):
+def fleet_attack(fleet_a, fleet_b, current_round_number):
     """
     Do a round of fleet attack calculation.
 
-    Send an attack from fleet_a to fleet_b.
+    Send an attack from fleet_a to fleet_b on round current_round_number.
+
+    current_round_number determines which weapons are fired (on 0 all are fired)
 
     TODO?: Appends the hit_by attribute on the victim ship in fleet_b for
     each ship in fleet_a.
@@ -354,34 +321,55 @@ def fleet_attack(fleet_a, fleet_b):
             # attacker is jammed can't attack or apply debuffs
             continue
 
-        #TODO: FOR WEAPON IN WEAPONLIST:
         for weapon in ship.schema.weapons:
-        
+            #if it isn't time for the weapon to cycle then do not do anything for this weapon
+            if current_round_number % weapon['cycle_time'] != 0:
+                continue
+
             # weapons increment shots by 1 if the weapon firepower is > 0
             if weapon['firepower'] > 0:
                 shots += 1
 
-            # check if there are priority targets
-            if weapon['priority_targets'] != []:
-                target_found = False
-                for possible_target in weapon['priority_targets']:
-                    #for each priority level
-                    target_list = priority_target_list(result, possible_target)
-                    if target_list == []:
-                        continue
-                    else: #target found
+            aoe_hit_list = []
+            #repeat for each "area_of_effect" count
+            for area_of_effect in range(weapon['area_of_effect']):
+                # check if there are priority targets
+                if weapon['priority_targets'] != []:
+                    target_found = False
+                    for possible_target in weapon['priority_targets']:
+                        # for each priority level
+                        target_list = priority_target_list(result, possible_target)
+                        # aoe weapons cannot hit the same target twice
+                        target_list = list(set(target_list) - set(aoe_hit_list))
+                        if target_list == []: # no target
+                            continue # try next priority level
+
+                        # target found
                         target_id = random.choice(target_list)
                         result[target_id] = ship_attack(weapon, ship.debuffs, result[target_id])
+                        aoe_hit_list.append(target_id)
                         target_found = True
-                        break # only can shoot once per round per weapon
-                if target_found == False: # no priority targets found shoot anything
-                    target_id = random.randrange(0, len(result))
+                        break # only can hit once per loop
+                    #end of priority_targets for loop
+
+                    if target_found == False: # no priority targets found shoot anything
+                        #aoe weapons cannot hit the same target twice
+                        target_list = list(set(range(len(result))) - set(aoe_hit_list))
+                        if target_list == []:
+                            continue # no remaining targets for AOE
+
+                        target_id = random.choice(target_list)
+                        result[target_id] = ship_attack(weapon, ship.debuffs, result[target_id])
+                        aoe_hit_list.append(target_id)
+                else: # this means: weapon['priority_targets'] is [] (empty)
+                    target_list = list(set(range(len(result))) - set(aoe_hit_list))
+                    if target_list == []:
+                        continue # no remaining targets for AOE
+
+                    target_id = random.choice(target_list)
                     result[target_id] = ship_attack(weapon, ship.debuffs, result[target_id])
-            else: # this means: weapon['priority_targets'] is [] (empty)
-                target_id = random.randrange(0, len(result))
-                result[target_id] = ship_attack(weapon, ship.debuffs, result[target_id])
-
-
+                    aoe_hit_list.append(target_id)
+            #end of area_of_effect for loop
 
     # here all the ships have taken their shots and we sum for this round
     damage = sum((
@@ -418,11 +406,11 @@ class Battle(object):
         self.attacker_fleet = expand_fleet(self.attacker_count, library)
         self.defender_fleet = expand_fleet(self.defender_count, library)
 
-    def calculate_round(self):
+    def calculate_round(self, current_round_number):
         defender_damaged = fleet_attack(
-            self.attacker_fleet, self.defender_fleet)
+            self.attacker_fleet, self.defender_fleet, current_round_number)
         attacker_damaged = fleet_attack(
-            self.defender_fleet, self.attacker_fleet)
+            self.defender_fleet, self.attacker_fleet, current_round_number)
 
         attacker_repaired = repair_fleet(attacker_damaged.damaged_fleet)
         defender_repaired = repair_fleet(defender_damaged.damaged_fleet)
@@ -449,7 +437,7 @@ class Battle(object):
         for r in range(self.max_rounds):
             if not (self.defender_fleet.ships and self.attacker_fleet.ships):
                 break
-            self.calculate_round()
+            self.calculate_round(r)
 
         # when/if we implement more than 1v1 then this will need to change
         self.attacker_result = self.round_results[-1][0].ship_count
