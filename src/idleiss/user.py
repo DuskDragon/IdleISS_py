@@ -1,5 +1,18 @@
 from .fleet import FleetManager
 from .resource import ResourceManager
+import random
+
+def generate_alphanumeric():
+    valid_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+    return random.choice(valid_characters)
+
+def generate_system_name():
+    #example D-PNP9, 6VDT-H, OWXT-5, 16P-PX, CCP-US
+    #always uppercase letters
+    #5 characters with a dash in the middle somewhere
+    dash_position = random.randint(1,4)
+    letters = ''.join((generate_alphanumeric() for x in range(5)))
+    return letters[0:dash_position] + '-' + letters[dash_position::]
 
 class User(object):
     def __init__(self, user_id, *a, **kw):
@@ -50,3 +63,31 @@ class User(object):
         self.last_payout = timestamp
         # update idle time
         self.total_idle_time += timestamp - self.online_at
+
+    def init_conquer_new_system():
+        """
+        Construct an Infrastructure Control Hub which can be placed in an unclaimed system
+        consumes Structure Gantry
+        """
+        pass
+
+    def construct_citadel():
+        """
+        Citadels will function as money generators and basic material generators,
+        consumes Structure Gantry
+        """
+        pass
+
+    def construct_drilling_platform():
+        """
+        Drilling Platforms will function as basic and advanced material generators,
+        consumes Structure Gantry
+        """
+        pass
+
+    def construct_engineering_complex():
+        """
+        Engineering Complexes will produce ships and structures,
+        consumes Structure Gantry
+        """
+        pass

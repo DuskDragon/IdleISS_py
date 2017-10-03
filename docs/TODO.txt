@@ -1,0 +1,37 @@
+ - Progression:
+    Basic Income
+
+    Early
+    Construct small citadels for basic resources
+    Construct small engineering complexes for larger sized ships
+    Construct small drilling platforms for advanced resources
+
+    Mid
+    Conquer Systems using ICHs
+    Construct medium citadels for more basic resources
+    Construct medium engineering complexes for capital ships
+    Construct medium drilling platforms for more advanced resources
+
+    Late
+    Construct large engineering complexes for supercapital ships
+    Construct large citadels to hold control of ICH
+
+ - Player Interaction
+    Uses point system
+        Prevent new players from being attacked by players with more than 3x their points
+    Once a player achieves a new teir they cannot expand into the lower teir systems
+    Players can destroy each other's structures
+        medium drilling platforms can be destroyed, but new mediums need ICH
+    ICH cannot be destroyed until the large citadel is destroyed
+
+ - Universe
+    High Security
+        Small Citadels and Engineering Complexes can be constructed
+            make much more money, much more protected against other players
+    Low Security
+        Medium Citadels and Engineering Complexes can be constructed
+            make more money, but only have 3x point protection
+        Small drilling platforms can be constructed
+    Null Security
+        All buildings can be constructed
+        No player protections

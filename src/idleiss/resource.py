@@ -88,27 +88,3 @@ class ResourceManager(object):
                 raise Location_Does_Not_Exist(str(location)+"@"+str(system)+" does not exist.")
         else:
             raise Location_Does_Not_Exist(str(location)+"@"+str(system)+" does not exist.")
-
-    def init_conquer_new_system():
-        """
-        Using a Large Structure Gantry a TCU can be onlined in an unclaimed system
-        """
-        pass
-
-    def construct_citadel():
-        """
-        Citadels will function as money generators (mission hubs), consumes Small Structure Gantry
-        """
-        pass
-
-    def construct_drilling_platform():
-        """
-        Drilling Platforms will function as basic material generators, consumes Small Structure Gantry
-        """
-        pass
-
-    def construct_industrial_array():
-        """
-        Industrial Arrays will produce ships and structures, consumes Small Structure Gantry
-        """
-        pass
