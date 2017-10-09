@@ -1,18 +1,5 @@
 from .fleet import FleetManager
 from .resource import ResourceManager
-import random
-
-def generate_alphanumeric():
-    valid_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-    return random.choice(valid_characters)
-
-def generate_system_name():
-    #example D-PNP9, 6VDT-H, OWXT-5, 16P-PX, CCP-US
-    #always uppercase letters
-    #5 characters with a dash in the middle somewhere
-    dash_position = random.randint(1,4)
-    letters = ''.join((generate_alphanumeric() for x in range(5)))
-    return letters[0:dash_position] + '-' + letters[dash_position::]
 
 class User(object):
     def __init__(self, user_id, *a, **kw):

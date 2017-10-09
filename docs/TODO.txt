@@ -27,11 +27,36 @@
  - Universe
     High Security
         Small Citadels and Engineering Complexes can be constructed
-            make much more money, much more protected against other players
+            make much less money, protected against other players
     Low Security
         Medium Citadels and Engineering Complexes can be constructed
             make more money, but only have 3x point protection
         Small drilling platforms can be constructed
     Null Security
         All buildings can be constructed
+            make most money
         No player protections
+
+ - Solar System Layout
+    non-directed graph
+    1-7 connections per system
+    find 1907 "names" for high and lowsec
+        generate 5100 systems:
+            end goal target numbers:
+                1090 highsec
+                 817 lowsec
+                3193 nullsec
+        start with 5100 nodes
+        collect nodes into 340 constellations (15 nodes each)
+        collect constellations into 68 regions (5 constellations each)
+        sparsely connect nodes within constellations (1-3 per system, floodfill verified)
+        sparsely connect constellations within regions (1-2 per constellation, floodfill verified)
+        sparsely connect regions within the universe (4 per region, floodfill verified)
+        use graph-tool to draw universe map
+
+    security designation:
+        Manual?
+
+    Universe seed: (placeholder)
+
+42
