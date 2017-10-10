@@ -12,6 +12,25 @@ def generate_system_name(random_state):
     letters = ''.join((generate_alphanumeric(random_state) for x in range(5)))
     return letters[0:dash_position] + '-' + letters[dash_position::]
 
+def flood(node):
+    if(node.flooded):
+        return
+    node.flooded = True
+    for x in node.connections:
+        flood(x)
+
+def floodfill(node_list):
+    flood(node_list[0])
+    for x in node_list:
+        if x.flooded == False: # found an unconnected node, eject
+            return False
+    # no unconnected nodes were found
+    return True
+
+def drain(node_list):
+    for x in node_list: #reset flood state
+        x.flooded = False
+
 class SolarSystem(object):
     def __init__(self, system_id, random_state, universe):
         unvalidated_name = generate_system_name(random_state)
@@ -40,25 +59,6 @@ class SolarSystem(object):
             raise ValueError("1-way System Connection: "+system.name+" to "+self.name)
         system.connections.append(self)
         return True # connection added
-
-    def flood(self, node):
-        if(node.flooded):
-            return
-        node.flooded = True
-        for x in node.connections:
-            self.flood(x)
-
-    def floodfill(self, node_list):
-        self.flood(node_list[0])
-        for x in node_list:
-            if x.flooded == False: # found an unconnected node, eject
-                for y in node_list: #reset flood state
-                    y.flooded = False
-                return False
-        # no unconnected nodes were found
-        for x in node_list: #reset flood state
-            x.flooded = False
-        return True
 
 class Universe(object):
     def __init__(self, seed, systems, constellations, regions, connectedness):
@@ -107,22 +107,29 @@ class Universe(object):
         import networkx as nx
         self.G = nx.Graph()
         connection_list = []
+        orphan_list = []
         for x in node_list:
+            if len(x.connections) == 0:
+                orphan_list.append(x.id)
             for y in x.connections:
                 if x.id > y.id:
-                    connection_list.append((x.id+1,y.id+1,))
+                    connection_list.append((x.id,y.id,))
                 else: # y > x:
-                    connection_list.append((y.id+1,x.id+1,))
+                    connection_list.append((y.id,x.id,))
         pruned_list = set(connection_list)
+        # add collected nodes
         self.G.add_edges_from(pruned_list)
+        self.G.add_nodes_from(orphan_list)
+        # output debug info
         print("Nodes: "+str(self.G.number_of_nodes())+", Edges: "+str(self.G.number_of_edges()))
         import matplotlib.pyplot as plt
         plt.subplot(111)
         nx.draw(self.G, with_labels=True, font_weight='bold')
         plt.show()
 
-
     def generate_constellation(self, system_count):
+        if system_count < 2:
+            raise ValueError("must have at least two systems for a constellation")
         system_list = []
         for x in range(system_count):
             system_list.append(SolarSystem(self.current_unused_system_id, self.rand, self))
@@ -136,8 +143,40 @@ class Universe(object):
             s1, s2 = self.rand.sample(system_list, 2)
             s1.add_connection(s2)
 
-        # floodfill
         #PDB
         self.sys = system_list
+        #import pdb; pdb.set_trace()
         #ENDPDB
-        return system_list[0].floodfill(system_list)
+
+        # floodfill
+        if len(system_list[0].connections) == 0: #floodfill will start on orphan, avoid this
+            system_list[0].add_connection(self.rand.choice(system_list[1:]))
+        while not floodfill(system_list):
+            #floodfill failed, find failed nodes:
+            valid_nodes = []
+            orphan_nodes = []
+            disjoint_nodes = []
+            for x in system_list:
+                if len(x.connections) == 0:
+                    orphan_nodes.append(x)
+                elif x.flooded:
+                    valid_nodes.append(x)
+                else: # not flooded, not orphan, must be disjoint
+                    disjoint_nodes.append(x)
+            #first pin disjoint graphs to valid nodes
+            if len(disjoint_nodes) > 0:
+                disjoint_nodes[0].add_connection(self.rand.choice(valid_nodes))
+                drain(system_list)
+                continue #go around again
+            #next pin all orphans, there are only ophans remaining
+            for x in range(len(orphan_nodes)): #include already processed orphans
+                orphan_nodes[x].add_connection(self.rand.choice((valid_nodes + orphan_nodes[:x])))
+            #PDB
+            drain(system_list)
+            if not floodfill(system_list):
+                raise ValueError("generate_constellation: I'm pretty sure this literally cannot happen. Connected nodes to only valid nodes and we didn't fill.")
+            #ENDPDB
+            drain(system_list)
+        #end of floodfill
+        drain(system_list)
+        return system_list

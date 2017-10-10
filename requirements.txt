@@ -1,3 +1,7 @@
 # testing purposes only
 nose
 coverage
+
+# extras
+matplotlib
+networkx
