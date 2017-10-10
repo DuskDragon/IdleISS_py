@@ -98,6 +98,30 @@ class Universe(object):
             output_str += str(x)
         return output_str[:-2]
 
+    def generate_networkx(self, node_list):
+        """
+        Debugging function which uses NetworkX (python mathematics tool)
+        NetworkX is a fully python implementation so don't use HUGE graphs
+        it's 225x slower than graph-tool (implemented as a C++ library with python wrapper)
+        """
+        import networkx as nx
+        self.G = nx.Graph()
+        connection_list = []
+        for x in node_list:
+            for y in x.connections:
+                if x.id > y.id:
+                    connection_list.append((x.id+1,y.id+1,))
+                else: # y > x:
+                    connection_list.append((y.id+1,x.id+1,))
+        pruned_list = set(connection_list)
+        self.G.add_edges_from(pruned_list)
+        print("Nodes: "+str(self.G.number_of_nodes())+", Edges: "+str(self.G.number_of_edges()))
+        import matplotlib.pyplot as plt
+        plt.subplot(111)
+        nx.draw(self.G, with_labels=True, font_weight='bold')
+        plt.show()
+
+
     def generate_constellation(self, system_count):
         system_list = []
         for x in range(system_count):
