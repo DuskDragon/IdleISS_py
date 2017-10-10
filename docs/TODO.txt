@@ -57,6 +57,20 @@
     security designation:
         Manual?
 
+        Need to use NetworkX or graph-tool to find a "measure of center", then using a counting floodfill assign high, low, and null
+
+ - Pilot simulation?
+    skill level, "effort", timezone, "morale", spies?, inventory?
+
+ - Winning a universe round?
+    should IdleISS be perpetual? or run Monthly rounds?
+    Victory conditions?
+        Most Systems
+        Most Ships Killed
+        Most Resources/Points Killed
+        Most Resources/Points Efficient
+        Most Resources Acquired
+
     Universe seed: (placeholder)
 
 42
