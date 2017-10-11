@@ -105,7 +105,7 @@ class Universe(object):
         it's 225x slower than graph-tool (implemented as a C++ library with python wrapper)
         """
         import networkx as nx
-        self.G = nx.Graph()
+        G = nx.Graph()
         connection_list = []
         orphan_list = []
         for x in node_list:
@@ -118,14 +118,16 @@ class Universe(object):
                     connection_list.append((y.id,x.id,))
         pruned_list = set(connection_list)
         # add collected nodes
-        self.G.add_edges_from(pruned_list)
-        self.G.add_nodes_from(orphan_list)
-        # output debug info
-        print("Nodes: "+str(self.G.number_of_nodes())+", Edges: "+str(self.G.number_of_edges()))
-        import matplotlib.pyplot as plt
-        plt.subplot(111)
-        nx.draw(self.G, with_labels=True, font_weight='bold')
-        plt.show()
+        G.add_edges_from(pruned_list)
+        G.add_nodes_from(orphan_list)
+        ## TODO: clean up when not needed
+        ## debug info
+        #print("Nodes: "+str(G.number_of_nodes())+", Edges: "+str(G.number_of_edges()))
+        #import matplotlib.pyplot as plt
+        #plt.subplot(111)
+        #nx.draw_networkx(G, with_labels=True)
+        #plt.show()
+        return G
 
     def generate_constellation(self, system_count):
         if system_count < 2:
@@ -142,11 +144,6 @@ class Universe(object):
         for x in range(int(self.connectedness*system_count)):
             s1, s2 = self.rand.sample(system_list, 2)
             s1.add_connection(s2)
-
-        #PDB
-        self.sys = system_list
-        #import pdb; pdb.set_trace()
-        #ENDPDB
 
         # floodfill
         if len(system_list[0].connections) == 0: #floodfill will start on orphan, avoid this
@@ -171,11 +168,6 @@ class Universe(object):
             #next pin all orphans, there are only ophans remaining
             for x in range(len(orphan_nodes)): #include already processed orphans
                 orphan_nodes[x].add_connection(self.rand.choice((valid_nodes + orphan_nodes[:x])))
-            #PDB
-            drain(system_list)
-            if not floodfill(system_list):
-                raise ValueError("generate_constellation: I'm pretty sure this literally cannot happen. Connected nodes to only valid nodes and we didn't fill.")
-            #ENDPDB
             drain(system_list)
         #end of floodfill
         drain(system_list)
