@@ -1,0 +1,430 @@
+{
+    "Universe_Seed": 42,
+    "System_Count": 5100,
+    "Constellation_Count": 340,
+    "Systems_Per_Constellation": 15,
+    "Region_Count": 68,
+    "Constellations_Per_Region": 5,
+    "Systems_Per_Region": 75
+    "High_Security_Systems": 1050,
+    "High_Security_Regions": 14,
+    "Low_Security_Systems": 750,
+    "Low_Secuirty_Regions": 10,
+    "Null_Security_Systems": 3300,
+    "Null_Security_Regions": 44,
+    "Connectedness": 1.35,
+    "Universe_Structure":
+    [
+        "Aridia":
+        {
+            "Security": "Low",
+            "Orphan Systems": [],
+            "Constellations":
+            {
+                "Anama":
+                {
+                    "Systems":
+                    [
+                        "Maalna",
+                        "Massera",
+                        "Shakasi",
+                        "Gens",
+                        "Hier",
+                        "Jasson",
+                        "Kamih",
+                        "Kenahehab",
+                        "Yehaba",
+                        "Maseera",
+                        "Shirshocin",
+                        "Van",
+                        "Zayi",
+                        "Ahraghen",
+                        "Ajna"
+
+                    ]
+                },
+                "Fabai":
+                {
+                    "Systems":
+                    [
+                        "Anath",
+                        "Efu",
+                        "Naga",
+                        "Omigiav",
+                        "Sakht",
+                        "Tisot",
+                        "Fageras",
+                        "Nielez",
+                        "Sheri",
+                        "Soliara",
+                        "Tukanas",
+                        "Defsunun",
+                        "Esubara",
+                        "Getrenjesa",
+                        "Jerhesh"
+                    ]
+                },
+                "Maal":
+                {
+                    "Systems":
+                    [
+                        "Anohel",
+                        "Bapraya",
+                        "Ghekon",
+                        "Illi",
+                        "Keba",
+                        "Pserz",
+                        "Soza",
+                        "Vaini",
+                        "Zaveral",
+                        "Nalnifan",
+                        "Shafrak",
+                        "Yahyerer",
+                        "Zazamye",
+                        "Isid",
+                        "Marmeha"
+                    ]
+                },
+                "Selonat":
+                {
+                    "Systems":
+                    [
+                        "Esaeel",
+                        "Fobiner",
+                        "Hophib",
+                        "Huna",
+                        "Karan",
+                        "Ned",
+                        "Nouta",
+                        "Onanam",
+                        "Sadana",
+                        "Udianoor",
+                        "Vehan",
+                        "Avada",
+                        "Bazadod",
+                        "Chibi",
+                        "Haimeh"
+                    ]
+                },
+                "Tid":
+                {
+                    "Systems":
+                    [
+                        "Afrah",
+                        "Nema",
+                        "Rashagh",
+                        "Sazilid",
+                        "Shenda",
+                        "Sota",
+                        "Mishi",
+                        "Pahineh",
+                        "Balas",
+                        "Edilkam",
+                        "Ertoo",
+                        "Feshur",
+                        "Fihrneh",
+                        "Gesh",
+                        "Hakatiz"
+                    ]
+                }
+            }
+        },
+        "Basin":
+        {
+            "Security": "Null",
+            "Orphan Systems": ["Salt"],
+            "Constellations": {},
+        },
+        "Black Rise":
+        {
+            "Security": "Low",
+            "Orphan Systems": []
+            "Constellations": 
+            {
+                "Urpiken":
+                {
+                    "Systems":
+                    [
+                        "Ashitsu",
+                        "Hykanima",
+                        "Ienakkamon",
+                        "Kehjari",
+                        "Korasen",
+                        "Okagaiken",
+                        "Sarenemi",
+                        "Villasen",
+                        "Ahtila",
+                        "Astoh",
+                        "Ichoriya",
+                        "Onnamon",
+                        "Rohamaa",
+                        "Samanuni",
+                        "Tsuruma"
+                    ]
+                },
+                "Inolari":
+                {
+                    "Systems":
+                    [
+                        "Uchomida",
+                        "Uuhulanen",
+                        "Eha",
+                        "Innia",
+                        "Kinakka",
+                        "Martoh",
+                        "Pavanakka",
+                        "Raihbaka",
+                        "Hirri",
+                        "Iwisoda",
+                        "Kedama",
+                        "Nisuwa",
+                        "Notoras",
+                        "Pynekastoh",
+                        "Rakapas"
+                    ]
+                },
+                "Ishaga":
+                {
+                    "Systems":
+                    [
+                        "Aivonen",
+                        "Akidagi",
+                        "Enaluri",
+                        "Hallanen",
+                        "Hikkoken",
+                        "Immuri",
+                        "Nennamaila",
+                        "Reitsato",
+                        "Teimo",
+                        "Akae",
+                        "Jara",
+                        "Gim",
+                        "Waska",
+                        "Hullon",
+                        "Psegne"
+                    ]
+                },
+                "Kurala":
+                {
+                    "Systems":
+                    [
+                        "Asakai",
+                        "Elunala",
+                        "Ikoskio",
+                        "Mushikegi",
+                        "Okkamon",
+                        "Prism",
+                        "Teskanen",
+                        "Vaaralen",
+                        "Siilen",
+                        "Uill",
+                        "Zar",
+                        "Vaar",
+                        "Puzi",
+                        "Aska",
+                        "Asuka"
+                    ]
+                },
+                "Yourel": #may need to kill these
+                {
+                    "Systems":
+                    [
+                        "Kripp",
+                        "Jennich",
+                        "Madeon",
+                        "Porter",
+                        "Shelter",
+                        "Sterling",
+                        "Linus",
+                        "Prohzede",
+                        "Eyedub",
+                        "Kibler",
+                        "Kurzgesagt",
+                        "Vertias",
+                        "Nedter",
+                        "Kapakris",
+                        "Zogbi"
+                    ]
+                }
+            }
+        }
+        "The Bleak Lands":
+        {
+            "Security": "Low",
+            "Orphan Systems": []
+            "Constellations": 
+            {
+                "":
+                {
+                    "Systems":
+                    [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                    ]
+                },
+                "":
+                {
+                    "Systems":
+                    [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                    ]
+                },
+                "":
+                {
+                    "Systems":
+                    [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                    ]
+                },
+                "":
+                {
+                    "Systems":
+                    [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                    ]
+                },
+                "":
+                {
+                    "Systems":
+                    [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                    ]
+                },
+            }
+        }
+        "Branch
+        "Cache
+        "Catch
+        "The Citadel
+        "Cloud Ring
+        "Cobalt Edge
+        "The Colonnade
+        "Curse
+        "Deklein
+        "Delve
+        "Derelik
+        "Detorid
+        "Devoid
+        "Domain
+        "Esoteria
+        "Essence
+        "Etherium Reach
+        "Everyshore
+        "Fade
+        "Feythabolis
+        "The Forge
+        "Fountain
+        "Geminate
+        "Genesis
+        "Great Wildlands
+        "Heimatar
+        "Immensea
+        "Impass
+        "Insmother
+        "Kador
+        "The Kalevala Expanse
+        "Khanid
+        "Kor-Azor
+        "Lonetrek
+        "Malpais
+        "Metropolis
+        "The Midnight Sea
+        "Molden Heath
+        "Oasa
+        "Omist
+        "Outer Passage
+        "Outer Ring
+        "Paragon Soul
+        "Period Pasis
+        "Perrigen Falls
+        "Placid
+        "Polyhedra
+        "Providence
+        "Pure Blind
+        "Querious
+        "Scalding Pass
+        "Sinq Laison
+        "Solitude
+        "The Spire
+        "Stain
+        "Syndicate
+        "Tash-Murkon
+        "Tenal
+        "Tenerifis
+        "Tribute
+        "Vale of the Silent
+        "Venal
+        "Verge Vendor
+        "Wicked Creek
+    ]
+
+]

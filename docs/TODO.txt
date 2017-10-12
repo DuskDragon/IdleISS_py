@@ -38,6 +38,8 @@
         No player protections
 
  - Solar System Layout
+    Universe config sanity check
+        Check there are NO name collisions at all (constellations, regions, systems, etc)
     non-directed graph
     1-7 connections per system
     find 1907 "names" for high and lowsec
@@ -58,6 +60,10 @@
         Manual?
 
         Need to use NetworkX or graph-tool to find a "measure of center", then using a counting floodfill assign high, low, and null
+        Then update region names based on overall security of region
+        Then update constellation names based on region names (high, low, null)
+        Then update system names based on constellation names (high, low)
+        Keep null system names randomly generated
 
  - Pilot simulation?
     skill level, "effort", timezone, "morale", spies?, inventory?
