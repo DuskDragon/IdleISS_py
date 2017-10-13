@@ -34,6 +34,13 @@ class UserTestCase(TestCase):
             self.assertEqual(graph.number_of_nodes(), 15)
             self.assertEqual(nx.is_connected(graph), True)
 
+#with open("config/Universe_Config.json") as fd:
+#    raw_data = json.load(fd)
+#
+#for x in raw_data["Universe_Structure"]:
+#    if raw_data["Universe_Structure"][x]["Security"] == "High":
+#        print(x)
+
 #from idleiss.universe import Universe
 #uni = Universe(42, 5100, 340, 68, 1.35)
 #uni.generate_constellation(15)
@@ -43,3 +50,25 @@ class UserTestCase(TestCase):
 #from idleiss.universe import Universe; uni = Universe(42, 5100, 340, 68, 1.74); uni.generate_constellation(15); uni.generate_networkx(uni.sys)
 
 #uni.generate_constellation(15); uni.generate_networkx(uni.sys)
+
+
+#Highsec:
+#Isikesu
+#Juunigaishi
+#Kusomonmon
+#Suroken
+#Halaima
+#Ikao
+#Kamio
+#Sankkasen
+#Santola
+#Tintoh
+#Waira
+#Ealur
+#Fahruni
+
+#Lowsec:
+#Armi (const)
+#Jakemhih (const)
+#Kashag (const)
+    #Nirbhi (Derelink)

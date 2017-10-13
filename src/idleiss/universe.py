@@ -145,6 +145,7 @@ class Universe(object):
             s1, s2 = self.rand.sample(system_list, 2)
             s1.add_connection(s2)
 
+        #def stitch_nodes(self, node_list):
         # floodfill
         if len(system_list[0].connections) == 0: #floodfill will start on orphan, avoid this
             system_list[0].add_connection(self.rand.choice(system_list[1:]))
