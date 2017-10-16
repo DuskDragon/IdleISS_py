@@ -34,6 +34,7 @@ class UserTestCase(TestCase):
             self.assertEqual(graph.number_of_nodes(), 15)
             self.assertEqual(nx.is_connected(graph), True)
 
+#import json
 #with open("config/Universe_Config.json") as fd:
 #    raw_data = json.load(fd)
 #
@@ -66,9 +67,11 @@ class UserTestCase(TestCase):
 #Waira
 #Ealur
 #Fahruni
+#Ishisomo - Uoyonen, Akkilen - Vattuolen
 
 #Lowsec:
 #Armi (const)
 #Jakemhih (const)
 #Kashag (const)
     #Nirbhi (Derelink)
+#Old Man Star

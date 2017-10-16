@@ -847,7 +847,7 @@
         "Esoteria":
         {
             "Security": "Null",
-            "Orphan Systems": ["D-PNP9","BY-MSY","DTX8-M","0-O6XF","IPX-H5"],
+            "Orphan Systems": ["D-PNP9","BY-MSY","DTX8-M","0-O6XF","IPX-H5", "C9N-CC"],
             "Special Systems": {},
             "Constellations":
             {
@@ -871,119 +871,337 @@
             {
                 "Arand":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Allebin",
+                    "Ellebin",
+                    "Droselory",
+                    "Haine",
+                    "Isenan",
+                    "Perckhevin",
+                    "Yaine",
+                    "Pel",
+                    "Balrille",
+                    "Annages",
+                    "Deninard",
+                    "Hulmate",
+                    "Onne",
+                    "Palmon",
+                    "Vitrauze"
                 ],
-                "":
+                "Crux":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Algogille",
+                    "Couster",
+                    "Duripant",
+                    "Luminaire",
+                    "Mies",
+                    "Oursulaert",
+                    "Renyn",
+                    "Eustron",
+                    "Andole",
+                    "Atlangeins",
+                    "Cat",
+                    "Derririntel",
+                    "Hecarrin",
+                    "Ommare",
+                    "Vale"
                 ],
-                "":
+                "Jeon":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Abune",
+                    "Actee",
+                    "Amane",
+                    "Deven",
+                    "Estaunitte",
+                    "Fliet",
+                    "Heydieles",
+                    "Indregulle",
+                    "Patrie",
+                    "Caslemon",
+                    "Charmerout",
+                    "Jolevier",
+                    "Mesybier",
+                    "Pemene",
+                    "Yvangier"
                 ],
-                "":
+                "Peccanouette":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Adirain",
+                    "Aere",
+                    "Aeschee",
+                    "Arnon",
+                    "Attyn",
+                    "Ignebaener",
+                    "Laurvier",
+                    "Lisbaetanne",
+                    "Thoulde",
+                    "Adrel",
+                    "Ane",
+                    "Aporulie",
+                    "Clorteler",
+                    "Henebene",
+                    "Mesokel"
                 ],
-                "":
+                "Vieres":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Noghere",
+                    "Seyllin",
+                    "Synchelle",
+                    "Wysalan",
+                    "Yona",
+                    "Allamotte",
+                    "Arant",
+                    "Ladistier",
+                    "Obalyu",
+                    "Parts",
+                    "Vifrevaert",
+                    "Vollore",
+                    "Secure",
+                    "Flow",
+                    "Infor"
                 ]
             }
         },
         "Etherium Reach":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems":
+            {
+                "LXQ2-T": "Lowsec Border"
+            },
+            "Constellations": {}
         },
         "Everyshore":
         {
-            "Security": "High"
+            "Security": "High",
+            "Orphan Systems": [],
+            "Sepcial Systems": {},
+            "Constellations":
+            {
+                "Chasnaye":
+                [
+                    "Azer",
+                    "Cherore",
+                    "Gerper",
+                    "Harerget",
+                    "Mosson",
+                    "Mya",
+                    "Torvi",
+                    "Iaca",
+                    "Cyair",
+                    "Deyfr",
+                    "Pyta",
+                    "Werz",
+                    "Quya",
+                    "Garasson",
+                    "Yuakei"
+                ],
+                "Elalan":
+                [
+                    "Angymonne",
+                    "Antollare",
+                    "Avele",
+                    "Averon",
+                    "Aydoteaux",
+                    "Carirgnottin",
+                    "Enedore",
+                    "Laic",
+                    "Muer",
+                    "Odixie",
+                    "Scuelazyns",
+                    "Tolle",
+                    "Giatole",
+                    "Alachene",
+                    "Atlanins"
+                ],
+                "Marele":
+                [
+                    "Bille",
+                    "Colcer",
+                    "Elarel",
+                    "Leremblompes",
+                    "Uphene",
+                    "Adeel",
+                    "Angatalie",
+                    "Groothese",
+                    "Mannar",
+                    "Mormelot",
+                    "Olide",
+                    "Aken",
+                    "Hove",
+                    "Zyd",
+                    "Neir"
+                ],
+                "Osnins":
+                [
+                    "Athinard",
+                    "Ethernity",
+                    "Frarolle",
+                    "Gicodel",
+                    "Mattere",
+                    "Meves",
+                    "Quier",
+                    "Aice",
+                    "Amattens",
+                    "Arnatele",
+                    "Bereye",
+                    "Halle",
+                    "Junsoraert",
+                    "Jurlesel",
+                    "Mormoen"
+                ],
+                "Ysiette":
+                [
+                    "Aclan",
+                    "Ardallabier",
+                    "Blameston",
+                    "Jaschercis",
+                    "Lirsautton",
+                    "Marosier",
+                    "Vaurent",
+                    "Automata",
+                    "Apri",
+                    "Une",
+                    "Tob",
+                    "Embe",
+                    "Nuar",
+                    "Temb",
+                    "Embar"
+                ]
+            }
         },
         "Fade":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Feythabolis":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "The Forge":
         {
-            "Security": "High"
+            "Security": "High",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "Etsala":
+                [
+                    "Anttanen",
+                    "Unpas",
+                    "Aulari",
+                    "Ihatalo",
+                    "Ihilakken",
+                    "Mivora",
+                    "Okkelen",
+                    "Okomon",
+                    "Geras",
+                    "Nomaa",
+                    "Senda",
+                    "Shihuken",
+                    "Sirseshin",
+                    "Tuuriainas",
+                    "Uitra"
+                ],
+                "Kimotoro":
+                [
+                    "Jita",
+                    "Otsabaira",
+                    "Kisogo",
+                    "Maurasi",
+                    "New Caldari",
+                    "Niyabainen",
+                    "Perimeter",
+                    "Urlen",
+                    "Airaken",
+                    "Inaya",
+                    "Korsiki",
+                    "Nuken",
+                    "Oijanen",
+                    "Osmon",
+                    "Uminas",
+                    "Wuos"
+                ],
+                "Onirvura":
+                [
+                    "Josamento",
+                    "Liekuri",
+                    "Obanen",
+                    "Olo",
+                    "Otela",
+                    "Poinen",
+                    "Akora",
+                    "Ikami",
+                    "Maila",
+                    "Messoya",
+                    "Purjola",
+                    "Reisen",
+                    "Ansila",
+                    "Aokannitoh",
+                    "Eskunen"
+                ],
+                "Orpana":
+                [
+                    "Eruka",
+                    "Mastakomon",
+                    "Obe",
+                    "Ohkunen",
+                    "Osaa",
+                    "Uchosi",
+                    "Wirashoda",
+                    "Hirtamon",
+                    "Hykkota",
+                    "Ikuchi",
+                    "Ohmahailen",
+                    "Outuni",
+                    "Sakenta",
+                    "Akkio",
+                    "Fuskunen"
+                ],
+                "Ruomo":
+                [
+                    "Ahtulaima",
+                    "Itamo",
+                    "Jatate",
+                    "Kylmabe",
+                    "Mahtista",
+                    "Mitsolen",
+                    "Vaankalen",
+                    "Otosela",
+                    "Paala",
+                    "Tasti",
+                    "Uemon",
+                    "Airmia",
+                    "Friggi",
+                    "Ihakana",
+                    "Ishisomo"
+                ]
+            }
         },
         "Fountain":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["F-88PJ", "PXF-RF"],
+            "Special Systems":
+            {
+                "J5A-IX": "Nullsec Border",
+                "D4KU-5": "Lowsec Border",
+                "Y-2ANO": "Nullsec Border"
+            },
+            "Constellations":
+            {
+                "Basilisk": [],
+                "Hydra": [],
+                "Phoenix": ["YZ-LQL", "Serpentis Prime"],
+                "Chimera": ["6VDT-H", "AV-VB6", "NDH-NV"],
+                "Unicorn": ["DBRN-Z", "U-SOH2", "L-1SW8"]
+            }
         },
         "Geminate":
         {
@@ -1009,12 +1227,9 @@
             "Constellations":
             {
                 "Y46-EN":
-                {
-                    "Systems":
-                    [
-                        "B-R5RB"
-                    ]
-                }
+                [
+                    "B-R5RB"
+                ]
             }
         },
         "Impass":
@@ -1100,7 +1315,7 @@
             "Special Systems": {},
             "Constellations":
             {
-                "Pentagon":
+                "Plato":
                 {
                     "Tetrahedron": ["Four", "Fire", "Icosahedron","Hexahedron"],
                     "Hexahedron": ["Six", "Earth", "Tetrahedron","Octahedron"],
