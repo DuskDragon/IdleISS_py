@@ -1,5 +1,6 @@
 from unittest import TestCase
 import networkx as nx
+import json
 
 from idleiss.universe import Universe
 
@@ -7,6 +8,10 @@ class UserTestCase(TestCase):
 
     def setUp(self):
         pass
+
+    def test_load_universe_config(self):
+        with open("config/Universe_Config.json") as fd:
+            raw_data = json.load(fd)
 
     def test_generate_constellation_raises_error(self):
         uni = Universe(42, 5100, 340, 68, 1.35)
@@ -54,9 +59,6 @@ class UserTestCase(TestCase):
 
 
 #Highsec:
-#Isikesu
-#Juunigaishi
-#Kusomonmon
 #Suroken
 #Halaima
 #Ikao
@@ -68,10 +70,21 @@ class UserTestCase(TestCase):
 #Ealur
 #Fahruni
 #Ishisomo - Uoyonen, Akkilen - Vattuolen
+#Charak (only systems in the const not charak itself)
+#Shemah
+#Telang
+#Zorrabed
+#Akhwa
+#Halibai
+#Kothe
+#Sonama
+#Suner
+#Turba
 
 #Lowsec:
+#Amamake
 #Armi (const)
 #Jakemhih (const)
 #Kashag (const)
     #Nirbhi (Derelink)
-#Old Man Star
+#Youledian
