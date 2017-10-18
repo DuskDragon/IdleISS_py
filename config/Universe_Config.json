@@ -1883,129 +1883,255 @@
             "Special Systems": {},
             "Constellations":
             {
-                "":
+                "Armi":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Amamake",
+                    "Rimbah",
+                    "Bourar",
+                    "Arodan",
+                    "Sobenah",
+                    "Rammi",
+                    "Milal",
+                    "Jakemhih",
+                    "Rephirib",
+                    "Mamet",
+                    "Biphi",
+                    "Hoshoun",
+                    "Misaba",
+                    "Ziriert",
+                    "Sibot"
                 ],
-                "":
+                "Elfrad":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Besateoden",
+                    "Eldulf",
+                    "Horaka",
+                    "Illamur",
+                    "Meildolf",
+                    "Orien",
+                    "Varigne",
+                    "Aeditide",
+                    "Egbinger",
+                    "Hegfunden",
+                    "Kadlina",
+                    "Kategaud",
+                    "Klingt",
+                    "Weld",
+                    "Oyir"
                 ],
-                "":
+                "Eoldulf":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Ennur",
+                    "Fegomenko",
+                    "Mimiror",
+                    "Osvetur",
+                    "Skarkon",
+                    "Unertek",
+                    "Reyi",
+                    "Bika",
+                    "Jerma",
+                    "Miyeli",
+                    "Sadye",
+                    "Arshat",
+                    "Gyra",
+                    "Harold",
+                    "Bring"
                 ],
-                "":
+                "Fittakan":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Aeddin",
+                    "Atlar",
+                    "Bosena",
+                    "Gelfiven",
+                    "Gulfonodi",
+                    "Oddelulf",
+                    "Teonusude",
+                    "Youledian",
+                    "Kaira",
+                    "Ashmarir",
+                    "Arzanni",
+                    "Keberz",
+                    "Lansez",
+                    "Nourbal",
+                    "Ifa"
                 ],
-                "":
+                "Tartatven":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Aedald",
+                    "Audesder",
+                    "Heild",
+                    "Hrober",
+                    "Hrokkur",
+                    "Muttokon",
+                    "Andabian",
+                    "Mista",
+                    "Kheram",
+                    "Unefsih",
+                    "Sibot",
+                    "Valmu",
+                    "Atkrym",
+                    "Qucta",
+                    "Iota"
                 ]
             }
         },
         "Oasa":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["P-ZWKH","IAMJ-Q"],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Omist":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["7L9-ZC"],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Outer Passage":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["P-T9VC"],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Outer Ring":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["A2V6-6", "C0T-77"],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Paragon Soul":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems":
+            {
+                "G-M4GK": "Nullsec Border"
+            },
+            "Constellations": {}
         },
         "Period Basis":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["MVUO-F"],
+            "Special Systems":
+            {
+                "TN25-J": "Nullsec Border",
+                "TCAG-3": "Nullsec Border"
+            },
+            "Constellations": {}
         },
         "Perrigen Falls":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["VWES-Y"],
+            "Special Systems":
+            {
+                "MTO2-2": "Nullsec Border"
+            },
+            "Constellations": {}
         },
         "Placid":
         {
-            "Security": "Low"
+            "Security": "Low",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "Amevync":
+                [
+                    "Alselbosier",
+                    "Alperaute",
+                    "Aunsou",
+                    "Cumemare",
+                    "Gare",
+                    "Pain",
+                    "Reynire",
+                    "Aldranette",
+                    "Alsavoinon",
+                    "Anchauttes",
+                    "Esesier",
+                    "Evaulon",
+                    "Oicx",
+                    "Vlillirier",
+                    "Adacyne"
+                ],
+                "Beyt":
+                [
+                    "Fislipesnes",
+                    "Adacyne",
+                    "Chardalane",
+                    "Maut",
+                    "Orvolle",
+                    "Osmeden",
+                    "Oulley",
+                    "Covryn",
+                    "Dastryns",
+                    "Iges",
+                    "Slays",
+                    "Stacmon",
+                    "Uphallant",
+                    "Aulbres",
+                    "Ausmaert"
+                ],
+                "Ganoure":
+                [
+                    "Josmaert",
+                    "Barleguet",
+                    "Espigoure",
+                    "Kenninck",
+                    "Vestouve",
+                    "Algasienan",
+                    "Brellystier",
+                    "Dour",
+                    "Grispire",
+                    "Pelille",
+                    "Vivanier",
+                    "Amasiree",
+                    "Amoen",
+                    "Aubonnie",
+                    "Avaux"
+                ],
+                "Pegeler":
+                [
+                    "Mallugier",
+                    "Gallusiene",
+                    "Hedoubel",
+                    "Ruerrotta",
+                    "Archavoinet",
+                    "Aubenall",
+                    "Eugales",
+                    "Frarie",
+                    "Moclinamaud",
+                    "Renarelle",
+                    "Ivorider",
+                    "Mollin",
+                    "Ommaerrer",
+                    "Osmallanais",
+                    "Vilinnon"
+                ],
+                "Serthoulde":
+                [
+                    "Unour",
+                    "Viriette",
+                    "Alamel",
+                    "Alparena",
+                    "Arderonne",
+                    "Athounon",
+                    "Mantenault",
+                    "Mercomesier",
+                    "Odamia",
+                    "Reschard",
+                    "Iffrue",
+                    "Agoze",
+                    "Brarel",
+                    "Ostingele",
+                    "Intaki"
+                ]
+            }
         },
         "Polyhedra":
         {

@@ -82,9 +82,6 @@ class UserTestCase(TestCase):
 #Turba
 
 #Lowsec:
-#Amamake
-#Armi (const)
-#Jakemhih (const)
-#Kashag (const)
-    #Nirbhi (Derelink)
-#Youledian
+#Annancale
+#Harroule
+#Vey
