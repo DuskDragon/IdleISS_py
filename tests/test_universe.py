@@ -80,8 +80,6 @@ class UserTestCase(TestCase):
 #Sonama
 #Suner
 #Turba
+#listing: Tash-Murkon -> below and including Tividu
 
 #Lowsec:
-#Annancale
-#Harroule
-#Vey

@@ -1967,7 +1967,7 @@
                     "Mista",
                     "Kheram",
                     "Unefsih",
-                    "Sibot",
+                    "Siboto",
                     "Valmu",
                     "Atkrym",
                     "Qucta",
@@ -2161,74 +2161,511 @@
         },
         "Providence":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Pure Blind":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["X-7OMU"],
+            "Special Systems":
+            {
+                "EC-P8R": "Highsec Border"
+            },
+            "Constellations": {}
         },
         "Querious":
+        {
+            "Security": "Null",
+            "Orphan Systems": ["B-7DFU", "9CG6-H"],
+            "Special Systems": {},
+            "Constellations": {}
+        },
+        "Scalding Pass":
         {
             "Security": "Null",
             "Orphan Systems": [],
             "Special Systems": {},
             "Constellations": {}
         },
-        "Scalding Pass":
-        {
-            "Security": "Null"
-        },
         "Sinq Laison":
         {
-            "Security": "High"
+            "Security": "High",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "Agiesseon":
+                [
+                    "Adiere",
+                    "Auberulle",
+                    "Claysson",
+                    "Doussivitte",
+                    "Oirtlair",
+                    "Olelon",
+                    "Stetille",
+                    "Unel",
+                    "Alsottobier",
+                    "Audaerne",
+                    "Barmalie",
+                    "Colelie",
+                    "Deltole",
+                    "Fluekele",
+                    "Jolia"
+                ],
+                "Coriault":
+                [
+                    "Agrallarier",
+                    "Aunia",
+                    "Auvergne",
+                    "Botane",
+                    "Dodixie",
+                    "Eglennaert",
+                    "Odotte",
+                    "Vylade",
+                    "Parchanier",
+                    "Ainaille",
+                    "Caretyn",
+                    "Fricoure",
+                    "Mirilene",
+                    "Pucherie",
+                    "Trossere"
+                ],
+                "Firille":
+                [
+                    "Alles",
+                    "Basgerin",
+                    "Chelien",
+                    "Foves",
+                    "Misneden",
+                    "Pulin",
+                    "Vittenyn",
+                    "Adreland",
+                    "Aufay",
+                    "Balle",
+                    "Erme",
+                    "Grinacanne",
+                    "Metserel",
+                    "Pettinck",
+                    "Sharuveil"
+                ],
+                "Nadire":
+                [
+                    "Aetree",
+                    "Allipes",
+                    "Assiettes",
+                    "Esmes",
+                    "Goinard",
+                    "Lermireve",
+                    "Raeghoscon",
+                    "Ambeke",
+                    "Carrou",
+                    "Direrie",
+                    "Faurent",
+                    "Ignoitton",
+                    "Ansone",
+                    "Dunraelare",
+                    "Estene"
+                ],
+                "Nexus":
+                [
+                    "Abenync",
+                    "Alillere",
+                    "Aurcel",
+                    "Aymaerne",
+                    "Bourynes",
+                    "Pozirblant",
+                    "Gallareue",
+                    "Inghenges",
+                    "Nausschie",
+                    "Stayme",
+                    "Trosquesere",
+                    "Artisine",
+                    "Bamiette",
+                    "Chainelant",
+                    "Crielere"
+                ]
+            }
         },
         "Solitude":
         {
-            "Security": "Low"
+            "Security": "Low",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "Braille":
+                [
+                    "Aimoguier",
+                    "Anckee",
+                    "Cadelanne",
+                    "Conomette",
+                    "Elore",
+                    "Meunvon",
+                    "Vevelonel",
+                    "Yveve",
+                    "Aeman",
+                    "Rancer",
+                    "Lamadent",
+                    "Otou",
+                    "Miroitem",
+                    "Rorsins",
+                    "Thelan"
+                ],
+                "Elose":
+                [
+                    "Boystin",
+                    "Lour",
+                    "Maire",
+                    "Octanneve",
+                    "Oerse",
+                    "Pertnineere",
+                    "Vey",
+                    "Annancale",
+                    "Harroule",
+                    "Amod",
+                    "Akila",
+                    "Basan",
+                    "Shajarleg",
+                    "Sahda",
+                    "Naguton"
+                ],
+                "Goins":
+                [
+                    "Arasare",
+                    "Lazer",
+                    "Stoure",
+                    "Vecodie",
+                    "Yvaeroure",
+                    "Yvelet",
+                    "Raravath",
+                    "Namaili",
+                    "Ziriet",
+                    "Akhe",
+                    "Iela",
+                    "Emarr",
+                    "Qka",
+                    "Gie",
+                    "Asieen"
+                ],
+                "Mobrault":
+                [
+                    "Eggheron",
+                    "Ondree",
+                    "Pochelympe",
+                    "Ratillose",
+                    "Straloin",
+                    "Toustain",
+                    "Vhae",
+                    "Quawi",
+                    "Zis",
+                    "Llef",
+                    "Pae",
+                    "Gyfi",
+                    "Roean",
+                    "Roa",
+                    "Gids"
+                ],
+                "Orvanne":
+                [
+                    "Aeter",
+                    "Gererique",
+                    "Harner",
+                    "Larryn",
+                    "Niballe",
+                    "Odinesyn",
+                    "Postouvin",
+                    "Sarline",
+                    "Weraoix",
+                    "Fuaw",
+                    "Ernal",
+                    "Myria",
+                    "Deca",
+                    "Exa",
+                    "Tricosa"
+                ]
+            }
         },
         "The Spire":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["M-NP5O","OSW-0P","4DH-ST"],
+            "Special Systems":
+            {
+                "ZWM-BB": "Nullsec Border",
+                "C6C-K9": "Nullsec Border",
+                "0J-MQW": "Nullsec Border",
+                "3ET-G8": "Nullsec Border"
+            },
+            "Constellations": {}
         },
         "Stain":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems":
+            {
+                "DSS-EZ": "Nullsec Border",
+                "U-WLT9": "Nullsec Border",
+                "CJF-1P": "Nullsec Border"
+            },
+            "Constellations": {}
         },
         "Syndicate":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["Poitot","FD-MLJ"],
+            "Special Systems":
+            {
+                "PF-346": "Highsec Border"
+            },
+            "Constellations": {}
         },
         "Tash-Murkon":
         {
-            "Security": "High"
+            "Security": "High",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "Ajah":
+                [
+                    "Assiad",
+                    "Iswa",
+                    "Kerepa",
+                    "Marthia",
+                    "Nosodnis",
+                    "Rand",
+                    "Rumida",
+                    "Safilbab",
+                    "Sizamod",
+                    "Adar",
+                    "Goni",
+                    "Modun",
+                    "Paye",
+                    "Sagain",
+                    "Saminer"
+                ],
+                "Arvachah":
+                [
+                    "Baviasi",
+                    "Emrayur",
+                    "Hilaban",
+                    "Pasha",
+                    "Pimebeka",
+                    "Shesha",
+                    "Tash-Murkon Prime",
+                    "Asesamy",
+                    "Hostni",
+                    "Kibursha",
+                    "Lossa",
+                    "Mimime",
+                    "Onazel",
+                    "Perdan",
+                    "Arakor"
+                ],
+                "Emsek":
+                [
+                    "Chamume",
+                    "Gemodi",
+                    "Hibi",
+                    "Nuzair",
+                    "Pera",
+                    "Shousran",
+                    "Yong",
+                    "Atoosh",
+                    "Hoona",
+                    "Mimen",
+                    "Sacalan",
+                    "Thashkarai",
+                    "Unkah",
+                    "Esa",
+                    "Hath"
+                ],
+                "Mise":
+                [
+                    "Dabrid",
+                    "Gyerzen",
+                    "Ivih",
+                    "Mani",
+                    "Sehmosh",
+                    "Seil",
+                    "Arkoz",
+                    "Azhgabid",
+                    "Jinizu",
+                    "Nafrivik",
+                    "Phoren",
+                    "Remoriu",
+                    "Taru",
+                    "Yanuel",
+                    "Ahteer"
+                ],
+                "Rifenda":
+                [
+                    "Judra",
+                    "Kari",
+                    "Sharios",
+                    "Uhodoh",
+                    "Abai",
+                    "Ahkour",
+                    "Gaknem",
+                    "Iro",
+                    "Nehkiah",
+                    "Siyi",
+                    "Adahum",
+                    "Ahrosseas",
+                    "Anjedin",
+                    "Goram",
+                    "Tendhyes"
+                ]
+            }
         },
         "Tenal":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": ["30-D5G","3-QYVE"],
+            "Special Systems":
+            {
+                "2-3Q2G": "Nullsec Border",
+                "OE-4HB": "Nullsec Border"
+            },
+            "Constellations": {}
         },
         "Tenerifis":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Tribute":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Vale of the Silent":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Venal":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
         },
         "Verge Vendor":
         {
-            "Security": "High"
+            "Security": "High",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "":
+                [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "":
+                [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "":
+                [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "":
+                [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "":
+                [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ]
+            }
         },
         "Wicked Creek":
         {
-            "Security": "Null"
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
         }
     }
 }
