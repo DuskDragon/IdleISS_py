@@ -59,27 +59,7 @@ class UserTestCase(TestCase):
 
 
 #Highsec:
-#Suroken
-#Halaima
-#Ikao
-#Kamio
-#Sankkasen
-#Santola
-#Tintoh
-#Waira
-#Ealur
-#Fahruni
-#Ishisomo - Uoyonen, Akkilen - Vattuolen
-#Charak (only systems in the const not charak itself)
-#Shemah
-#Telang
-#Zorrabed
-#Akhwa
-#Halibai
-#Kothe
-#Sonama
-#Suner
-#Turba
+#Vahunomi - Uoyonen, Akkilen - Vattuolen
 #listing: Tash-Murkon -> below and including Tividu
 
 #Lowsec:

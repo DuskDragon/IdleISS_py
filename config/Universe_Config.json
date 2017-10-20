@@ -2536,29 +2536,43 @@
         "Tenerifis":
         {
             "Security": "Null",
-            "Orphan Systems": [],
-            "Special Systems": {},
+            "Orphan Systems": ["JV1V-O"],
+            "Special Systems":
+            {
+                "3L3N-X": "Nullsec Border"
+            },
             "Constellations": {}
         },
         "Tribute":
         {
             "Security": "Null",
-            "Orphan Systems": [],
-            "Special Systems": {},
+            "Orphan Systems": ["PNDN-V", "15W-GC"],
+            "Special Systems":
+            {
+                "M-OEE8": "Lowsec Border",
+                "UMI-KK": "Nullsec Border"
+            },
             "Constellations": {}
         },
         "Vale of the Silent":
         {
             "Security": "Null",
-            "Orphan Systems": [],
-            "Special Systems": {},
+            "Orphan Systems": ["AZBR-2", "TVN-FM", "Y-ZXIO", "ZA0L-U"],
+            "Special Systems":
+            {
+                "P3EN-E": "Lowsec Border"
+            },
             "Constellations": {}
         },
         "Venal":
         {
             "Security": "Null",
-            "Orphan Systems": [],
-            "Special Systems": {},
+            "Orphan Systems": ["PF-QHK","N5Y-4N"],
+            "Special Systems":
+            {
+                "3A1P-N": "Nullsec Border",
+                "WLF-D3": "Nullsec Border"
+            },
             "Constellations": {}
         },
         "Verge Vendor":
@@ -2568,102 +2582,102 @@
             "Special Systems": {},
             "Constellations":
             {
-                "":
+                "Aideron":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Amoderia",
+                    "Arraron",
+                    "Chantrousse",
+                    "Osmomonne",
+                    "Stou",
+                    "Tierijev",
+                    "Annelle",
+                    "Ancbeu",
+                    "Chesiette",
+                    "Claulenne",
+                    "Masalle",
+                    "Reblier",
+                    "Scolluzer",
+                    "Sortet",
+                    "Suroken"
                 ],
-                "":
+                "Anwyns":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Adallier",
+                    "Aidart",
+                    "Alenia",
+                    "Alentene",
+                    "Channace",
+                    "Cistuvaert",
+                    "Merolles",
+                    "Tourier",
+                    "Vaere",
+                    "Halaima",
+                    "Ikao",
+                    "Kamio",
+                    "Sankkasen",
+                    "Santola",
+                    "Tintoh"
                 ],
-                "":
+                "Kiartanne":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Amygnon",
+                    "Ansalle",
+                    "Ellmay",
+                    "Gisleres",
+                    "Jufvitte",
+                    "Scheenins",
+                    "Theruesse",
+                    "Waira",
+                    "Ealur",
+                    "Fahruni",
+                    "Shemah",
+                    "Telang",
+                    "Zorrabed",
+                    "Akhwa",
+                    "Halibai"
                 ],
-                "":
+                "Obray":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Clacille",
+                    "Clellinon",
+                    "Ekuenbiron",
+                    "Eletta",
+                    "Hevrice",
+                    "Jovainnon",
+                    "Luse",
+                    "Raneilles",
+                    "Vay",
+                    "Kothe",
+                    "Sonama",
+                    "Suner",
+                    "Turba",
+                    "Chiga",
+                    "Habu"
                 ],
-                "":
+                "Woenckee":
                 [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "Costolle",
+                    "Loes",
+                    "Melmaniel",
+                    "Muetralle",
+                    "Murethand",
+                    "Ouelletta",
+                    "Anyed",
+                    "Abhan",
+                    "Asanot",
+                    "Anzalaision",
+                    "Anyef",
+                    "Ishisomo",
+                    "Otitoh",
+                    "Otomainen",
+                    "Sakkikainen"
                 ]
             }
         },
         "Wicked Creek":
         {
             "Security": "Null",
-            "Orphan Systems": [],
+            "Orphan Systems": ["U-HVIX","H6-EYX", "F-QQ5N", "1L-OEK", "5H-SM2"],
             "Special Systems": {},
             "Constellations": {}
         }
