@@ -1,17 +1,17 @@
 {
-    "Universe_Seed": 42,
-    "System_Count": 5100,
-    "Constellation_Count": 340,
-    "Systems_Per_Constellation": 15,
-    "Region_Count": 68,
-    "Constellations_Per_Region": 5,
-    "Systems_Per_Region": 75,
-    "High_Security_Systems": 975,
-    "High_Security_Regions": 13,
-    "Low_Security_Systems": 750,
-    "Low_Secuirty_Regions": 10,
-    "Null_Security_Systems": 3375,
-    "Null_Security_Regions": 45,
+    "Universe Seed": 42,
+    "System Count": 5100,
+    "Constellation Count": 340,
+    "Systems Per Constellation": 15,
+    "Region Count": 68,
+    "Constellations Per Region": 5,
+    "Systems Per Region": 75,
+    "High Security Systems": 975,
+    "High Security Regions": 13,
+    "Low Security Systems": 750,
+    "Low Secuirty Regions": 10,
+    "Null Security Systems": 3375,
+    "Null Security Regions": 45,
     "Connectedness": 1.35,
     "Universe Structure":
     {
@@ -621,7 +621,7 @@
                 ],
                 "Sazdih":
                 [
-                    "Bairshir",
+                    "Bairshi",
                     "Bayuka",
                     "Dooz",
                     "Moh",
@@ -705,7 +705,7 @@
                     "Yuzier",
                     "Zaid",
                     "Bairshir",
-                    "Bayuka"
+                    "Bayukan"
                 ],
                 "Kisana":
                 [
@@ -715,10 +715,10 @@
                     "Mehatoor",
                     "Ohide",
                     "Sasoutikh",
-                    "Dooz",
-                    "Moh",
-                    "Sari",
-                    "Uzistoon",
+                    "Douz",
+                    "Moih",
+                    "Saria",
+                    "Uzist",
                     "Bekirdod",
                     "Berta",
                     "Gamis",
@@ -1303,7 +1303,7 @@
                     "Leran",
                     "Diaderi",
                     "Ubar",
-                    "Leran",
+                    "Leranon",
                     "Malma",
                     "Manatirid"
                 ]
@@ -1393,7 +1393,7 @@
                     "Meirakulf",
                     "Usteli",
                     "Abudan",
-                    "Hulm"
+                    "Hulim"
                 ],
                 "Urtfer":
                 [
@@ -1553,13 +1553,6 @@
             "Security": "Low",
             "Orphan Systems": [],
             "Special Systems": {},
-            "Constellations": {}
-        },
-        "Kor-Azor":
-        {
-            "Security": "Low",
-            "Orphan Systems": [],
-            "Special Systems": {},
             "Constellations":
             {
                 "Akar":
@@ -1570,36 +1563,56 @@
                     "Baratar",
                     "Hakana",
                     "Nahrneder",
-                    "Fanathor",
-                    "Hezere",
-                    "Nakis",
-                    "Old Man Star",
-                    "Rafeme",
-                    "Zirsem",
                     "Gidali",
                     "Molea",
-                    "Moniyyuku"
-                ],
-                "Amdimmah":
-                [
+                    "Moniyyuku",
                     "Palas",
                     "Reteka",
                     "Safshela",
-                    "Aurjet",
+                    "Cabeki",
+                    "Goudiyah",
+                    "Ibani"
+                ],
+                "Alpakian":
+                [
+                    "Amdimmah",
+                    "Fanathor",
+                    "Hezere",
+                    "Nakis",
+                    "Pout",
+                    "Rafeme",
+                    "Zirsem",
+                    "Irmalin",
+                    "Sassecho",
+                    "Timudan",
+                    "Ervekam",
+                    "Geztic",
+                    "Hishai",
+                    "Kahah",
+                    "Mashtarmem"
+                ],
+                "Arniri":
+                [
+                    "Budar",
+                    "Aurejet",
                     "Bomana",
                     "Danera",
                     "Edani",
                     "Rahabeda",
                     "Rilera",
-                    "Cabeki",
-                    "Goudiyah",
-                    "Ibani",
-                    "Irmalin",
-                    "Sassecho",
-                    "Timudan"
+                    "Osis",
+                    "Saloti",
+                    "Sehsasez",
+                    "Yezara",
+                    "Chitiamem",
+                    "Dimoohan",
+                    "Kuhri",
+                    "Nandeza"
                 ],
                 "Fekhoya":
                 [
+                    "Finaka",
+                    "Homroon",
                     "Afnakat",
                     "Balanaz",
                     "Bashyam",
@@ -1608,34 +1621,20 @@
                     "Firbha",
                     "Parses",
                     "Tegheon",
-                    "Ervekam",
-                    "Geztic",
-                    "Hishai",
-                    "Kahah",
-                    "Mashtarmem",
-                    "Osis",
-                    "Saloti"
-                ],
-                "Finaka":
-                [
-                    "Sehsasez",
-                    "Yezara",
-                    "Chitiamem",
-                    "Dimoohan",
-                    "Kuhri",
-                    "Nandeza",
                     "Neda",
                     "Zahefeus",
                     "Zephan",
+                    "Efa",
+                    "Kaira"
+                ],
+                "Nohshayess":
+                [
                     "Agil",
                     "Bukah",
                     "Gousoviba",
                     "Ipref",
                     "Jachanu",
-                    "Khanid Prime"
-                ],
-                "Seevadin":
-                [
+                    "Khanid Prime",
                     "Kihtaled",
                     "Neyi",
                     "Sazre",
@@ -1644,11 +1643,104 @@
                     "Hemouner",
                     "Seshala",
                     "Upt",
-                    "Vezila",
-                    "Ainsan",
+                    "Vezila"
+                ]
+            }
+        },
+        "Kor-Azor":
+        {
+            "Security": "Low",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "Comadu":
+                [
+                    "Atarli",
+                    "Keproh",
+                    "Piri",
+                    "Rannoze",
+                    "Shokal",
+                    "Zatamaka",
+                    "Vahunomi",
+                    "Abagawa",
+                    "Gekutami",
+                    "Old Man Star",
+                    "Hampinen",
+                    "Hurtoken",
+                    "Jakanerva",
+                    "Saisio",
+                    "Uoyonen"
+                ],
+                "Finena":
+                [
+                    "Kizama",
+                    "Misha",
+                    "Neesher",
+                    "Ordion",
+                    "Perbhe",
+                    "Shaha",
+                    "Akkilen",
+                    "Keikaken",
+                    "Onuse",
+                    "Silen",
+                    "Soshin",
+                    "Ukkalen",
+                    "Vattuolen",
+                    "Iekna",
+                    "Pekha"
+                ],
+                "Gebem":
+                [
+                    "Amdonen",
+                    "Conoban",
+                    "Chiamem",
+                    "Tividu",
+                    "Imeshasa",
+                    "Nandea",
+                    "Nedadr",
+                    "Zahefs",
+                    "Zepha",
+                    "Agile",
+                    "Bukh",
+                    "Goiba",
+                    "Iopref",
+                    "Jacanu",
+                    "Kor-Azor Prime"
+                ],
+                "Jatari":
+                [
+                    "Ami",
+                    "Bridi",
+                    "Fensi",
+                    "Jeni",
+                    "Khabara",
+                    "Nebian",
+                    "Kula",
+                    "Andrub",
+                    "Annad",
+                    "Chaktaren",
+                    "Danyana",
+                    "Jinkah",
+                    "Nahyeen",
+                    "Polfaly",
+                    "Dyean"
+                ],
+                "Orus":
+                [
+                    "Daran",
+                    "Gademam",
+                    "Latari",
+                    "Nahol",
+                    "Pananan",
+                    "Tadadan",
+                    "Choga",
+                    "Ravin",
+                    "Arzi",
+                    "Kerying",
                     "Ashi",
                     "Badivefi",
-                    "Efa",
+                    "Arza",
                     "Moro",
                     "Sabusi"
                 ]
@@ -1947,7 +2039,7 @@
                     "Oddelulf",
                     "Teonusude",
                     "Youledian",
-                    "Kaira",
+                    "Kaiyra",
                     "Ashmarir",
                     "Arzanni",
                     "Keberz",
@@ -2062,7 +2154,7 @@
                 "Beyt":
                 [
                     "Fislipesnes",
-                    "Adacyne",
+                    "Adacu",
                     "Chardalane",
                     "Maut",
                     "Orvolle",
@@ -2667,7 +2759,7 @@
                     "Asanot",
                     "Anzalaision",
                     "Anyef",
-                    "Ishisomo",
+                    "Ishisomoe",
                     "Otitoh",
                     "Otomainen",
                     "Sakkikainen"
