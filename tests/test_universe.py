@@ -10,8 +10,7 @@ class UserTestCase(TestCase):
         pass
 
     def test_load_universe_config(self):
-        with open("config/Universe_Config.json") as fd:
-            raw_data = json.load(fd)
+        uni = Universe(42, 5100, 340, 68, 1.35, 'config/Universe_Config.json')
 
     def test_generate_constellation_raises_error(self):
         uni = Universe(42, 5100, 340, 68, 1.35)

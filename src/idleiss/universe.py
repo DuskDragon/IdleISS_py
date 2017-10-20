@@ -1,4 +1,5 @@
 import random
+import json
 
 def generate_alphanumeric(random_state):
     valid_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
@@ -61,7 +62,31 @@ class SolarSystem(object):
         return True # connection added
 
 class Universe(object):
-    def __init__(self, seed, systems, constellations, regions, connectedness):
+    _required_keys = [
+        'Universe_Seed', #top level keys
+        'System_Count',
+        'Constellation_Count',
+        'Systems_Per_Constellation',
+        'Region_Count',
+        'Constellations_Per_Region',
+        'Systems_Per_Region',
+        'High_Security_Systems',
+        'High_Security_Regions',
+        'Low_Security_Systems',
+        'Low_Secuirty_Regions',
+        'Null_Security_Systems',
+        'Null_Security_Regions',
+        'Connectedness',
+        'Universe Structure'
+    ]
+    _required_region_keys = [
+        'Security',
+        'Orphan Systems',
+        'Special Systems',
+        'Constellations'
+    ]
+
+    def __init__(self, seed, systems, constellations, regions, connectedness, filename=None):
         """
         generates a universe with #systems, #constellations and #regions
         using connectedness as a rough guide to how linked nodes are within a collection
@@ -74,6 +99,36 @@ class Universe(object):
         self.connectedness = connectedness
         self.system_names = []
         self.current_unused_system_id = 0
+        if filename:
+            self.load(filename)
+
+    def _missing_universe_keys(self, universe_data):
+        uni_required_keys = set(self._required_keys)
+        uni_provided_keys = set(universe_data.keys())
+        missing = uni_required_keys - uni_provided_keys
+        if missing:
+            return ', '.join(uni_required_keys - uni_provided_keys)
+        for region in universe_data['Universe Structure']:
+            region_required_keys = set(self._required_region_keys)
+            region_provided_keys = set(universe_data['Universe Structure'][region].keys())
+            missing = region_required_keys - region_provided_keys
+            if missing:
+                return str(region)+": "+', '.join(missing)
+        return False
+
+    def load(self, filename):
+        with open(filename) as fd:
+            raw_data = json.load(fd)
+        self._load(raw_data)
+
+    def _load(self, raw_data):
+        missing = self._missing_universe_keys(raw_data)
+        if missing:
+            raise ValueError(str(missing)+' not found in config')
+
+        #TODO: Check proper structure
+            #highsec/lowsec all named systems and constellations, no specials or orphans
+            #nullsec can contain named systems, orphans, and specials, and fully defined consts
 
     def register_system_name(self, name):
         if self.system_name_exists(name):
