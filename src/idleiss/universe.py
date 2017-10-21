@@ -173,10 +173,16 @@ class Universe(object):
             if region_data['Security'] == "High" or region_data['Security'] == "Low":
                 if raw_data["Constellations Per Region"] != len(region_data["Constellations"]):
                     raise ValueError(region+": contains "+str(len(region_data["Constellations"]))+" the expected value is "+str(raw_data["Constellations Per Region"]))
+                for constellation in universe_structure[region]['Constellations']:
+                    if raw_data['Systems Per Constellation'] != len(universe_structure[region]['Constellations'][constellation]):
+                        raise ValueError(region+': '+constellation+': contains '+str(len(universe_structure[region]['Constellations'][constellation]))+' systems when it should have '+str(raw_data['Systems Per Constellation']))
                 #verify all consts and systems are named
             elif region_data['Security'] == "Null":
                 if raw_data["Constellations Per Region"] < len(region_data["Constellations"]):
                     raise ValueError(region+": contains "+str(len(region_data["Constellations"]))+" the expected value is less than or equal to "+str(raw_data["Constellations Per Region"]))
+                for constellation in universe_structure[region]['Constellations']:
+                    if raw_data['Systems Per Constellation'] < len(universe_structure[region]['Constellations'][constellation]):
+                        raise ValueError(region+': '+constellation+': contains '+str(len(universe_structure[region]['Constellations'][constellation]))+' systems when it should have less than or equal to '+str(raw_data['Systems Per Constellation']))
             else:
                 raise ValueError(region+": contiains invalid Security rating.")
 
