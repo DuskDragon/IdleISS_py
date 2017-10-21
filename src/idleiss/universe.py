@@ -35,7 +35,7 @@ def drain(node_list):
 class SolarSystem(object):
     def __init__(self, system_id, random_state, universe):
         unvalidated_name = generate_system_name(random_state)
-        while(universe._name_exists(unvalidated_name)):
+        while(universe.name_exists(unvalidated_name)):
             unvalidated_name = generate_system_name(random_state)
         self.name = unvalidated_name
         universe.register_name(self.name)
@@ -73,7 +73,7 @@ class Universe(object):
         'High Security Systems',
         'High Security Regions',
         'Low Security Systems',
-        'Low Secuirty Regions',
+        'Low Security Regions',
         'Null Security Systems',
         'Null Security Regions',
         'Connectedness',
@@ -86,17 +86,12 @@ class Universe(object):
         'Constellations'
     ]
 
-    def __init__(self, seed, systems, constellations, regions, connectedness, filename=None):
+    def __init__(self, filename=None):
         """
         generates a universe with #systems, #constellations and #regions
         using connectedness as a rough guide to how linked nodes are within a collection
         """
         self.rand = random
-        self.rand.seed(seed)
-        self.system_count_target = systems
-        self.constellation_count_target = constellations
-        self.region_count_target = regions
-        self.connectedness = connectedness
         self.used_names = []
         self.current_unused_system_id = 0
         if filename:
@@ -126,17 +121,51 @@ class Universe(object):
         if missing:
             raise ValueError(str(missing)+' not found in config')
 
+        self.rand.seed(raw_data['Universe Seed'])
+        self.system_count_target = raw_data['System Count']
+        self.constellation_count_target = raw_data['Constellation Count']
+        self.region_count_target = raw_data['Region Count']
+        self.connectedness = raw_data['Connectedness']
+
+        self._verify_config_settings(raw_data)
+
+    def _verify_config_settings(self, raw_data):
         universe_structure = raw_data['Universe Structure']
 
-        #TODO:verify math
         if raw_data["System Count"] != raw_data["Constellation Count"] * raw_data["Systems Per Constellation"]:
             raise ValueError("System Count does not equal 'Constellation Count'*'Systems Per Constellation'")
         if raw_data["System Count"] != raw_data["Region Count"] * raw_data["Systems Per Region"]:
             raise ValueError("System Count does not equal 'Region Count'*'Systems Per Region'")
         if raw_data["System Count"] != raw_data["Region Count"] * raw_data["Constellations Per Region"] * raw_data["Systems Per Constellation"]:
             raise ValueError("System Count does not equal 'Region Count'*'Constellations Per Region'*'Systems Per Constellation'")
+        if raw_data["High Security Systems"] != raw_data['High Security Regions'] * raw_data['Systems Per Region']:
+            raise ValueError("High Security System count does not match highsec_regions*systems_per_region")
+        if raw_data["Low Security Systems"] != raw_data['Low Security Regions'] * raw_data['Systems Per Region']:
+            raise ValueError("Low Security System count does not match lowsec_regions*systems_per_region")
+        if raw_data["Null Security Systems"] != raw_data['Null Security Regions'] * raw_data['Systems Per Region']:
+            raise ValueError("Null Security System count does not match nullsec_regions*systems_per_region")
+        if raw_data["Region Count"] != raw_data['High Security Regions'] + raw_data['Low Security Regions'] + raw_data['Null Security Regions']:
+            raise ValueError("Region counts do not match with total region count")
+        #count actual regions
         if raw_data["Region Count"] != len(universe_structure):
             raise ValueError("Region Count in config: "+str(raw_data["Region Count"])+" does not match actual region count: "+str(len(universe_structure)))
+
+        highsec_regions, lowsec_regions, nullsec_regions = 0,0,0
+
+        for region in universe_structure:
+            if universe_structure[region]['Security'] == "High":
+                highsec_regions += 1
+            elif universe_structure[region]['Security'] == "Low":
+                lowsec_regions += 1
+            elif universe_structure[region]['Security'] == "Null":
+                nullsec_regions += 1
+
+        if raw_data["High Security Regions"] != highsec_regions:
+            raise ValueError("Highsec Region Count is "+str(highsec_regions)+" but should be: "+str(raw_data["High Security Regions"]))
+        if raw_data["Low Security Regions"] != lowsec_regions:
+            raise ValueError("Lowsec Region Count is "+str(lowsec_regions)+" but should be: "+str(raw_data["Low Security Regions"]))
+        if raw_data["Null Security Regions"] != nullsec_regions:
+            raise ValueError("Nullsec Region Count is "+str(nullsec_regions)+" but should be: "+str(raw_data["Null Security Regions"]))
 
         #verify low/high sec space have fully named systems:
         for region in universe_structure:
@@ -146,7 +175,8 @@ class Universe(object):
                     raise ValueError(region+": contains "+str(len(region_data["Constellations"]))+" the expected value is "+str(raw_data["Constellations Per Region"]))
                 #verify all consts and systems are named
             elif region_data['Security'] == "Null":
-                continue
+                if raw_data["Constellations Per Region"] < len(region_data["Constellations"]):
+                    raise ValueError(region+": contains "+str(len(region_data["Constellations"]))+" the expected value is less than or equal to "+str(raw_data["Constellations Per Region"]))
             else:
                 raise ValueError(region+": contiains invalid Security rating.")
 
@@ -166,12 +196,12 @@ class Universe(object):
             #nullsec can contain named systems, orphans, and specials, and fully defined consts
 
     def register_name(self, name):
-        if self._name_exists(name):
+        if self.name_exists(name):
             raise ValueError("Universe generation: entity name exists: "+name)
         else:
             self.used_names.append(name)
 
-    def _name_exists(self, name):
+    def name_exists(self, name):
         return name in self.used_names
 
     def generate_wolfram_alpha_output(self, node_list):

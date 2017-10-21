@@ -1,3 +1,5 @@
+nosetests --with-coverage --cover-package=IdleISS --cover-html
+
  - Progression:
     Basic Income
 
