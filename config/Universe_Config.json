@@ -544,7 +544,7 @@
         {
             "Security": "Low",
             "Orphan Systems": [],
-            "Special Systems": [],
+            "Special Systems": {},
             "Constellations":
             {
                 "Ananah":

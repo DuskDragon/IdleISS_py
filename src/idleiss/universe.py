@@ -153,11 +153,12 @@ class Universe(object):
         highsec_regions, lowsec_regions, nullsec_regions = 0,0,0
 
         for region in universe_structure:
-            if universe_structure[region]['Security'] == "High":
+            region_data = universe_structure[region]
+            if region_data['Security'] == "High":
                 highsec_regions += 1
-            elif universe_structure[region]['Security'] == "Low":
+            elif region_data['Security'] == "Low":
                 lowsec_regions += 1
-            elif universe_structure[region]['Security'] == "Null":
+            elif region_data['Security'] == "Null":
                 nullsec_regions += 1
 
         if raw_data["High Security Regions"] != highsec_regions:
@@ -170,36 +171,56 @@ class Universe(object):
         #verify low/high sec space have fully named systems:
         for region in universe_structure:
             region_data = universe_structure[region]
+            if type(region_data["Orphan Systems"]) != list:
+                raise ValueError(region+": orphan systems is not a list.")
+            if type(region_data["Special Systems"]) != dict:
+                raise ValueError(region+": special systems is not a dictionary.")
             if region_data['Security'] == "High" or region_data['Security'] == "Low":
+                if region_data["Orphan Systems"] != []:
+                    raise ValueError(region+" is a non-nullsec region with orphan systems which is not allowed.")
                 if raw_data["Constellations Per Region"] != len(region_data["Constellations"]):
                     raise ValueError(region+": contains "+str(len(region_data["Constellations"]))+" the expected value is "+str(raw_data["Constellations Per Region"]))
-                for constellation in universe_structure[region]['Constellations']:
-                    if raw_data['Systems Per Constellation'] != len(universe_structure[region]['Constellations'][constellation]):
-                        raise ValueError(region+': '+constellation+': contains '+str(len(universe_structure[region]['Constellations'][constellation]))+' systems when it should have '+str(raw_data['Systems Per Constellation']))
-                #verify all consts and systems are named
+                for constellation in region_data['Constellations']:
+                    if raw_data['Systems Per Constellation'] != len(region_data['Constellations'][constellation]):
+                        raise ValueError(region+': '+constellation+': contains '+str(len(region_data['Constellations'][constellation]))+' systems when it should have '+str(raw_data['Systems Per Constellation']))
+            #null is more customiziable because it is filled in with random sys-names
             elif region_data['Security'] == "Null":
                 if raw_data["Constellations Per Region"] < len(region_data["Constellations"]):
                     raise ValueError(region+": contains "+str(len(region_data["Constellations"]))+" the expected value is less than or equal to "+str(raw_data["Constellations Per Region"]))
-                for constellation in universe_structure[region]['Constellations']:
-                    if raw_data['Systems Per Constellation'] < len(universe_structure[region]['Constellations'][constellation]):
-                        raise ValueError(region+': '+constellation+': contains '+str(len(universe_structure[region]['Constellations'][constellation]))+' systems when it should have less than or equal to '+str(raw_data['Systems Per Constellation']))
+                for constellation in region_data['Constellations']:
+                    if raw_data['Systems Per Constellation'] < len(region_data['Constellations'][constellation]):
+                        raise ValueError(region+': '+constellation+': contains '+str(len(region_data['Constellations'][constellation]))+' systems when it should have less than or equal to '+str(raw_data['Systems Per Constellation']))
             else:
                 raise ValueError(region+": contiains invalid Security rating.")
 
+        systems_verified = 0
+        constellations_verified = 0
+        regions_verified = 0
         #start loading names into the huge name list
         for region in universe_structure:
+            region_data = universe_structure[region]
             self.register_name(region)
-            for orphan_sys in universe_structure[region]["Orphan Systems"]:
+            regions_verified += 1
+            for orphan_sys in region_data["Orphan Systems"]:
                 self.register_name(orphan_sys)
-            for special_sys in universe_structure[region]["Special Systems"]:
+                systems_verified += 1
+            for special_sys in region_data["Special Systems"]:
                 self.register_name(special_sys)
-            for constellation in universe_structure[region]["Constellations"]:
+                systems_verified += 1
+            for constellation in region_data["Constellations"]:
                 self.register_name(constellation)
-                for system in universe_structure[region]["Constellations"][constellation]:
+                constellations_verified += 1
+                for system in region_data["Constellations"][constellation]:
                     self.register_name(system)
-        #TODO: Check proper structure
-            #highsec/lowsec all named systems and constellations, no specials or orphans
-            #nullsec can contain named systems, orphans, and specials, and fully defined consts
+                    systems_verified += 1
+
+        print("\nSuccessfully imported the following:")
+        print(str(regions_verified)+" regions")
+        print("    "+str(highsec_regions)+" High Security")
+        print("    "+str(lowsec_regions)+" Low Security")
+        print("    "+str(nullsec_regions)+" Null Security")
+        print(str(constellations_verified)+" constellations")
+        print(str(systems_verified)+" systems")
 
     def register_name(self, name):
         if self.name_exists(name):
