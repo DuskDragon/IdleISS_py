@@ -1,17 +1,7 @@
 import random
 import json
 
-def generate_alphanumeric(random_state):
-    valid_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-    return random_state.choice(valid_characters)
-
-def generate_system_name(random_state):
-    #example D-PNP9, 6VDT-H, OWXT-5, 16P-PX, CCP-US
-    #always uppercase letters
-    #5 characters with a dash in the middle somewhere
-    dash_position = random_state.randint(1,4)
-    letters = ''.join((generate_alphanumeric(random_state) for x in range(5)))
-    return letters[0:dash_position] + '-' + letters[dash_position::]
+#TODO: Distance floodfill?
 
 def flood(node):
     if(node.flooded):
@@ -33,24 +23,30 @@ def drain(node_list):
         x.flooded = False
 
 class SolarSystem(object):
-    def __init__(self, system_id, random_state, universe):
-        unvalidated_name = generate_system_name(random_state)
-        while(universe.name_exists(unvalidated_name)):
-            unvalidated_name = generate_system_name(random_state)
-        self.name = unvalidated_name
+    def __init__(self, random_state, universe, security, name, const, region):
+        if universe.name_exists(name):
+            raise ValueError("SolarSystem __init__: "+name+" already exists")
+        self.name = name
         universe.register_name(self.name)
-        self.id = system_id
+
+        self.constellation = const
+        self.region = region
+        self.entitytype = "System"
+        self.bordertype = "Solar"
+        self.security = security
+        self.rand = random_state
         self.connections = []
+        self.id = universe.get_next_system_id()
         self.flooded = False
 
     def __str__(self):
         connections_str = ""
         for x in self.connections:
-            connections_str += " " + str(x.id)
-        return "idleiss.universe.SolarSystem: " + str(self.id) + " Connections: " + connections_str
+            connections_str += " " + str(x.name)
+        return "idleiss.universe.SolarSystem: " + str(self.name) + " Connections: " + connections_str
 
-    def connection_exists(self, system):
-        return system in self.connections
+    def connection_exists(self, entity):
+        return entity in self.connections
 
     def add_connection(self, system):
         if self.connection_exists(system):
@@ -59,6 +55,111 @@ class SolarSystem(object):
         if system.connection_exists(self):
             raise ValueError("1-way System Connection: "+system.name+" to "+self.name)
         system.connections.append(self)
+        return True # connection added
+
+class Constellation(object):
+    def __init__(self, random_state, universe, systems, security, name, region):
+        if universe.name_exists(name):
+            raise ValueError("Constellation __init__: "+name+" already exists")
+        self.name = name
+        universe.register_name(self.name)
+
+        self.entitytype = "Constellation"
+        self.systems = systems
+        self.security = security
+        if len(self.systems) > universe.systems_per_constellation:
+            raise ValueError("Constellation __init__: "+name+": too many systems")
+        if len(self.systems) < universe.systems_per_constellation:
+            if security != "Null":
+                raise ValueError("Constellation __init__: "+name+": too few systems for non-nullsec")
+            for x in range(universe.systems_per_constellation - len(self.systems)):
+                new_sys = SolarSystem(random_state, universe, security, universe.generate_unused_nullsec_name(), self.name, region)
+                self.systems.append(new_sys)
+        #print("idleiss.universe._build_universe: calling stitch nodes on: "+region+": "+self.name+": systems: "+str(len(self.systems)))#DEBUG LINE
+        self.systems = universe.stitch_nodes(self.systems)
+        self.rand = random_state
+        self.region = region
+        self.connections = []
+        self.id = universe.get_next_constellation_id()
+        self.flooded = False
+
+    def __str__(self):
+        connections_str = ""
+        for x in self.connections:
+            connections_str += " " + str(x.name)
+        return "idleiss.universe.Constellation: " + str(self.name) + " Connections: " + connections_str
+
+    def connection_exists(self, constellation):
+        return constellation in self.connections
+
+    def add_connection(self, constellation, connect_type="Constellation", extra=False):
+        if self.connection_exists(constellation) and extra == False:
+            return False # may want to change this return type (means already connected)
+        elif self.connection_exists(constellation) and extra == True:
+            pass # TODO:may need to add something else here
+        else: #self.connection_exists(constellation) is false
+            self.connections.append(constellation)
+            if constellation.connection_exists(self):
+                raise ValueError("1-way Constellation Connection: "+constellation.name+" to "+self.name)
+            constellation.connections.append(self)
+        #TODO: change this to find the LEAST CONNECTED system (maybe) instead of random choice
+        dest = self.rand.choice(constellation.systems)
+        jumpoff = self.rand.choice(self.systems)
+        dest.add_connection(jumpoff)
+        dest.bordertype = connect_type
+        jumpoff.bordertype = connect_type
+        return True # connection added
+
+class Region(object):
+    def __init__(self, random_state, universe, constellations, name, security):
+        if universe.name_exists(name):
+            raise ValueError("Region __init__: "+name+" already exists")
+        self.name = name
+        universe.register_name(self.name)
+
+        self.entitytype = "Region"
+        self.constellations = constellations
+        self.security = security
+        if len(self.constellations) > universe.constellations_per_region:
+            raise ValueError("Region __init__: "+name+": too many constellations")
+        if len(self.constellations) < universe.constellations_per_region:
+            if security != "Null":
+                raise ValueError("Region __init__: "+name+": too few constellations for non-nullsec")
+            for x in range(universe.constellations_per_region - len(self.constellations)):
+                new_const = Constellation(random_state, universe, [], security, universe.generate_unused_nullsec_name(), self.name)
+                self.constellations.append(new_const)
+        #print("idleiss.universe._build_universe: calling stitch nodes on: "+self.name+": constellations: "+str(len(self.constellations)))#DEBUG LINE
+        self.constellations = universe.stitch_nodes(self.constellations)
+        self.rand = random_state
+        self.connections = []
+        self.border_edge_systems = []
+        self.id = universe.get_next_constellation_id()
+        self.flooded = False
+
+    def __str__(self):
+        connections_str = ""
+        for x in self.connections:
+            connections_str += " " + str(x.name)
+        return "idleiss.universe.Region: " + str(self.name) + " Connections: " + connections_str
+
+    def connection_exists(self, region):
+        return region in self.connections
+
+    def add_connection(self, region, extra=False):
+        if self.connection_exists(region) and extra == False:
+            return False # may want to change this return type (means already connected)
+        elif self.connection_exists(region) and extra == True:
+            pass # TODO:may need to add something else here
+        else: #self.connection_exists(region) is false
+            self.connections.append(region)
+            if region.connection_exists(self):
+                raise ValueError("1-way Region Connection: "+region.name+" to "+self.name)
+            region.connections.append(self)
+        #TODO: change this to find the LEAST CONNECTED const (maybe) instead of random choice
+        dest = self.rand.choice(region.constellations)
+        jumpoff = self.rand.choice(self.constellations)
+        dest.add_connection(jumpoff, connect_type="Region")
+
         return True # connection added
 
 class Universe(object):
@@ -93,9 +194,29 @@ class Universe(object):
         """
         self.rand = random
         self.used_names = []
+        self.regions = []
+        self.constellations = []
+        self.systems = []
         self.current_unused_system_id = 0
+        self.current_unused_constellation_id = 0
+        self.current_unused_region_id = 0
         if filename:
             self.load(filename)
+
+    def get_next_system_id(self):
+        ret_val = self.current_unused_system_id
+        self.current_unused_system_id += 1
+        return ret_val
+
+    def get_next_constellation_id(self):
+        ret_val = self.current_unused_constellation_id
+        self.current_unused_constellation_id += 1
+        return ret_val
+
+    def get_next_region_id(self):
+        ret_val = self.current_unused_region_id
+        self.current_unused_region_id += 1
+        return ret_val
 
     def _missing_universe_keys(self, universe_data):
         uni_required_keys = set(self._required_keys)
@@ -126,8 +247,13 @@ class Universe(object):
         self.constellation_count_target = raw_data['Constellation Count']
         self.region_count_target = raw_data['Region Count']
         self.connectedness = raw_data['Connectedness']
+        self.systems_per_constellation = raw_data["Systems Per Constellation"]
+        self.constellations_per_region = raw_data["Constellations Per Region"]
 
         self._verify_config_settings(raw_data)
+        #TODO: config file is verified except for rigidly defined structures
+
+        self._build_universe(raw_data)
 
     def _verify_config_settings(self, raw_data):
         universe_structure = raw_data['Universe Structure']
@@ -193,6 +319,7 @@ class Universe(object):
             else:
                 raise ValueError(region+": contiains invalid Security rating.")
 
+        #TODO remove DEBUG initial name loading \/ \/ \/ \/
         systems_verified = 0
         constellations_verified = 0
         regions_verified = 0
@@ -222,6 +349,9 @@ class Universe(object):
         print(str(constellations_verified)+" constellations")
         print(str(systems_verified)+" systems")
 
+        self.used_names = []
+        #TODO remove initial name loading ^^^^^^^^^^
+
     def register_name(self, name):
         if self.name_exists(name):
             raise ValueError("Universe generation: entity name exists: "+name)
@@ -230,20 +360,6 @@ class Universe(object):
 
     def name_exists(self, name):
         return name in self.used_names
-
-    def generate_wolfram_alpha_output(self, node_list):
-        connection_list = []
-        for x in node_list:
-            for y in x.connections:
-                if x.id > y.id:
-                    connection_list.append(str(x.id+1) + "->" + str(y.id+1) + ", ")
-                else: # y > x:
-                    connection_list.append(str(y.id+1) + "->" + str(x.id+1) + ", ")
-        pruned_list = set(connection_list)
-        output_str = "Graph "
-        for x in pruned_list:
-            output_str += str(x)
-        return output_str[:-2]
 
     def generate_networkx(self, node_list):
         """
@@ -257,12 +373,12 @@ class Universe(object):
         orphan_list = []
         for x in node_list:
             if len(x.connections) == 0:
-                orphan_list.append(x.id)
+                orphan_list.append(x.name)
             for y in x.connections:
                 if x.id > y.id:
-                    connection_list.append((x.id,y.id,))
+                    connection_list.append((x.name,y.name,))
                 else: # y > x:
-                    connection_list.append((y.id,x.id,))
+                    connection_list.append((y.name,x.name,))
         pruned_list = set(connection_list)
         # add collected nodes
         G.add_edges_from(pruned_list)
@@ -276,32 +392,50 @@ class Universe(object):
         #plt.show()
         return G
 
-    def generate_constellation(self, system_count):
-        if system_count < 2:
-            raise ValueError("must have at least two systems for a constellation")
-        system_list = []
-        for x in range(system_count):
-            system_list.append(SolarSystem(self.current_unused_system_id, self.rand, self))
-            self.current_unused_system_id += 1
-        # now we have a list of systems which each have an id and a name
-        # we just need to randomly add connections
-        # at first we won't care if they are already connected
+    def _build_universe(self, verified_config):
+        regions = verified_config["Universe Structure"]
+        these_region = []
+        for region in regions: #dict
+            constellations = regions[region]["Constellations"]
+            these_const = []
+            for constellation in constellations: #list/dict
+                systems = constellations[constellation]
+                these_sys = []
+                for system in systems:
+                    #generate system
+                    new_sys = SolarSystem(self.rand, self, regions[region]["Security"], system, constellation, region)
+                    these_sys.append(new_sys)
+                    if type(systems) == dict: #defined const
+                        pass #TODO: connect pre-defined connected systems
+                # generate const
+                new_const = Constellation(self.rand, self, these_sys, regions[region]["Security"], constellation, region)
+                these_const.append(new_const)
+            # generate region
+            new_region = Region(self.rand, self, these_const, region, regions[region]["Security"])
+            these_region.append(new_region)
+            #TODO: Force in guaranteed system names
+            #TODO: Force in Special Systems
 
-        # develop 'connectedness * system_count' connections
-        for x in range(int(self.connectedness*system_count)):
-            s1, s2 = self.rand.sample(system_list, 2)
-            s1.add_connection(s2)
+        #build final connected listing
+        self.regions = self.stitch_nodes(these_region)
+        for region in self.regions:
+            for constellation in region.constellations:
+                self.constellations.append(constellation)
+                for system in constellation.systems:
+                    self.systems.append(system)
 
-        #def stitch_nodes(self, node_list):
+    def stitch_nodes(self, node_list):
+        if len(node_list) < 2:
+            raise ValueError("idleiss.universe.stitch_nodes: must have at least two systems for a connection. List provided was: "+str(node_list))
         # floodfill
-        if len(system_list[0].connections) == 0: #floodfill will start on orphan, avoid this
-            system_list[0].add_connection(self.rand.choice(system_list[1:]))
-        while not floodfill(system_list):
+        if len(node_list[0].connections) == 0: #floodfill will start on orphan, avoid this
+            node_list[0].add_connection(self.rand.choice(node_list[1:]))
+        while not floodfill(node_list):
             #floodfill failed, find failed nodes:
             valid_nodes = []
             orphan_nodes = []
             disjoint_nodes = []
-            for x in system_list:
+            for x in node_list:
                 if len(x.connections) == 0:
                     orphan_nodes.append(x)
                 elif x.flooded:
@@ -311,12 +445,30 @@ class Universe(object):
             #first pin disjoint graphs to valid nodes
             if len(disjoint_nodes) > 0:
                 disjoint_nodes[0].add_connection(self.rand.choice(valid_nodes))
-                drain(system_list)
+                drain(node_list)
                 continue #go around again
             #next pin all orphans, there are only ophans remaining
             for x in range(len(orphan_nodes)): #include already processed orphans
                 orphan_nodes[x].add_connection(self.rand.choice((valid_nodes + orphan_nodes[:x])))
-            drain(system_list)
+            drain(node_list)
         #end of floodfill
-        drain(system_list)
-        return system_list
+        drain(node_list)
+        return node_list
+
+    def generate_alphanumeric(self):
+        valid_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+        return self.rand.choice(valid_characters)
+
+    def _generate_nullsec_name(self):
+        #example D-PNP9, 6VDT-H, OWXT-5, 16P-PX, CCP-US
+        #always uppercase letters
+        #5 characters with a dash in the middle somewhere
+        dash_position = self.rand.randint(1,4)
+        letters = ''.join((self.generate_alphanumeric() for x in range(5)))
+        return letters[0:dash_position] + '-' + letters[dash_position::]
+
+    def generate_unused_nullsec_name(self):
+        possible_name = self._generate_nullsec_name()
+        while self.name_exists(possible_name):
+            possible_name = self._generate_nullsec_name()
+        return possible_name
