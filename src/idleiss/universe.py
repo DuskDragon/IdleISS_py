@@ -500,6 +500,10 @@ class Universe(object):
                 nullsec_regions.append(region)
             else:
                 raise ValueError("galaxy_stitch: invalid security status: "+str(region.name))
+        # shuffle the region lists to prevent the order in the config from determing placement
+        self.rand.shuffle(highsec_regions)
+        self.rand.shuffle(lowsec_regions)
+        self.rand.shuffle(nullsec_regions)
         # first pick a highsec region to act as the central region
         central_highsec_region = self.rand.choice(highsec_regions)
         highsec_ring = highsec_regions
