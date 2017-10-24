@@ -158,7 +158,7 @@ class Region(object):
         #TODO: change this to find the LEAST CONNECTED const (maybe) instead of random choice
         dest = self.rand.choice(region.constellations)
         jumpoff = self.rand.choice(self.constellations)
-        dest.add_connection(jumpoff, connect_type="Region")
+        dest.add_connection(jumpoff, connect_type="Region", extra=extra)
 
         return True # connection added
 
@@ -178,6 +178,10 @@ class Universe(object):
         'Null Security Systems',
         'Null Security Regions',
         'Connectedness',
+        'Low-High Bonus Connections',
+        'Low-Null Bonus Connections',
+        'High-Null Bonus Connections',
+        'Null-Low Depth Ratio',
         'Universe Structure'
     ]
     _required_region_keys = [
@@ -249,6 +253,10 @@ class Universe(object):
         self.connectedness = raw_data['Connectedness']
         self.systems_per_constellation = raw_data["Systems Per Constellation"]
         self.constellations_per_region = raw_data["Constellations Per Region"]
+        self.low_high_bonus = raw_data["Low-High Bonus Connections"]
+        self.low_null_bonus = raw_data["Low-Null Bonus Connections"]
+        self.high_null_bonus = raw_data["High-Null Bonus Connections"]
+        self.null_low_depth = raw_data["Null-Low Depth Ratio"]
 
         self._verify_config_settings(raw_data)
         #TODO: config file is verified except for rigidly defined structures
@@ -293,6 +301,16 @@ class Universe(object):
             raise ValueError("Lowsec Region Count is "+str(lowsec_regions)+" but should be: "+str(raw_data["Low Security Regions"]))
         if raw_data["Null Security Regions"] != nullsec_regions:
             raise ValueError("Nullsec Region Count is "+str(nullsec_regions)+" but should be: "+str(raw_data["Null Security Regions"]))
+
+        if self.low_high_bonus > 1.0 or self.low_high_bonus < 0.0:
+            raise ValueError("Low-High Bonus connections must be in the range [0,1]")
+        if self.low_null_bonus+self.high_null_bonus > 1.0 or self.low_null_bonus+self.high_null_bonus < 0.0:
+            raise ValueError("Low-Null Bonus+High-Null Bonus must be in the range [0,1]")
+        if self.high_null_bonus > self.low_null_bonus:
+            raise ValueError("Low-High Bonus must be less than Low-Null Bonus")
+
+        if self.null_low_depth < 1.0:
+            raise ValueError("Null-Low Depth Ratio cannot be less than 1")
 
         #verify low/high sec space have fully named systems:
         for region in universe_structure:
@@ -426,8 +444,6 @@ class Universe(object):
             graph.add_edge(vertex_list[x[0]],vertex_list[x[1]])
         return graph
 
-        #graph_draw(graph, vertex_text=g.vertex_properties["name"], vertex_font_size=10, output_size=(2000, 2000), output="node_list.png")
-
     def _build_universe(self, verified_config):
         regions = verified_config["Universe Structure"]
         these_region = []
@@ -444,15 +460,20 @@ class Universe(object):
                     if type(systems) == dict: #defined const
                         pass #TODO: connect pre-defined connected systems
                 # generate const
+                these_sys = self.constellation_stitch(these_sys)
                 new_const = Constellation(self.rand, self, these_sys, regions[region]["Security"], constellation, region)
                 these_const.append(new_const)
             # generate region
+            these_const = self.region_stitch(these_const)
             new_region = Region(self.rand, self, these_const, region, regions[region]["Security"])
             these_region.append(new_region)
             #TODO: Force in guaranteed system names
-            #TODO: Force in Special Systems
 
         #build final connected listing
+        #   connect regions using region-specific connection method
+        these_region = self.galaxy_stitch(these_region)
+        #TODO: Force in Special Systems
+        #verify all regions are connected
         self.regions = self.stitch_nodes(these_region)
         for region in self.regions:
             for constellation in region.constellations:
@@ -460,7 +481,197 @@ class Universe(object):
                 for system in constellation.systems:
                     self.systems.append(system)
 
+    def galaxy_stitch(self, region_list):
+        """
+        The galaxy will have a highsec center, lowsec inner layer, and nullsec outer layer
+        Highsec will be formed using a central region with a ring of outer regions
+        Lowsec will be outside this, nullsec outside that
+        """
+        # collect regions into categories
+        highsec_regions = []
+        lowsec_regions = []
+        nullsec_regions = []
+        for region in region_list:
+            if region.security == "High":
+                highsec_regions.append(region)
+            elif region.security == "Low":
+                lowsec_regions.append(region)
+            elif region.security == "Null":
+                nullsec_regions.append(region)
+            else:
+                raise ValueError("galaxy_stitch: invalid security status: "+str(region.name))
+        # first pick a highsec region to act as the central region
+        central_highsec_region = self.rand.choice(highsec_regions)
+        highsec_ring = highsec_regions
+        highsec_ring.remove(central_highsec_region)
+        # form the ring using the self.connectedness metric to determine
+        #   when a spoke or arc exists
+        for x in range(len(highsec_ring)):
+            region = highsec_ring[x]
+            edge_chance = min(float(self.connectedness)/2.0,1.0)
+            # check if there is only one region
+            if len(highsec_ring) == 1:
+                region.add_connection(central_highsec_region)
+                continue
+            # determine which node is on the "rightside"
+            rightside = 0
+            if x == len(highsec_ring)-1: #last node
+                rightside = highsec_ring[0]
+            else:
+                rightside = highsec_ring[x+1]
+            # roll for spoke
+            if self.rand.random() <= edge_chance:
+                region.add_connection(central_highsec_region)
+            # roll for rightside arc
+            if self.rand.random() <= edge_chance:
+                region.add_connection(rightside)
+        # add additional connections at random according to connectedness
+        if len(highsec_regions) != 1:
+            existing_connections = self.count_edges(highsec_regions)
+            target_connections = int(float(self.connectedness)*float(len(highsec_regions)))
+            needed_additional_connections = max(target_connections-existing_connections,0)
+            for x in range(needed_additional_connections):
+                source, dest = self.rand.sample(highsec_regions, 2)
+                source.add_connection(dest, extra=True)
+        # highsec is formed
+        # now to create lowsec ring
+        for x in range(len(lowsec_regions)):
+            region = lowsec_regions[x]
+            edge_chance = min(float(self.connectedness)/2.0,1.0)
+            inward = 0
+            rightside = 0
+            #determine if there are more lowsec regions than highsec for the rings
+            #determine spoke target
+            lowsec_pos = (x+1)
+            if len(highsec_ring) == 0:
+                inward = central_highsec_region
+            elif len(lowsec_regions) >= len(highsec_ring):
+                inward = highsec_ring[int(lowsec_pos/len(highsec_ring))]
+            else: #len(lowsec_regions) < len(highsec_ring):
+                inner_start = int(x*len(highsec_ring)/len(lowsec_regions))
+                inner_end = inner_start + int(len(highsec_ring)/len(lowsec_regions))
+                inward = self.rand.choice(highsec_ring[inner_start:inner_end])
+            #determine rightside
+            if x == len(lowsec_regions)-1: #last node
+                rightside = highsec_ring[0]
+            else:
+                rightside = highsec_ring[x+1]
+            #roll for spoke
+            if self.rand.random() <= edge_chance:
+                region.add_connection(inward)
+            #roll for righside arc
+            if self.rand.random() <= edge_chance:
+                region.add_connection(rightside)
+        # add additional connections at random according to connectedness
+        if len(lowsec_regions) != 1:
+            existing_connections = self.count_edges(lowsec_regions)
+            target_connections = int(float(self.connectedness)*float(len(highsec_regions)))
+            needed_additional_connections = max(target_connections-existing_connections,0)
+            for x in range(needed_additional_connections):
+                source = self.rand.choice(lowsec_regions)
+                if self.rand.random() <= self.low_high_bonus and len(highsec_regions) > 0: #highsec
+                    dest = self.rand.choice(highsec_regions)
+                else: # lowsec
+                    source, dest = self.rand.sample(lowsec_regions, 2)
+                source.add_connection(dest, extra=True)
+        # lowsec is formed
+        # now to create nullsec rings
+        nullsec_ring_count = max(int(len(nullsec_regions)/(self.null_low_depth*len(lowsec_regions))),1)
+        #how many layers of nullsec? layer_count = int(null/(1.5*lowsec_count))
+        #so if there are 45 nullsec and 10 lowsec
+        #there should be 3 layers of nullsec
+        nullsec_ring_list = list(range(nullsec_ring_count))
+        regions_per_ring = int(len(nullsec_regions)/nullsec_ring_count)
+        last_used = 0
+        for x in range(nullsec_ring_count):
+            nullsec_ring_list[x] = nullsec_regions[x*regions_per_ring:(x*regions_per_ring)+(regions_per_ring-1)]
+            last_used = (x*regions_per_ring)+(regions_per_ring-1)
+        remainder_regions = nullsec_regions[last_used::]
+        #randomly insert remainder_regions into all rings
+        for region in remainder_regions:
+            random_ring = self.rand.choice(nullsec_ring_list)
+            random_position = self.rand.randint(0,len(random_ring))
+            random_ring.insert(random_position, region)
+        for ring_number in range(len(nullsec_ring_list)):
+            this_ring = nullsec_ring_list[ring_number]
+            for region_number in range(len(this_ring)):
+                region = this_ring[region_number]
+                edge_chance = min(float(self.connectedness)/2.0,1.0)
+                inward = 0
+                righward = 0
+                #determine spoke target
+                if ring_number == 0: # innermost null ring, inward connects to lowsec
+                    #determine if there are more nullsec regions in ring than lowsec ring
+                    if len(lowsec_regions) == 0:
+                        if len(highsec_ring) == 0: # no highsec ring
+                            inward = central_highsec_region
+                        else: # highsec ring exists
+                            if len(this_ring) >= len(highsec_ring):
+                                inward = highsec_ring[int((region_number+1)/len(highsec_ring))]
+                            else: #len(this_ring) < len(highsec_ring):
+                                inner_start = int(region_number*len(highsec_ring)/len(this_ring))
+                                inner_end = inner_start + int(len(highsec_ring)/len(this_ring))
+                                inward = self.rand.choice(highsec_ring[inner_start:inner_end])
+                    else: # lowsec exists
+                        if len(this_ring) >= len(lowsec_regions):
+                            inward = lowsec_regions[int((region_number+1)/len(lowsec_regions))]
+                        else: #len(this_ring) < len(lowsec_regions):
+                            inner_start = int(region_number*len(lowsec_regions)/len(this_ring))
+                            inner_end = inner_start + int(len(lowsec_regions)/len(this_ring))
+                            inward = self.rand.choice(lowsec_regions[inner_start:inner_end])
+                else: # this null ring only connects to null for inward
+                    inner_ring = nullsec_ring_list[ring_number-1]
+                    if len(this_ring) >= len(inner_ring):
+                        inward = inner_ring[int((region_number+1)/len(inner_ring))]
+                    else: #len(this_ring) < len(inner_ring):
+                        inner_start = int(region_number*len(inner_ring)/len(this_ring))
+                        inner_end = inner_start + int(len(inner_ring)/len(this_ring))
+                        inward = self.rand.choice(inner_ring[inner_start:inner_end])
+                #determine rightside
+                if region_number == len(this_ring)-1: #last node
+                    rightside = this_ring[0]
+                else:
+                    rightside = this_ring[region_number+1]
+                #roll for spoke
+                if self.rand.random() <= edge_chance:
+                    region.add_connection(inward)
+                #roll for righside arc
+                if self.rand.random() <= edge_chance:
+                    region.add_connection(rightside)
+                # add additional connections at random according to connectedness
+                if len(nullsec_regions) != 1:
+                    existing_connections = self.count_edges(nullsec_regions)
+                    target_connections = int(float(self.connectedness)*float(len(nullsec_regions)))
+                    needed_additional_connections = max(target_connections-existing_connections,0)
+                    for extra_connection_num in range(needed_additional_connections):
+                        source = self.rand.choice(nullsec_regions)
+                        rolled_chance = self.rand.random()
+                        if rolled_chance <= self.high_null_bonus and len(highsec_regions) > 0: #highsec
+                            dest = self.rand.choice(highsec_regions)
+                        elif rolled_chance <= self.high_null_bonus+self.low_null_bonus and len(lowsec_regions) > 0: #lowsec
+                            dest = self.rand.choice(lowsec_regions)
+                        else: # nullsec
+                            source, dest = self.rand.sample(nullsec_regions, 2)
+                        source.add_connection(dest, extra=True)
+                    # end of for loop for additional connections
+                #end of if statement preventing additional connections if nullsec_region count is 1
+            #end of for loop iterating over regions in current nullsec ring
+        #end of for loop iterating over all nullsec rings
+        # nullsec is formed
+        # return finished galaxy
+        return region_list
+
+    def region_stitch(self, constellation_list):
+        return constellation_list
+
+    def constellation_stitch(self, system_list):
+        return system_list
+
     def stitch_nodes(self, node_list):
+        """
+        guarantees that a node_list will pass floodfill
+        does not add more edges than needed
+        """
         if len(node_list) < 2:
             raise ValueError("idleiss.universe.stitch_nodes: must have at least two systems for a connection. List provided was: "+str(node_list))
         # floodfill
@@ -490,6 +701,17 @@ class Universe(object):
         #end of floodfill
         drain(node_list)
         return node_list
+
+    def count_edges(self, node_list):
+        connection_list = []
+        for x in node_list:
+            for y in x.connections:
+                if x.id > y.id:
+                    connection_list.append((x.id,y.id,))
+                else: # y > x:
+                    connection_list.append((y.id,x.id,))
+        pruned_list = set(connection_list)
+        return len(pruned_list)
 
     def generate_alphanumeric(self):
         valid_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'

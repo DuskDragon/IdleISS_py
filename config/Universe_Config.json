@@ -13,6 +13,10 @@
     "Null Security Systems": 3375,
     "Null Security Regions": 45,
     "Connectedness": 1.35,
+    "Low-High Bonus Connections": 0.2,
+    "Low-Null Bonus Connections": 0.3,
+    "High-Null Bonus Connections": 0.1,
+    "Null-Low Depth Ratio": 1.5,
     "Universe Structure":
     {
         "Aridia":
