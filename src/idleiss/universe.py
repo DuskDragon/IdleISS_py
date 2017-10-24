@@ -402,8 +402,11 @@ class Universe(object):
         graph = gtool.Graph(directed=False)
         connection_list = []
         orphan_list = []
+        name_list = list(range(len(node_list)))
+        vprop = graph.new_vertex_property("string")
         vertex_list = graph.add_vertex(len(node_list))
         for x in node_list:
+            name_list[x.id] = x.name
             if len(x.connections) == 0:
                 orphan_list.append(x.name)
             for y in x.connections:
@@ -411,11 +414,19 @@ class Universe(object):
                     connection_list.append((x.id,y.id,))
                 else: # y > x:
                     connection_list.append((y.id,x.id,))
+        #prune redundant connections
         pruned_list = set(connection_list)
-        # add collected nodes
+        # name nodes
+        for x in range(vertex_list):
+            vprop[vertex_list[x]] = name_list[x]
+        # assign properties as a dict value
+        graph.vertex_properties["name"]=vprop
+        # add collected edges
         for x in pruned_list:
             graph.add_edge(vertex_list[x[0]],vertex_list[x[1]])
         return graph
+
+        #graph_draw(graph, vertex_text=g.vertex_properties["name"], vertex_font_size=10, output_size=(2000, 2000), output="node_list.png")
 
     def _build_universe(self, verified_config):
         regions = verified_config["Universe Structure"]
