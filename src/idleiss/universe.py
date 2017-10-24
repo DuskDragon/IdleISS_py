@@ -404,7 +404,7 @@ class Universe(object):
         orphan_list = []
         name_list = list(range(len(node_list)))
         vprop = graph.new_vertex_property("string")
-        vertex_list = graph.add_vertex(len(node_list))
+        vertex_list = list(graph.add_vertex(len(node_list)))
         for x in node_list:
             name_list[x.id] = x.name
             if len(x.connections) == 0:
@@ -417,7 +417,7 @@ class Universe(object):
         #prune redundant connections
         pruned_list = set(connection_list)
         # name nodes
-        for x in range(vertex_list):
+        for x in range(len(vertex_list)):
             vprop[vertex_list[x]] = name_list[x]
         # assign properties as a dict value
         graph.vertex_properties["name"]=vprop

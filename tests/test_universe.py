@@ -65,4 +65,5 @@ class UserTestCase(TestCase):
 #from idleiss.universe import Universe
 #uni = Universe('config/Universe_Config.json')
 #graph = uni.generate_graph_tool(uni.systems)
-#graph.graph_draw(graph, vertex_text=graph.vertex_properties["name"], vertex_font_size=10, output_size=(2000, 2000), output="node_list.png")
+#from graph_tool.draw import graph_draw
+#graph_draw(graph, vertex_text=graph.vertex_properties["name"], vertex_font_size=10, output_size=(2000, 2000), output="node_list.png")
