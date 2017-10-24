@@ -66,4 +66,4 @@ class UserTestCase(TestCase):
 #uni = Universe('config/Universe_Config.json')
 #graph = uni.generate_graph_tool(uni.systems)
 #from graph_tool.draw import graph_draw
-#graph_draw(graph, vertex_text=graph.vertex_properties["name"], vertex_font_size=10, output_size=(2000, 2000), output="node_list.png")
+#graph_draw(graph, vertex_text=graph.vertex_properties["name"], vertex_font_size=6, edge_pen_width=1.2, output_size=(4000,4000), output="node_list.png")
