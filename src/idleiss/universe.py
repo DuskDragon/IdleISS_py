@@ -365,7 +365,7 @@ class Universe(object):
         """
         Debugging function which uses NetworkX (python mathematics tool)
         NetworkX is a fully python implementation so don't use HUGE graphs
-        it's 225x slower than graph-tool (implemented as a C++ library with python wrapper)
+        it's 225x slower than graph-tool (g-t is implemented as a C++ library with python wrapper)
         """
         import networkx as nx
         G = nx.Graph()
@@ -391,6 +391,31 @@ class Universe(object):
         #nx.draw_networkx(G, with_labels=True)
         #plt.show()
         return G
+
+    def generate_graph_tool(self, node_list):
+        """
+        Debugging function which uses graph-tool (python mathematics tool)
+        graph-tool is a C++ implementation with a python wrapper
+        it's 225x faster than NetworkX (NetworkX is python only)
+        """
+        import graph_tool as gtool
+        graph = gtool.Graph(directed=False)
+        connection_list = []
+        orphan_list = []
+        vertex_list = graph.add_vertex(len(node_list))
+        for x in node_list:
+            if len(x.connections) == 0:
+                orphan_list.append(x.name)
+            for y in x.connections:
+                if x.id > y.id:
+                    connection_list.append((x.id,y.id,))
+                else: # y > x:
+                    connection_list.append((y.id,x.id,))
+        pruned_list = set(connection_list)
+        # add collected nodes
+        for x in pruned_list:
+            graph.add_edge(vertex_list[x[0]],vertex_list[x[1]])
+        return graph
 
     def _build_universe(self, verified_config):
         regions = verified_config["Universe Structure"]
