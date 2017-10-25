@@ -63,10 +63,33 @@ class UserTestCase(TestCase):
 
 
 ###########NetworkX##############
+#import matplotlib.pyplot as plt
+#import networkx as nx
 #from idleiss.universe import Universe
 #uni = Universe('config/Universe_Config.json')
-#graph = uni.generate_networkx(uni.systems)
-#print("Nodes: "+str(graph.number_of_nodes())+", Edges: "+str(graph.number_of_edges()))
+#systems = uni.generate_networkx(uni.systems)
+#print("Total System Nodes: "+str(systems.number_of_nodes())+", Edges: "+str(systems.number_of_edges()))
+#regions = uni.generate_networkx(uni.regions)
+#print("Total Region Nodes: "+str(regions.number_of_nodes())+", Edges: "+str(regions.number_of_edges()))
+#constellations = uni.generate_networkx(uni.constellations)
+#print("Total Constellation Nodes: "+str(constellations.number_of_nodes())+", Edges: "+str(constellations.number_of_edges()))
+#the_forge = [r for r in uni.regions if r.name == "The Forge"][0]
+#forge_systems = []
+#for const in the_forge.constellations:
+#    for system in const.systems:
+#        forge_systems.append(system)
+#
+#forge_graph = uni.generate_networkx(forge_systems)
+#print(f'The Forge Systems: {forge_graph.number_of_nodes()}, Edges: {forge_graph.number_of_edges()}')
+#
+#
+#nx.draw_networkx(forge_graph, pos=nx.spring_layout(forge_graph), with_labels=True)
+#plt.show()
+#
+#
+#nx.draw_networkx(regions, pos=nx.spring_layout(regions), with_labels=True)
+#plt.show()
+
 
 ###########Graph-Tool############
 #from idleiss.universe import Universe

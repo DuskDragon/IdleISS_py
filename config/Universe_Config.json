@@ -12,7 +12,7 @@
     "Low Security Regions": 10,
     "Null Security Systems": 3375,
     "Null Security Regions": 45,
-    "Connectedness": 1.35,
+    "Connectedness": 0.75,
     "Low-High Bonus Connections": 0.2,
     "Low-Null Bonus Connections": 0.3,
     "High-Null Bonus Connections": 0.1,
