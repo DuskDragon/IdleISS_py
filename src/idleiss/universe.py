@@ -1,5 +1,6 @@
 import random
 import json
+import networkx as nx
 
 class SolarSystem(object):
     def __init__(self, random_state, universe, security, name, const, region):
@@ -364,7 +365,6 @@ class Universe(object):
         NetworkX is a fully python implementation so don't use HUGE graphs
         it's 225x slower than graph-tool (g-t is implemented as a C++ library with python wrapper)
         """
-        import networkx as nx
         G = nx.Graph()
         connection_list = []
         orphan_list = []
@@ -440,7 +440,7 @@ class Universe(object):
                         pass #TODO: connect pre-defined connected systems
                 # generate const
                 new_const = Constellation(self.rand, self, these_sys, regions[region]["Security"], constellation, region)
-                #these_sys = self.constellation_stitch(these_sys)
+                these_sys = self.constellation_stitch(these_sys)
                 these_const.append(new_const)
             # generate region
             new_region = Region(self.rand, self, these_const, region, regions[region]["Security"])
@@ -461,9 +461,16 @@ class Universe(object):
                     self.systems.append(system)
         # final validation
         self.drain(self.systems)
-        if not self.floodfill(self.systems):
-            raise ValueError("_build_universe failed to connect all nodes")
-        self.drain(self.systems)
+        self.networkx_graph = self.generate_networkx(self.systems)
+        if not nx.is_connected(self.networkx_graph):
+            raise ValueError("_build_universe: failed to connect all nodes")
+        # done building universe
+        # DEBUG LINE BLOCK
+        print('\nRemaining required systems generated:')
+        print(f'{self.networkx_graph.number_of_nodes()} Systems')
+        print(f'{self.networkx_graph.number_of_edges()} Connections')
+        print(f'All systems connected: {nx.is_connected(self.networkx_graph)}')
+        # END DEBUG LINE BLOCK
 
     def galaxy_stitch(self, region_list):
         """
