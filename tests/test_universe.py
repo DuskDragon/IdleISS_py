@@ -13,6 +13,7 @@ class UserTestCase(TestCase):
         uni = Universe('config/Universe_Config.json')
         graph = uni.generate_networkx(uni.systems)
         self.assertEqual(graph.number_of_nodes(), 5100)
+        self.assertTrue(nx.is_connected(graph))
 
     # def test_generate_constellation_raises_error(self):
         # uni = Universe()
@@ -60,6 +61,12 @@ class UserTestCase(TestCase):
 
 #uni.generate_constellation(15); uni.generate_networkx(uni.sys)
 
+
+###########NetworkX##############
+#from idleiss.universe import Universe
+#uni = Universe('config/Universe_Config.json')
+#graph = uni.generate_networkx(uni.systems)
+#print("Nodes: "+str(graph.number_of_nodes())+", Edges: "+str(graph.number_of_edges()))
 
 ###########Graph-Tool############
 #from idleiss.universe import Universe

@@ -1,27 +1,6 @@
 import random
 import json
 
-#TODO: Distance floodfill?
-
-def flood(node):
-    if(node.flooded):
-        return
-    node.flooded = True
-    for x in node.connections:
-        flood(x)
-
-def floodfill(node_list):
-    flood(node_list[0])
-    for x in node_list:
-        if x.flooded == False: # found an unconnected node, eject
-            return False
-    # no unconnected nodes were found
-    return True
-
-def drain(node_list):
-    for x in node_list: #reset flood state
-        x.flooded = False
-
 class SolarSystem(object):
     def __init__(self, random_state, universe, security, name, const, region):
         if universe.name_exists(name):
@@ -361,11 +340,11 @@ class Universe(object):
 
         print("\nSuccessfully imported the following:")
         print(str(regions_verified)+" regions")
-        print("    "+str(highsec_regions)+" High Security")
-        print("    "+str(lowsec_regions)+" Low Security")
-        print("    "+str(nullsec_regions)+" Null Security")
-        print(str(constellations_verified)+" constellations")
-        print(str(systems_verified)+" systems")
+        print(f'\t{highsec_regions} High Security')
+        print(f'\t{lowsec_regions} Low Security')
+        print(f'\t{nullsec_regions} Null Security')
+        print(f'{constellations_verified} constellations')
+        print(f'{systems_verified} systems')
 
         self.used_names = []
         #TODO remove initial name loading ^^^^^^^^^^
@@ -460,12 +439,12 @@ class Universe(object):
                     if type(systems) == dict: #defined const
                         pass #TODO: connect pre-defined connected systems
                 # generate const
-                these_sys = self.constellation_stitch(these_sys)
                 new_const = Constellation(self.rand, self, these_sys, regions[region]["Security"], constellation, region)
+                #these_sys = self.constellation_stitch(these_sys)
                 these_const.append(new_const)
             # generate region
-            these_const = self.region_stitch(these_const)
             new_region = Region(self.rand, self, these_const, region, regions[region]["Security"])
+            these_const = self.region_stitch(these_const)
             these_region.append(new_region)
             #TODO: Force in guaranteed system names
 
@@ -480,6 +459,11 @@ class Universe(object):
                 self.constellations.append(constellation)
                 for system in constellation.systems:
                     self.systems.append(system)
+        # final validation
+        self.drain(self.systems)
+        if not self.floodfill(self.systems):
+            raise ValueError("_build_universe failed to connect all nodes")
+        self.drain(self.systems)
 
     def galaxy_stitch(self, region_list):
         """
@@ -666,9 +650,29 @@ class Universe(object):
         return region_list
 
     def region_stitch(self, constellation_list):
+        """
+        regions are comprised of constellations
+        we add connections between them based on:
+        len(constellation_list)*self.connectedness
+        connections are strictly random
+        """
+        connections_to_add = int(len(constellation_list)*self.connectedness)
+        for x in range(connections_to_add):
+            source, dest = self.rand.sample(constellation_list, 2)
+            source.add_connection(dest, extra=True)
         return constellation_list
 
     def constellation_stitch(self, system_list):
+        """
+        constellations are comprised of systems
+        we add connections between them based on:
+        len(system_list)*self.connectedness
+        connections are strictly random
+        """
+        connections_to_add = int(len(system_list)*self.connectedness)
+        for x in range(connections_to_add):
+            source, dest = self.rand.sample(system_list, 2)
+            source.add_connection(dest)
         return system_list
 
     def stitch_nodes(self, node_list):
@@ -681,7 +685,7 @@ class Universe(object):
         # floodfill
         if len(node_list[0].connections) == 0: #floodfill will start on orphan, avoid this
             node_list[0].add_connection(self.rand.choice(node_list[1:]))
-        while not floodfill(node_list):
+        while not self.floodfill(node_list):
             #floodfill failed, find failed nodes:
             valid_nodes = []
             orphan_nodes = []
@@ -696,14 +700,14 @@ class Universe(object):
             #first pin disjoint graphs to valid nodes
             if len(disjoint_nodes) > 0:
                 disjoint_nodes[0].add_connection(self.rand.choice(valid_nodes))
-                drain(node_list)
+                self.drain(node_list)
                 continue #go around again
             #next pin all orphans, there are only ophans remaining
             for x in range(len(orphan_nodes)): #include already processed orphans
                 orphan_nodes[x].add_connection(self.rand.choice((valid_nodes + orphan_nodes[:x])))
-            drain(node_list)
+            self.drain(node_list)
         #end of floodfill
-        drain(node_list)
+        self.drain(node_list)
         return node_list
 
     def count_edges(self, node_list):
@@ -734,3 +738,19 @@ class Universe(object):
         while self.name_exists(possible_name):
             possible_name = self._generate_nullsec_name()
         return possible_name
+
+    #TODO: Distance floodfill?
+    def flood(self, node):
+        if(node.flooded):
+            return
+        node.flooded = True
+        for x in node.connections:
+            self.flood(x)
+
+    def floodfill(self, node_list):
+        self.flood(node_list[0])
+        return all(x.flooded for x in node_list)
+
+    def drain(self, node_list):
+        for x in node_list: #reset flood state
+            x.flooded = False
