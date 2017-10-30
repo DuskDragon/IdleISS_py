@@ -510,10 +510,10 @@
                 {
                     "3T7-M8": ["N2IS-B","MZ1E-P","WUZ-WM"],
                     "43B-O1": ["WUZ-WM","5S-KXA"],
-                    "4N-BUI": ["WUX-WM","VPLL-N","GY5-26","XCBK-X","9CK-KZ"],
+                    "4N-BUI": ["WUZ-WM","VPLL-N","GY5-26","XCBK-X","9CK-KZ"],
                     "5S-KXA": ["43B-O1"],
                     "9CK-KZ": ["VPLL-N","GY5-26","XCBK-X","4N-BUI"],
-                    "GY5-26": ["WUX-WM","VPLL-N","XCBK-X","9CK-KZ"],
+                    "GY5-26": ["WUZ-WM","VPLL-N","XCBK-X","9CK-KZ"],
                     "J1AU-9": ["X3-PBC","MZ1E-P"],
                     "MZ1E-P": ["J1AU-9","3T7-M8"],
                     "N2IS-B": ["VPLL-N","3T7-M8"],
@@ -2250,6 +2250,7 @@
                     "Fire": ["Tetrahedron"],
                     "Earth": ["Hexahedron"],
                     "Air": ["Octahedron"],
+                    "Ether": ["Dodecahedron"],
                     "Water": ["Icosahedron"]
                 }
             }

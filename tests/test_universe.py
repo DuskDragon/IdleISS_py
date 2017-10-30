@@ -89,6 +89,9 @@ class UserTestCase(TestCase):
 #
 #nx.draw_networkx(regions, pos=nx.spring_layout(regions), with_labels=True)
 #plt.show()
+#
+#
+#nx.draw_networkx(graph, pos=nx.spring_layout(graph), with_labels=True); plt.show()
 
 
 ###########Graph-Tool############

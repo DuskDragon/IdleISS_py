@@ -23,7 +23,7 @@ class SolarSystem(object):
         connections_str = ""
         for x in self.connections:
             connections_str += " " + str(x.name)
-        return "idleiss.universe.SolarSystem: " + str(self.name) + " Connections: " + connections_str
+        return f'idleiss.universe.SolarSystem: {self.name}\tConnections:{connections_str}'
 
     def connection_exists(self, entity):
         return entity in self.connections
@@ -67,7 +67,7 @@ class Constellation(object):
         connections_str = ""
         for x in self.connections:
             connections_str += " " + str(x.name)
-        return "idleiss.universe.Constellation: " + str(self.name) + " Connections: " + connections_str
+        return f'idleiss.universe.Constellation: {self.name}\tConnections:{connections_str}'
 
     def connection_exists(self, constellation):
         return constellation in self.connections
@@ -120,7 +120,7 @@ class Region(object):
         connections_str = ""
         for x in self.connections:
             connections_str += " " + str(x.name)
-        return "idleiss.universe.Region: " + str(self.name) + " Connections: " + connections_str
+        return f'idleiss.universe.Region: {self.name}\tConnections:{connections_str}'
 
     def connection_exists(self, region):
         return region in self.connections
@@ -432,12 +432,28 @@ class Universe(object):
             for constellation in constellations: #list/dict
                 systems = constellations[constellation]
                 these_sys = []
-                for system in systems:
-                    #generate system
-                    new_sys = SolarSystem(self.rand, self, regions[region]["Security"], system, constellation, region)
-                    these_sys.append(new_sys)
-                    if type(systems) == dict: #defined const
-                        pass #TODO: connect pre-defined connected systems
+                if type(systems) == dict: #defined const:
+                    pre_def = {}
+                    #generate all pre-def systems:
+                    for system in systems:
+                        pre_def[system] = SolarSystem(self.rand, self, regions[region]["Security"], system, constellation, region)
+                    #connect all pre-def systems
+                    for source, connections in systems.items():
+                        if type(connections) != list:
+                            raise ValueError(f'_build_universe: {region}, {constellation} is a predefined constellation without a list of connecting systems')
+                        for connection in connections:
+                            dest = pre_def.get(connection,0)
+                            if dest == 0:
+                                raise ValueError(f'_build_universe: {region}, {constellation}, {source}: contains a unlisted system as a connection: {connection}')
+                            pre_def[source].add_connection(dest)
+                    #add all predefined systems to these_sys to be added to the constellation
+                    for system_name, system_instance in pre_def.items():
+                        these_sys.append(system_instance)
+                else: # not pre-defined const
+                    for system in systems:
+                        #generate system
+                        new_sys = SolarSystem(self.rand, self, regions[region]["Security"], system, constellation, region)
+                        these_sys.append(new_sys)
                 # generate const
                 new_const = Constellation(self.rand, self, these_sys, regions[region]["Security"], constellation, region)
                 these_sys = self.constellation_stitch(these_sys)
@@ -663,8 +679,9 @@ class Universe(object):
         len(constellation_list)*self.connectedness
         connections are strictly random
         """
+        current_connections = self.count_edges(constellation_list)
         connections_to_add = int(len(constellation_list)*self.connectedness)
-        for x in range(connections_to_add):
+        for x in range(connections_to_add - current_connections):
             source, dest = self.rand.sample(constellation_list, 2)
             source.add_connection(dest, extra=True)
         return constellation_list
@@ -676,8 +693,9 @@ class Universe(object):
         len(system_list)*self.connectedness
         connections are strictly random
         """
+        current_connections = self.count_edges(system_list)
         connections_to_add = int(len(system_list)*self.connectedness)
-        for x in range(connections_to_add):
+        for x in range(connections_to_add - current_connections):
             source, dest = self.rand.sample(system_list, 2)
             source.add_connection(dest)
         return system_list
