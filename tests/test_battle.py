@@ -887,12 +887,60 @@ class BattleTestCase(TestCase):
         ])
 
     def test_generate_summary_data(self):
-        pass
-        #TODO: collect:
-        #    shots from attackers, defenders
-        #    damage dealt to/by attackers, defenders
-        #    resulting ship counts for both attackers, defenders
-        #    ships started with for both attackers, defenders (and ships destroyed)
+    #TODO: collect:
+    #    shots from attackers, defenders
+    #    damage dealt to/by attackers, defenders
+    #    resulting ship counts for both attackers, defenders
+    #    ships started with for both attackers, defenders (and ships destroyed)
+        attacker = {
+            "ship2": 25,
+        }
+        defender = {
+            "ship1": 25,  # they look pretty dead.  ship2 too stronk
+        }
+        max_rounds = 6
+        battle_instance = Battle(attacker, defender, max_rounds)
+        library = ShipLibraryMock()
+
+        random.seed(0)
+        battle_instance.prepare(library)
+        battle_instance.calculate_battle()
+
+        self.assertEqual(battle_instance.defender_fleet.ships, [])
+        self.assertEqual(len(battle_instance.round_results), 2)
+
+        counts = [(a.ship_count, d.ship_count)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(counts, [
+            ({'ship2': 25}, {'ship1': 9}),
+            ({'ship2': 25}, {})
+        ])
+
+        shots = [(a.hits_taken, d.hits_taken)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(shots, [
+            (25, 25),
+            (9, 25)
+        ])
+
+        damage = [(a.damage_taken, d.damage_taken)
+            for a, d in battle_instance.round_results]
+        self.assertEqual(damage, [
+            (1250, 1920),
+            (450, 1080)
+        ])
+        summary = battle_instance.generate_summary_data()
+        summary_test = {
+            "attacker_fleet": {"ship2": 25},
+            "defender_fleet": {"ship1": 25},
+            "attacker_result": {"ship2": 25},
+            "attacker_shots_fired": 50,
+            "attacker_damage_dealt": 3000,
+            "defender_result": {},
+            "defender_shots_fired": 34,
+            "defender_damage_dealt": 1700
+        }
+        self.assertEqual(summary, summary_test)
 
     def test_generate_summary_text(self):
         pass
