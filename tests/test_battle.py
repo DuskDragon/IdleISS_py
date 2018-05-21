@@ -364,7 +364,6 @@ class BattleTestCase(TestCase):
 
     def test_aoe_weapon(self):
         random.seed(0)
-        library = ShipLibraryMock()
         attacker = {
             "area_of_effect_test": 1,
         }
@@ -373,11 +372,8 @@ class BattleTestCase(TestCase):
         }
 
         rounds = 1
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
-
-        battle_instance.prepare(library)
-        battle_instance.calculate_battle()
+        battle_instance = Battle(attacker, defender, rounds, library)
 
         #round_results => [0]th round,
         #    [0]: attacker ([1]: defender)
@@ -497,13 +493,10 @@ class BattleTestCase(TestCase):
             "ewar_test_target": 1,
         }
         rounds = 6
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
+        battle_instance = Battle(attacker, defender, rounds, library)
         schema_test = library.get_ship_schemata('ewar_ecm_test')
         schema_target = library.get_ship_schemata('ewar_test_target')
-
-        battle_instance.prepare(library)
-        battle_instance.calculate_battle()
 
         #round_results => [0]th round,
         #    [0]: attacker ([1]: defender)
@@ -529,13 +522,10 @@ class BattleTestCase(TestCase):
             "ewar_test_target2": 1,
         }
         rounds = 6
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
+        battle_instance = Battle(attacker, defender, rounds, library)
         schema_test = library.get_ship_schemata('ewar_ecm_test')
         schema_target = library.get_ship_schemata('ewar_test_target')
-
-        battle_instance.prepare(library)
-        battle_instance.calculate_battle()
 
         self.assertEqual(battle_instance.attacker_result, {
             'ewar_ecm_test': 1,
@@ -556,13 +546,10 @@ class BattleTestCase(TestCase):
         }
 
         rounds = 6
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
+        battle_instance = Battle(attacker, defender, rounds, library)
         schema_test = library.get_ship_schemata('ewar_ecm_test')
         schema_target = library.get_ship_schemata('ewar_test_target')
-
-        battle_instance.prepare(library)
-        battle_instance.calculate_battle()
 
         #round_results => [0]th round,
         #    [0]: attacker ([1]: defender)
@@ -621,7 +608,6 @@ class BattleTestCase(TestCase):
         # Test the result of the attacking fleet firing once on the defenders.
         # Check that the damage on the defenders is accurate to only being
         # fired on once.
-        random.seed(0)
         attacker = {
             "ship1": 5,
         }
@@ -629,12 +615,10 @@ class BattleTestCase(TestCase):
             "ship1": 4,
         }
         rounds = 6
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
-        schema1 = library.get_ship_schemata('ship1')
+        battle_instance = Battle(attacker, defender, rounds, library, calculate=False)
 
         random.seed(1)
-        battle_instance.prepare(library)
         result = battle.fleet_attack(
             battle_instance.attacker_fleet,
             battle_instance.defender_fleet,
@@ -644,6 +628,7 @@ class BattleTestCase(TestCase):
         self.assertEqual(result.hits_taken, 5)
         self.assertEqual(result.damage_taken, 250)
 
+        schema1 = library.get_ship_schemata('ship1')
         result = battle.prune_fleet(result)
         self.assertEqual(result.ships, [
             Ship(schema1, ShipAttributes(10, 0, 20)),
@@ -665,11 +650,8 @@ class BattleTestCase(TestCase):
             "priority_test_target": 1
         }
         rounds = 2
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
-
-        battle_instance.prepare(library)
-        battle_instance.calculate_battle()
+        battle_instance = Battle(attacker, defender, rounds, library)
 
         self.assertEqual(battle_instance.defender_fleet.ships, [])
         self.assertEqual(len(battle_instance.round_results), 2)
@@ -707,10 +689,9 @@ class BattleTestCase(TestCase):
             "ship2": 1,
         }
         rounds = 1
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
+        battle_instance = Battle(attacker, defender, rounds, library, calculate=False)
 
-        battle_instance.prepare(library)
         battle_instance.calculate_round(0) # round number
 
         self.assertEqual(battle_instance.defender_fleet.ships, [])
@@ -725,10 +706,9 @@ class BattleTestCase(TestCase):
             "ship1": 1,
         }
         rounds = 6
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
+        battle_instance = Battle(attacker, defender, rounds, library, calculate=False)
 
-        battle_instance.prepare(library)
         attack_result = battle.fleet_attack(
             battle_instance.attacker_fleet,
             battle_instance.defender_fleet,
@@ -748,11 +728,10 @@ class BattleTestCase(TestCase):
             "ship1": 8,  # they look pretty dead.
         }
         rounds = 6
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
+        battle_instance = Battle(attacker, defender, rounds, library, calulate=False)
 
         random.seed(0)
-        battle_instance.prepare(library)
         battle_instance.calculate_round(0) # round number
 
         self.assertEqual(battle_instance.defender_fleet.ships, [])
@@ -764,10 +743,8 @@ class BattleTestCase(TestCase):
             "ship4": 3,
         }
         rounds = 6
-        battle_instance = Battle(stalemates, stalemates, rounds)
         library = ShipLibraryMock()
-        battle_instance.prepare(library)
-        battle_instance.calculate_battle()
+        battle_instance = Battle(stalemates, stalemates, rounds, library)
 
         self.assertEqual(len(battle_instance.round_results), 6)
         for a, d in battle_instance.round_results:
@@ -788,8 +765,8 @@ class BattleTestCase(TestCase):
             "local_rep_test": 20,
         }
         rounds = 6
-        battle_instance = Battle(attacker, defender, rounds)
         library = ShipLibraryMock()
+        battle_instance = Battle(attacker, defender, rounds, library)
         schema_rep = library.get_ship_schemata('local_rep_test')
         attack_result = AttackResult([], [
             Ship(schema_rep, ShipAttributes(100, 100, 100)),
@@ -855,12 +832,10 @@ class BattleTestCase(TestCase):
             "ship1": 25,  # they look pretty dead.  ship2 too stronk
         }
         max_rounds = 6
-        battle_instance = Battle(attacker, defender, max_rounds)
-        library = ShipLibraryMock()
-
         random.seed(0)
-        battle_instance.prepare(library)
-        battle_instance.calculate_battle()
+        library = ShipLibraryMock()
+        battle_instance = Battle(attacker, defender, max_rounds, library)
+
 
         self.assertEqual(battle_instance.defender_fleet.ships, [])
         self.assertEqual(len(battle_instance.round_results), 2)
@@ -899,12 +874,9 @@ class BattleTestCase(TestCase):
             "ship1": 25,  # they look pretty dead.  ship2 too stronk
         }
         max_rounds = 6
-        battle_instance = Battle(attacker, defender, max_rounds)
         library = ShipLibraryMock()
-
         random.seed(0)
-        battle_instance.prepare(library)
-        battle_instance.calculate_battle()
+        battle_instance = Battle(attacker, defender, max_rounds, library)
 
         self.assertEqual(battle_instance.defender_fleet.ships, [])
         self.assertEqual(len(battle_instance.round_results), 2)
@@ -955,7 +927,5 @@ class SimBase(object):
 
     def fight(self, attacker, defender, seed=0, rounds=6):
         random.seed(seed)
-        result = Battle(attacker, defender, rounds)
-        result.prepare(self.library)
-        result.calculate_battle()
+        result = Battle(attacker, defender, rounds, self.library)
         return result

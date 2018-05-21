@@ -390,7 +390,18 @@ class Battle(object):
     one for the two respective sides.  Prune them separately for results.
     """
 
-    def __init__(self, attacker, defender, max_rounds, *a, **kw):
+    def __init__(self, attacker, defender, max_rounds, library,  *a, **kw):
+        """
+            attacker: dictionary with "ship_type": number
+            defender: dictionary with "ship_type": number
+            max_rounds: number of rounds battle will calulate
+            library: ship library to use
+
+            __init__ will automatically generate results once called
+        """
+        # kwargs:
+        #     calculate: DEBUG/TEST kwarg to stop automatic battle calculation if False
+
         self.max_rounds = max_rounds
         # attacker and defender are dictionaries with "ship_type": number
         self.attacker_count = attacker
@@ -399,6 +410,9 @@ class Battle(object):
         self.attacker_fleet = self.defender_fleet = None
 
         self.round_results = []
+        self.prepare(library)
+        if(kw.get('calculate', True) != False):
+            self.calculate_battle()
 
     def prepare(self, library):
         # do all the fleet preparation pre-battle using this game
