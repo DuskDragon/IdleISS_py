@@ -862,11 +862,6 @@ class BattleTestCase(TestCase):
         ])
 
     def test_generate_summary_data(self):
-    #TODO: collect:
-    #    shots from attackers, defenders
-    #    damage dealt to/by attackers, defenders
-    #    resulting ship counts for both attackers, defenders
-    #    ships started with for both attackers, defenders (and ships destroyed)
         attacker = {
             "ship2": 25,
         }
@@ -906,9 +901,11 @@ class BattleTestCase(TestCase):
             "attacker_fleet": {"ship2": 25},
             "defender_fleet": {"ship1": 25},
             "attacker_result": {"ship2": 25},
+            "attacker_losses": {"ship2": 0},
             "attacker_shots_fired": 50,
             "attacker_damage_dealt": 3000,
             "defender_result": {},
+            "defender_losses": {"ship1": 25},
             "defender_shots_fired": 34,
             "defender_damage_dealt": 1700
         }

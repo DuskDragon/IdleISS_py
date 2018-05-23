@@ -458,9 +458,6 @@ class Battle(object):
         self.defender_result = self.round_results[-1][1].ship_count
 
     def generate_summary_data(self):
-        """
-        TODO: Collect all the data (see test)
-        """
         attacker_shots = 0
         defender_shots = 0
         attacker_damage_dealt = 0
@@ -470,13 +467,17 @@ class Battle(object):
             defender_shots += round[0].hits_taken
             attacker_damage_dealt += round[1].damage_taken
             defender_damage_dealt += round[0].damage_taken
+        attacker_losses = {key: self.attacker_count[key] - self.attacker_result.get(key, 0) for key in self.attacker_count.keys()}
+        defender_losses = {key: self.defender_count[key] - self.defender_result.get(key, 0) for key in self.defender_count.keys()}
         return {
             "attacker_fleet": self.attacker_count,
             "defender_fleet": self.defender_count,
             "attacker_result": self.attacker_result,
+            "attacker_losses": attacker_losses,
             "attacker_shots_fired": attacker_shots,
             "attacker_damage_dealt": attacker_damage_dealt,
             "defender_result": self.defender_result,
+            "defender_losses": defender_losses,
             "defender_shots_fired": defender_shots,
             "defender_damage_dealt": defender_damage_dealt
         }
