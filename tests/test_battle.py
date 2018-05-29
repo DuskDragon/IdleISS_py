@@ -30,7 +30,13 @@ class ShipLibraryMock(ShipLibrary):
             'hullclasses': [
                 "generic",
                 "priority_test_not_target",
-                "priority_test_target"
+                "priority_test_target",
+                "local_rep_test",
+                "remote_rep_test",
+                "ewar_test",
+                "ewar_ecm_test",
+                "ewar_test_target",
+                "ewar_test_target2"
             ],
             'ships': {
                 "area_of_effect_test": {
@@ -355,6 +361,161 @@ class ShipLibraryMock(ShipLibrary):
             },
         })
 
+class ShipLibraryOrderMock(ShipLibrary):
+
+    def __init__(self):
+        self._load({
+            'sizes': {
+                "frigate": 40,
+                "destroyer": 85,
+                "cruiser": 135,
+                "battlecruiser": 275,
+                "battleship": 420,
+                "carrier": 1350,
+                "dreadnaught": 2500,
+                "titan": 3000
+            },
+            'hullclasses': [
+                "ecm frigate",
+                "tackle frigate",
+                "assault frigate",
+                "brawler frigate",
+                "logistic frigate",
+                "drone frigate",
+                "ecm destroyer",
+                "tackle destroyer",
+                "assault destroyer",
+                "brawler destroyer",
+                "logistic destroyer",
+                "interdictor destroyer",
+                "command destroyer",
+                "drone destroyer",
+                "ecm cruiser",
+                "tackle cruiser",
+                "assault cruiser",
+                "brawler cruiser",
+                "logistic cruiser",
+                "strategic cruiser",
+                "drone cruiser",
+                "sniper battlecruiser",
+                "assault battlecruiser",
+                "brawler battlecruiser",
+                "command battlecruiser",
+                "frontline battleship",
+                "attack battleship",
+                "ecm battleship",
+                "drone battleship",
+                "blackops battleship",
+                "marauder battleship",
+                "assault carrier",
+                "command carrier",
+                "superiority carrier",
+                "logistics capital"
+                "tracking dreadnaught",
+                "assault dreadnaught",
+                "tracking supercarrier",
+                "assault supercarrier",
+                "superiority supercarrier",
+                "tracking titan",
+                "assault titan",
+                "area-of-effect titan",
+                "other"
+            ],
+            'sortclasses': [
+                "frigate",
+                "destroyer",
+                "cruiser",
+                "battlecruiser",
+                "battleship",
+                "logistics capital",
+                "dreadnaught",
+                "supercarrier",
+                "titan",
+                "other"
+            ],
+            'ships': {
+                "Rifter": {
+                    "hullclass": "assault frigate",
+                    "sortclass": "frigate",
+                    "shield": 100,
+                    "armor": 100,
+                    "hull": 100,
+                    "weapons": [
+                        {
+                            "weapon_name": "150mm Autocannon",
+                            "weapon_size": "frigate",
+                            "firepower": 50,
+                            "priority_targets": [],
+                        }
+                    ],
+                    "sensor_strength": 20,
+                    "size": "frigate",
+                    "buffs": {
+                        "local_shield_repair": 10,
+                    },
+
+                },
+                "Incursus": {
+                    "hullclass": "brawler frigate",
+                    "sortclass": "frigate",
+                    "shield": 100,
+                    "armor": 10,
+                    "hull": 100,
+                    "weapons": [
+                        {
+                            "weapon_name": "125mm Blaster",
+                            "weapon_size": "frigate",
+                            "firepower": 60,
+                            "priority_targets": [],
+                        }
+                    ],
+                    "sensor_strength": 20,
+                    "size": "frigate",
+                    "buffs": {
+                        "local_shield_repair": 10,
+                    },
+
+                },
+
+                "Maller": {
+                    "hullclass": "brawler cruiser",
+                    "sortclass": "cruiser",
+                    "shield": 200,
+                    "armor": 200,
+                    "hull": 200,
+                    "weapons": [
+                        {
+                            "weapon_name": "Medium Laser",
+                            "weapon_size": "cruiser",
+                            "firepower": 120,
+                            "priority_targets": [],
+                        }
+                    ],
+                    "sensor_strength": 27,
+                    "size": "cruiser",
+                    "buffs": {},
+                },
+
+                "Moa": {
+                    "hullclass": "brawler cruiser",
+                    "sortclass": "cruiser",
+                    "shield": 200,
+                    "armor": 200,
+                    "hull": 200,
+                    "weapons": [
+                        {
+                            "weapon_name": "250mm Railgun",
+                            "weapon_size": "cruiser",
+                            "firepower": 80,
+                            "priority_targets": [],
+                        },
+                    ],
+                    "sensor_strength": 27,
+                    "size": "cruiser",
+                    "buffs": {},
+                },
+            },
+        })
 
 class BattleTestCase(TestCase):
 
@@ -912,8 +1073,85 @@ class BattleTestCase(TestCase):
         self.assertEqual(summary, summary_test)
 
     def test_generate_summary_text(self):
-        pass
-        #TODO: spit out a text block (with ASCII style newlines/formatting) to show summary
+        attacker = {
+            "ship2": 25,
+        }
+        defender = {
+            "ship1": 25,
+        }
+        max_rounds = 6
+        library = ShipLibraryMock()
+        random.seed(0)
+        battle_instance = Battle(attacker, defender, max_rounds, library)
+
+        #Ships in order of smallest first
+        output_lines = "Attacker:\n" +\
+            "    ship2: 25\n" +\
+            "Defender:\n" +\
+            "    ship1: 25\n" +\
+            "\n" +\
+            "Result:\n" +\
+            "Attacker:\n" +\
+            "    ship2: 25 (Lost: 0)\n" +\
+            "Defender:\n" +\
+            "    ALL DEFENDING SHIPS DESTROYED"
+
+        self.assertEqual(output_lines, battle_instance.generate_summary_text())
+
+    def test_order_of_generate_summary_text(self):
+        attacker = {
+            "Rifter": 60,
+            "Incursus": 60,
+            "Maller": 60,
+            "Moa": 60
+        }
+        defender = {
+            "Rifter": 60,
+            "Incursus": 60,
+            "Maller": 60,
+            "Moa": 60
+        }
+        max_rounds = 6
+        library = ShipLibraryOrderMock()
+        random.seed(0)
+        battle_instance = Battle(attacker, defender, max_rounds, library)
+
+        #Ships in order of smallest first
+        output_lines = "Attacker:\n" +\
+            "    Incursus: 60\n" +\
+            "    Rifter: 60\n" +\
+            "    Maller: 60\n" +\
+            "    Moa: 60\n" +\
+            "Defender:\n" +\
+            "    Incursus: 60\n" +\
+            "    Rifter: 60\n" +\
+            "    Maller: 60\n" +\
+            "    Moa: 60\n" +\
+            "\n" +\
+            "Result:\n" +\
+            "Attacker:\n" +\
+            "    Incursus: 45 (Lost: 15)\n" +\
+            "    Rifter: 56 (Lost: 4)\n" +\
+            "    Maller: 46 (Lost: 14)\n" +\
+            "    Moa: 47 (Lost: 13)\n" +\
+            "Defender:\n" +\
+            "    Incursus: 37 (Lost: 23)\n" +\
+            "    Rifter: 56 (Lost: 4)\n" +\
+            "    Maller: 45 (Lost: 15)\n" +\
+            "    Moa: 43 (Lost: 17)"
+
+        # 'attacker_fleet': {'Rifter': 60, 'Incursus': 60, 'Maller': 60, 'Moa': 60},
+        # 'defender_fleet': {'Rifter': 60, 'Incursus': 60, 'Maller': 60, 'Moa': 60},
+        # 'attacker_result': {'Rifter': 56, 'Incursus': 45, 'Maller': 46, 'Moa': 47},
+        # 'attacker_losses': {'Rifter': 4, 'Incursus': 15, 'Maller': 14, 'Moa': 13},
+        # 'attacker_shots_fired': 1386,
+        # 'attacker_damage_dealt': 73691,
+        # 'defender_result': {'Rifter': 56, 'Incursus': 37, 'Maller': 45, 'Moa': 43},
+        # 'defender_losses': {'Rifter': 4, 'Incursus': 23, 'Maller': 15, 'Moa': 17},
+        # 'defender_shots_fired': 1384,
+        # 'defender_damage_dealt': 71928}
+
+        self.assertEqual(output_lines, battle_instance.generate_summary_text())
 
 
 class SimBase(object):

@@ -14,7 +14,6 @@ class HelperTestCase(TestCase):
 
 
 class FleetLibraryTestCase(TestCase):
-
     def setUp(self):
         pass
 
@@ -26,7 +25,7 @@ class FleetLibraryTestCase(TestCase):
         self.assertEqual(schema, ship.ShipSchema('Small Cargo', 'Small Cargo',
             10, 0, 200, [], 3, 1,
             ship.ShipBuffs(10, 0, 0, 0),
-            ship.ShipDebuffs(0, 0, 0, 0)))
+            ship.ShipDebuffs(0, 0, 0, 0), 2))
 
     def test_load_fail_incorrect_priority_target(self):
         test_file_name = 'invalidpriority_target.json'

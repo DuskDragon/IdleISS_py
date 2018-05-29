@@ -3,7 +3,7 @@ from os.path import join, dirname, abspath
 import json
 
 ship_schema_fields = ['hullclass', 'shield', 'armor', 'hull', 'weapons', 'size', 'sensor_strength',]
-ship_schema_optional_fields = ['buffs', 'debuffs']
+ship_schema_optional_fields = ['buffs', 'debuffs', 'sortclass']
 
 buff_effects = ['local_shield_repair', 'local_armor_repair',
     'remote_shield_repair', 'remote_armor_repair',]
@@ -55,6 +55,7 @@ class ShipLibrary(object):
         '': ['sizes', 'hullclasses', 'ships',],  # top level keys
         'ships': ship_schema_fields,
     }
+    # Optional top level keys: 'sortclasses'
 
     def __init__(self, library_filename=None):
         if library_filename:
@@ -85,6 +86,12 @@ class ShipLibrary(object):
         self.size_data.update(raw_data['sizes'])
 
         self.hullclasses_data = raw_data['hullclasses']
+        if raw_data.get('sortclasses', None) != None:
+            self.sortclasses_exists = True
+            self.sortclasses_data = raw_data['sortclasses']
+        else:
+            self.sortclasses_exists = False
+            self.sortclasses_data = self.hullclasses_data
         self.ship_data = {}
 
         for ship_name, data in raw_data['ships'].items():
@@ -107,10 +114,21 @@ class ShipLibrary(object):
                 # include optional values: area_of_effect and cycle_time
                 updates['weapons'][x]['area_of_effect'] = weapon.get('area_of_effect', 1)
                 updates['weapons'][x]['cycle_time'] = weapon.get('cycle_time', 1)
-            #updates['hullclass'] = data['hullclass']
 
             size_type = type(data['size'])
             updates['size'] = data['size'] if size_type is int else self.size_data[data['size']]
+
+            if data['hullclass'] not in self.hullclasses_data:
+                raise ValueError("%s: hullclass %s not in hullclasses" % (ship_name, data['hullclass']))
+            if self.sortclasses_exists:
+                if data['sortclass'] not in self.sortclasses_data:
+                    raise ValueError("%s: sortclass %s not in sortclasses" % (ship_name, data['sortclass']))
+                updates['sortclass'] = data['sortclass']
+            else: #False = self.sortclasses_exists
+                updates['sortclass'] = data['hullclass']
+
+            #convert sortclass to a number based on the position of the string in the array sortclasses
+            updates['sortclass'] = self.sortclasses_data.index(updates['sortclass'])
 
             updates['buffs'] = _construct_tuple(ShipBuffs, data.get('buffs', {}))
             updates['debuffs'] = _construct_tuple(ShipDebuffs, data.get('debuffs', {}))
@@ -144,10 +162,10 @@ class ShipLibrary(object):
                         raise ValueError(ship_name+": "+weapon_name+": cannot have empty level in priority_list array")
                     for priority_target in priority_level:
                         if priority_target not in self.hullclasses_data:
-                            raise ValueError(ship_name+": "+weapon_name+": "+str(priority_target)+" does not exist as a hullclass")
+                            raise ValueError(ship_name+": "+weapon_name+": "+str(priority_target)+" does not exist as a hullclass or category")
             # end of massive weapon_list for loop
-
             # finally merge the updated fields here before constructing
+
             # final schema object to limit side effects.
             data.update(updates)
             self.ship_data[ship_name] = _construct_tuple(ShipSchema, data)
