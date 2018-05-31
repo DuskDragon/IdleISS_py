@@ -25,7 +25,7 @@ class FleetLibraryTestCase(TestCase):
         self.assertEqual(schema, ship.ShipSchema('Small Cargo', 'Small Cargo',
             10, 0, 200, [], 3, 1,
             ship.ShipBuffs(10, 0, 0, 0),
-            ship.ShipDebuffs(0, 0, 0, 0), 2))
+            ship.ShipDebuffs(0, 0, 0, 0), 2, False, False))
 
     def test_load_fail_incorrect_priority_target(self):
         test_file_name = 'invalidpriority_target.json'
@@ -44,6 +44,86 @@ class FleetLibraryTestCase(TestCase):
         target_path = join(dirname(__file__), 'data', test_file_name)
         with self.assertRaises(ValueError) as context:
             self.library = ship.ShipLibrary(target_path)
+
+    def test_library_structure_load(self):
+        library = ship.ShipLibrary()
+        library._load({
+            'sizes': {
+                "frigate": 35,
+                "capital": 1700,
+                "medium structure": 8000,
+            },
+            'hullclasses': [
+                "frigate",
+                "cruiser",
+                "battleship",
+                "logistics capital",
+                "dreadnaught",
+                "medium structure"
+            ],
+            'ships': {
+                "rifter": {
+                    "hullclass": "frigate",
+                    "shield": 391,
+                    "armor": 351,
+                    "hull": 336,
+                    "weapons": [
+                        {
+                            "weapon_name": "autocannons",
+                            "weapon_size": "frigate",
+                            "firepower": 120,
+                            "priority_targets": [
+                                ["cruiser",],
+                                ["battleship",],
+                            ],
+                        }
+                    ],
+                    "size": "frigate",
+                    "sensor_strength": 9.6,
+                },
+
+                "Astrahaus": {
+                    "hullclass": "medium structure",
+                    "shield": 1500000,  # 1.5m
+                    "armor": 1500000,   # 1.5m
+                    "hull": 1500000,    # 1.5m
+                    "weapons": [
+                        {
+                            "weapon_name": "Standup Proximity Defense System",
+                            "weapon_size": "frigate",
+                            "firepower": 400,
+                            "area_of_effect": 20,
+                            "priority_targets": [
+                                ["frigate",],
+                            ],
+                        },
+                        {
+                            "weapon_name": "Standup Anti-Capital Missile Launcher",
+                            "weapon_size": "capital",
+                            "firepower": 800000, #800,000
+                            "priority_targets": [
+                                ["logistics capital"],
+                                ["dreadnaught"],
+                            ],
+                        },
+                    ],
+                    "is_structure": True,
+                    "ecm_immune": True,
+                    "size": "medium structure",
+                    "produces": {
+                        "basic_materials": 1,
+                        "advanced_materials": 0.5,
+                        "money": 1,
+                    },
+                    "reinforce_cycles": 2,
+                    "structure_tier": 1,
+                    "can_build": [],
+                    "sensor_strength": 1,
+                },
+            },
+        })
+        self.assertEqual(library.get_ship_schemata('Astrahaus').is_structure, True)
+
 
     def test_library_order(self):
         library = ship.ShipLibrary()

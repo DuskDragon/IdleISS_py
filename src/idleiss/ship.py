@@ -3,7 +3,9 @@ from os.path import join, dirname, abspath
 import json
 
 ship_schema_fields = ['hullclass', 'shield', 'armor', 'hull', 'weapons', 'size', 'sensor_strength',]
-ship_schema_optional_fields = ['buffs', 'debuffs', 'sortclass']
+ship_schema_optional_fields = ['buffs', 'debuffs', 'sortclass', 'is_structure', 'ecm_immune']
+
+structure_schema_fields = ['produces', 'reinforce_cycles', 'structure_tier', 'can_build']
 
 buff_effects = ['local_shield_repair', 'local_armor_repair',
     'remote_shield_repair', 'remote_armor_repair',]
@@ -45,15 +47,12 @@ def Ship(schema, attributes, debuffs=None):
         debuffs = ShipDebuffs(*([False] * len(debuff_effects)))
     return _Ship(schema, attributes, debuffs)
 
-def ship_size_sort_key(obj):
-    return obj.size
-
-
 class ShipLibrary(object):
 
     _required_keys = {
         '': ['sizes', 'hullclasses', 'ships',],  # top level keys
         'ships': ship_schema_fields,
+        'structure': structure_schema_fields,
     }
     # Optional top level keys: 'sortclasses'
 
@@ -166,13 +165,32 @@ class ShipLibrary(object):
             # end of massive weapon_list for loop
             # finally merge the updated fields here before constructing
 
+            if 'ecm_immune' in data.keys():
+                if type(data['ecm_immune']) != bool:
+                    raise ValueError(ship_name+": ecm_immune attribute is not a boolean")
+            else:
+                updates['ecm_immune'] = False
+
+            # Structure attributes check
+            if 'is_structure' in data.keys():
+                if type(data['is_structure']) != bool:
+                    raise ValueError(ship_name+": is_strucutre attribute is not a boolean")
+            else:
+                updates['is_structure'] = False
+            # Structure specific attributes
+            if data.get('is_structure', False):
+                missing = self._check_missing_keys('structure', data)
+                if missing:
+                    raise ValueError("%s does not have %s attribute" % (
+                        ship_name, ', '.join(missing)))
+
             # final schema object to limit side effects.
             data.update(updates)
             self.ship_data[ship_name] = _construct_tuple(ShipSchema, data)
 
 
 
-        self.ordered_ship_data = sorted(self.ship_data.values(), key=ship_size_sort_key)
+        self.ordered_ship_data = sorted(self.ship_data.values(), key=lambda s: s.sortclass)
 
     def get_ship_schemata(self, ship_name):
         return self.ship_data[ship_name]
