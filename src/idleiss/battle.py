@@ -73,6 +73,9 @@ def grab_debuffs(attacker_weapon, victim_ship):
     Returns a new ShipDebuffs tuple with the calculated values.
     """
 
+    if victim_ship.schema.ecm_immune:
+        return ShipDebuffs(0, 0, 0, 0)
+
     new_debuffs = attacker_weapon.get('debuffs',{})
     current_debuffs = victim_ship.debuffs
 
@@ -105,6 +108,11 @@ def ship_attack(attacker_weapon, attacker_debuffs, victim_ship):
     if not is_ship_alive(victim_ship):
         # save us some time, it could be the same dead ship.
         return victim_ship
+
+    if victim_ship.schema.is_structure:
+        # strucutres should not be attacked during fleet fights
+        # structure damage and destruction is another mechanic outside of fleet engagements
+        raise ValueError("Battle.ship_attack() encountered a structure as a victim_ship")
 
     debuffs = grab_debuffs(attacker_weapon, victim_ship)
 
@@ -229,6 +237,18 @@ def priority_target_list(input_fleet, priority):
             continue
     return subfleet
 
+def strucutre_list(input_fleet):
+    """
+    returns a list of ships where ship.schema.is_structure is True
+    """
+    subfleet = []
+    for x in range(len(input_fleet)):
+        if input_fleet[x].schema.is_structure == True:
+            subfleet.append(x)
+        else:
+            continue
+    return subfleet
+
 def repair_fleet(input_fleet):
     """
     Have logistics ships do their job and repair other ships in the fleet
@@ -331,6 +351,7 @@ def fleet_attack(fleet_a, fleet_b, current_round_number):
                 shots += 1
 
             aoe_hit_list = []
+            structures = strucutre_list(result)
             #repeat for each "area_of_effect" count
             for area_of_effect in range(weapon['area_of_effect']):
                 # check if there are priority targets
@@ -340,7 +361,7 @@ def fleet_attack(fleet_a, fleet_b, current_round_number):
                         # for each priority level
                         target_list = priority_target_list(result, possible_target)
                         # aoe weapons cannot hit the same target twice
-                        target_list = list(set(target_list) - set(aoe_hit_list))
+                        target_list = list(set(target_list) - set(aoe_hit_list) - set(structures))
                         if target_list == []: # no target
                             continue # try next priority level
 
@@ -354,7 +375,7 @@ def fleet_attack(fleet_a, fleet_b, current_round_number):
 
                     if target_found == False: # no priority targets found shoot anything
                         #aoe weapons cannot hit the same target twice
-                        target_list = list(set(range(len(result))) - set(aoe_hit_list))
+                        target_list = list(set(range(len(result))) - set(aoe_hit_list) - set(structures))
                         if target_list == []:
                             continue # no remaining targets for AOE
 
@@ -362,7 +383,7 @@ def fleet_attack(fleet_a, fleet_b, current_round_number):
                         result[target_id] = ship_attack(weapon, ship.debuffs, result[target_id])
                         aoe_hit_list.append(target_id)
                 else: # this means: weapon['priority_targets'] is [] (empty)
-                    target_list = list(set(range(len(result))) - set(aoe_hit_list))
+                    target_list = list(set(range(len(result))) - set(aoe_hit_list) - set(structures))
                     if target_list == []:
                         continue # no remaining targets for AOE
 
