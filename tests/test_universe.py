@@ -4,6 +4,11 @@ import json
 
 from idleiss.universe import Universe
 
+def draw_graph(graph):
+    nx.draw_networkx(graph, pos=nx.spring_layout(graph), with_labels=True)
+    import matplotlib.pyplot as plt
+    plt.show()
+
 class UserTestCase(TestCase):
 
     def setUp(self):
@@ -14,6 +19,43 @@ class UserTestCase(TestCase):
         graph = uni.generate_networkx(uni.systems)
         self.assertEqual(graph.number_of_nodes(), 5100)
         self.assertTrue(nx.is_connected(graph))
+
+    def test_consistent_generation(self):
+        uni1 = Universe('config/Universe_config.json')
+        uni2 = Universe('config/Universe_config.json')
+        g1 = uni1.generate_networkx(uni1.systems)
+        g2 = uni2.generate_networkx(uni2.systems)
+        d1 = nx.symmetric_difference(g1, g2)
+        d2 = nx.symmetric_difference(g2, g1)
+        # d1 and d2 contain only the edges which are different,
+        # 0 edges in the d# graph means they are the same
+        self.assertEqual(d1.number_of_edges(),0)
+        self.assertEqual(d2.number_of_edges(),0)
+
+    def test_highsec_is_connected(self):
+        uni = Universe('config/Universe_Config.json')
+        highsec_regions_only = [r for r in uni.regions if r.security == 'High']
+        self.assertGreater(len(highsec_regions_only), 0)
+        highsec_systems_only = []
+        for r in highsec_regions_only:
+            for c in r.constellations:
+                for solar in c.systems:
+                    if solar.security == 'High':
+                        highsec_systems_only.append(solar)
+                        valid_adj = []
+                        for adj_solar in solar.connections:
+                            if adj_solar.security == "High":
+                                valid_adj.append(adj_solar)
+                        solar.connections = valid_adj
+        graph = uni.generate_networkx(highsec_systems_only)
+        self.assertEqual(len(graph), len(highsec_systems_only))
+        self.assertTrue(nx.is_connected(graph))
+        # UNIVERSE IS NOW RUINED DO NOT USE
+        # nx.draw_networkx(graph, pos=nx.spring_layout(graph), with_labels=True)
+        # import matplotlib.pyplot as plt
+        # plt.show()
+        # x = list(nx.connected_components(graph))
+        # print(len(x))
 
     # def test_generate_constellation_raises_error(self):
         # uni = Universe()

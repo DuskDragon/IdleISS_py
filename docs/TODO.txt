@@ -1,5 +1,9 @@
 nosetests --with-coverage --cover-package=IdleISS --cover-html
 
+Brand New Player Steps:
+Find Highsec system
+
+
  - Progression:
     Basic Income
 

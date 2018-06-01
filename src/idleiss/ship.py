@@ -5,7 +5,7 @@ import json
 ship_schema_fields = ['hullclass', 'shield', 'armor', 'hull', 'weapons', 'size', 'sensor_strength',]
 ship_schema_optional_fields = ['buffs', 'debuffs', 'sortclass', 'is_structure', 'ecm_immune']
 
-structure_schema_fields = ['produces', 'reinforce_cycles', 'structure_tier', 'can_build']
+structure_schema_fields = ['produces', 'reinforce_cycles', 'structure_tier', 'shipyard']
 
 buff_effects = ['local_shield_repair', 'local_armor_repair',
     'remote_shield_repair', 'remote_armor_repair',]

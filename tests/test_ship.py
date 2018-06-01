@@ -100,7 +100,7 @@ class FleetLibraryTestCase(TestCase):
                         {
                             "weapon_name": "Standup Anti-Capital Missile Launcher",
                             "weapon_size": "capital",
-                            "firepower": 800000, #800,000
+                            "firepower": 80000, #80,000
                             "priority_targets": [
                                 ["logistics capital"],
                                 ["dreadnaught"],
@@ -117,7 +117,7 @@ class FleetLibraryTestCase(TestCase):
                     },
                     "reinforce_cycles": 2,
                     "structure_tier": 1,
-                    "can_build": [],
+                    "shipyard": [],
                     "sensor_strength": 1,
                 },
             },

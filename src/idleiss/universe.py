@@ -545,6 +545,8 @@ class Universe(object):
                 source, dest = self.rand.sample(highsec_regions, 2)
                 source.add_connection(dest, extra=True)
         # highsec is formed
+        self.stitch_nodes(highsec_regions)
+        # highsec is forced to be connected
         # now to create lowsec ring
         for x in range(len(lowsec_regions)):
             region = lowsec_regions[x]
