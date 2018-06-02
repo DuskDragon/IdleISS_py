@@ -41,6 +41,10 @@ nosetests.xml
 *~
 .*.swp
 
+# test generated files
+docs/default_regions.png
+docs/default_region_*.png
+
 # Reminder Files
 env.txt
 notepadpplayout

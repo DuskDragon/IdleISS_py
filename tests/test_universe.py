@@ -1,13 +1,30 @@
 from unittest import TestCase
 import networkx as nx
+import matplotlib.pyplot as plt
 import json
 
 from idleiss.universe import Universe
 
 def draw_graph(graph):
     nx.draw_networkx(graph, pos=nx.spring_layout(graph), with_labels=True)
-    import matplotlib.pyplot as plt
     plt.show()
+
+def save_graph(graph, universe, name_of_file):
+    plt.figure(figsize=(24,14))
+    color_array = []
+    for node in graph:
+        if universe.master_dict[node].security == 'High':
+            color_array.append('b')
+        elif universe.master_dict[node].security == 'Low':
+            color_array.append('y')
+        elif universe.master_dict[node].security == 'Null':
+            color_array.append('r')
+        else:
+            raise ValueError(node + ": did not have a valid security rating")
+    nx.draw_networkx(graph, pos=nx.spring_layout(graph),
+        node_size=24, font_size=16, with_labels=True, node_color=color_array)
+    plt.savefig(name_of_file, bbox_inches='tight')
+    plt.close()
 
 class UserTestCase(TestCase):
 
@@ -19,6 +36,17 @@ class UserTestCase(TestCase):
         graph = uni.generate_networkx(uni.systems)
         self.assertEqual(graph.number_of_nodes(), 5100)
         self.assertTrue(nx.is_connected(graph))
+
+    # def test_save_various_plots(self):
+        # uni = Universe('config/Universe_Config.json')
+        # region_graph = uni.generate_networkx(uni.regions)
+        # save_graph(region_graph, uni, 'docs/default_regions.png')
+        # for region in uni.regions:
+            # system_list = []
+            # for constellation in region.constellations:
+                # system_list.extend(constellation.systems)
+            # inter_region_graph = uni.generate_networkx(system_list)
+            # save_graph(inter_region_graph, uni, 'docs/default_region_'+str(region.name)+'.png')
 
     def test_consistent_generation(self):
         uni1 = Universe('config/Universe_config.json')
@@ -52,7 +80,6 @@ class UserTestCase(TestCase):
         self.assertTrue(nx.is_connected(graph))
         # UNIVERSE IS NOW RUINED DO NOT USE
         # nx.draw_networkx(graph, pos=nx.spring_layout(graph), with_labels=True)
-        # import matplotlib.pyplot as plt
         # plt.show()
         # x = list(nx.connected_components(graph))
         # print(len(x))
@@ -105,7 +132,6 @@ class UserTestCase(TestCase):
 
 
 ###########NetworkX##############
-#import matplotlib.pyplot as plt
 #import networkx as nx
 #from idleiss.universe import Universe
 #uni = Universe('config/Universe_Config.json')

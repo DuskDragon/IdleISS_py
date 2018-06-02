@@ -242,6 +242,14 @@ class Universe(object):
         #TODO: config file is verified except for rigidly defined structures
 
         self._build_universe(raw_data)
+        #populate dictionaries:
+        self.master_dict = {}
+        for region in self.regions:
+            self.master_dict[region.name] = region
+        for constellation in self.constellations:
+            self.master_dict[constellation.name] = constellation
+        for system in self.systems:
+            self.master_dict[system.name] = system
 
     def _verify_config_settings(self, raw_data):
         universe_structure = raw_data['Universe Structure']
@@ -482,7 +490,8 @@ class Universe(object):
             raise ValueError("_build_universe: failed to connect all nodes")
         # done building universe
         # DEBUG LINE BLOCK
-        print('\nRemaining required systems generated:')
+        print('Remaining required systems generated.')
+        print('\nNew Totals:')
         print(f'{self.networkx_graph.number_of_nodes()} Systems')
         print(f'{self.networkx_graph.number_of_edges()} Connections')
         print(f'All systems connected: {nx.is_connected(self.networkx_graph)}')
