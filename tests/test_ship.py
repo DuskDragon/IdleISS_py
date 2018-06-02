@@ -51,7 +51,7 @@ class FleetLibraryTestCase(TestCase):
             'sizes': {
                 "frigate": 35,
                 "capital": 1700,
-                "medium structure": 8000,
+                "medium structure": 8_000,
             },
             'hullclasses': [
                 "frigate",
@@ -84,9 +84,9 @@ class FleetLibraryTestCase(TestCase):
 
                 "Astrahaus": {
                     "hullclass": "medium structure",
-                    "shield": 1500000,  # 1.5m
-                    "armor": 1500000,   # 1.5m
-                    "hull": 1500000,    # 1.5m
+                    "shield": 1_500_000,
+                    "armor": 1_500_000,
+                    "hull": 1_500_000,
                     "weapons": [
                         {
                             "weapon_name": "Standup Proximity Defense System",
@@ -100,7 +100,7 @@ class FleetLibraryTestCase(TestCase):
                         {
                             "weapon_name": "Standup Anti-Capital Missile Launcher",
                             "weapon_size": "capital",
-                            "firepower": 80000, #80,000
+                            "firepower": 80_000,
                             "priority_targets": [
                                 ["logistics capital"],
                                 ["dreadnaught"],
@@ -161,7 +161,7 @@ class FleetLibraryTestCase(TestCase):
 
                 "stabber": {
                     "hullclass": "cruiser",
-                    "shield": 600,  # 1600
+                    "shield": 600,
                     "armor": 1300,
                     "hull": 1300,
                     "weapons": [
@@ -181,7 +181,7 @@ class FleetLibraryTestCase(TestCase):
 
                 "tempest": {
                     "hullclass": "battleship",
-                    "shield": 1300,  # 6300
+                    "shield": 1300,
                     "armor": 7000,
                     "hull": 6800,
                     "weapons": [

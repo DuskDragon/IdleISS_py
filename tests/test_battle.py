@@ -126,21 +126,21 @@ class ShipLibraryMock(ShipLibrary):
 
                 "ship4": {
                     "hullclass": "generic",
-                    "shield": 1000000, # 1,000,000
+                    "shield": 1_000_000,
                     "armor": 200,
-                    "hull": 250000, # 250,000
+                    "hull": 250_000,
                     "weapons": [
                         {
                             "weapon_name": "BFG",
                             "weapon_size": "ship1",
-                            "firepower": 250000, # 250,000
+                            "firepower": 250_000,
                             "priority_targets": [],
                         }
                     ],
                     "sensor_strength": 1,
                     "size": "ship4",
                     "buffs": {
-                        "local_shield_repair": 1000000, # 1,000,000
+                        "local_shield_repair": 1_000_000,
                     },
                 },
 
@@ -371,9 +371,9 @@ class ShipLibraryOrderMock(ShipLibrary):
                 "cruiser": 135,
                 "battlecruiser": 275,
                 "battleship": 420,
-                "carrier": 1350,
-                "dreadnaught": 2500,
-                "titan": 3000
+                "carrier": 1_350,
+                "dreadnaught": 2_500,
+                "titan": 3_000
             },
             'hullclasses': [
                 "ecm frigate",
@@ -624,7 +624,7 @@ class BattleTestCase(TestCase):
         self.assertEqual(battle.true_damage(100, 1000, 2, d, d), 1)
 
         # weapon size just a weee bit larger than target size
-        self.assertEqual(battle.true_damage(100, 10000, 9999, d, d), 100)
+        self.assertEqual(battle.true_damage(100, 10_000, 9_999, d, d), 100)
 
     def test_ewar_target_painter_effect(self):
         self.assertEqual(
@@ -883,7 +883,7 @@ class BattleTestCase(TestCase):
         random.seed(0)
         attacker = {
             "ship1": 15,
-            "ship2": 1000,
+            "ship2": 1_000,
         }
         defender = {
             "ship1": 8,  # they look pretty dead.
@@ -911,11 +911,11 @@ class BattleTestCase(TestCase):
         for a, d in battle_instance.round_results:
             self.assertEqual(a.ship_count, stalemates)
             self.assertEqual(a.hits_taken, 3)
-            self.assertEqual(a.damage_taken, 750000)
+            self.assertEqual(a.damage_taken, 750_000)
 
             self.assertEqual(d.ship_count, stalemates)
             self.assertEqual(d.hits_taken, 3)
-            self.assertEqual(d.damage_taken, 750000)
+            self.assertEqual(d.damage_taken, 750_000)
 
     def test_local_rep(self):
         random.seed(0)
@@ -1018,8 +1018,8 @@ class BattleTestCase(TestCase):
         damage = [(a.damage_taken, d.damage_taken)
             for a, d in battle_instance.round_results]
         self.assertEqual(damage, [
-            (1250, 1920),
-            (450, 1080)
+            (1_250, 1_920),
+            (450, 1_080)
         ])
 
     def test_generate_summary_data(self):
@@ -1064,11 +1064,11 @@ class BattleTestCase(TestCase):
             "attacker_result": {"ship2": 25},
             "attacker_losses": {"ship2": 0},
             "attacker_shots_fired": 50,
-            "attacker_damage_dealt": 3000,
+            "attacker_damage_dealt": 3_000,
             "defender_result": {},
             "defender_losses": {"ship1": 25},
             "defender_shots_fired": 34,
-            "defender_damage_dealt": 1700
+            "defender_damage_dealt": 1_700
         }
         self.assertEqual(summary, summary_test)
 
