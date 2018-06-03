@@ -16,8 +16,10 @@ class SolarSystem(object):
         self.security = security
         self.rand = random_state
         self.connections = []
+        self.cap_connections = []
         self.id = universe.get_next_system_id()
         self.flooded = False
+        self.cap_flooded = False
 
     def __str__(self):
         connections_str = ""
@@ -35,6 +37,9 @@ class SolarSystem(object):
         if system.connection_exists(self):
             raise ValueError("1-way System Connection: "+system.name+" to "+self.name)
         system.connections.append(self)
+        if system.security != 'High' and self.security != 'High':
+            system.cap_connections.append(self)
+            self.cap_connections.append(system)
         return True # connection added
 
 class Constellation(object):
@@ -60,8 +65,10 @@ class Constellation(object):
         self.rand = random_state
         self.region = region
         self.connections = []
+        self.cap_connections = []
         self.id = universe.get_next_constellation_id()
         self.flooded = False
+        self.cap_flooded = False
 
     def __str__(self):
         connections_str = ""
@@ -88,6 +95,9 @@ class Constellation(object):
         dest.add_connection(jumpoff)
         dest.bordertype = connect_type
         jumpoff.bordertype = connect_type
+        if constellation.security != 'High' and self.security != 'High':
+            constellation.cap_connections.append(self)
+            self.cap_connections.append(constellation)
         return True # connection added
 
 class Region(object):
@@ -112,9 +122,11 @@ class Region(object):
         self.constellations = universe.stitch_nodes(self.constellations)
         self.rand = random_state
         self.connections = []
+        self.cap_connections = []
         self.border_edge_systems = []
         self.id = universe.get_next_constellation_id()
         self.flooded = False
+        self.cap_flooded = False
 
     def __str__(self):
         connections_str = ""
@@ -139,7 +151,9 @@ class Region(object):
         dest = self.rand.choice(region.constellations)
         jumpoff = self.rand.choice(self.constellations)
         dest.add_connection(jumpoff, connect_type="Region", extra=extra)
-
+        if region.security != 'High' and self.security != 'High':
+            region.cap_connections.append(self)
+            self.cap_connections.append(region)
         return True # connection added
 
 class Universe(object):
@@ -680,6 +694,8 @@ class Universe(object):
             #end of for loop iterating over regions in current nullsec ring
         #end of for loop iterating over all nullsec rings
         # nullsec is formed
+        # ensure capitals can traverse the entire map
+        self.cap_stitch_nodes(region_list)
         # return finished galaxy
         return region_list
 
@@ -746,6 +762,43 @@ class Universe(object):
         self.drain(node_list)
         return node_list
 
+    def cap_stitch_nodes(self, unpruned_node_list):
+        """
+        guarantees that a node_list discarding highsec will pass floodfill
+        does not add more edges than needed
+        """
+        node_list = [x for x in unpruned_node_list if x.security != 'High']
+        if len(node_list) < 2:
+            raise ValueError("idleiss.universe.cap_stitch_nodes: must have at least two systems for a connection. List provided was: "+str(node_list))
+        # floodfill
+        if len(node_list[0].cap_connections) == 0: #floodfill will start on orphan, avoid this
+            node_list[0].add_connection(self.rand.choice(node_list[1:]))
+        while not self.cap_floodfill(node_list):
+            #floodfill failed, find failed nodes:
+            valid_nodes = []
+            orphan_nodes = []
+            disjoint_nodes = []
+            for x in node_list:
+                if len(x.cap_connections) == 0:
+                    orphan_nodes.append(x)
+                elif x.cap_flooded:
+                    valid_nodes.append(x)
+                else: # not flooded, not orphan, must be disjoint
+                    disjoint_nodes.append(x)
+            #first pin disjoint graphs to valid nodes
+            if len(disjoint_nodes) > 0:
+                disjoint_nodes[0].add_connection(self.rand.choice(valid_nodes))
+                self.cap_drain(node_list)
+                continue #go around again
+            #next pin all orphans, there are only ophans remaining
+            for x in range(len(orphan_nodes)): #include already processed orphans
+                orphan_nodes[x].add_connection(self.rand.choice((valid_nodes + orphan_nodes[:x])))
+            self.cap_drain(node_list)
+        #end of floodfill
+        self.cap_drain(node_list)
+        return node_list
+
+
     def count_edges(self, node_list):
         connection_list = []
         for x in node_list:
@@ -790,3 +843,18 @@ class Universe(object):
     def drain(self, node_list):
         for x in node_list: #reset flood state
             x.flooded = False
+
+    def cap_flood(self, node):
+        if(node.cap_flooded):
+            return
+        node.cap_flooded = True
+        for x in node.cap_connections:
+            self.cap_flood(x)
+
+    def cap_floodfill(self, node_list):
+        self.cap_flood(node_list[0])
+        return all(x.cap_flooded for x in node_list)
+
+    def cap_drain(self, node_list):
+        for x in node_list: #reset cap_flood state
+            x.cap_flooded = False

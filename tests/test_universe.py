@@ -37,16 +37,16 @@ class UserTestCase(TestCase):
         self.assertEqual(graph.number_of_nodes(), 5100)
         self.assertTrue(nx.is_connected(graph))
 
-    # def test_save_various_plots(self):
-        # uni = Universe('config/Universe_Config.json')
-        # region_graph = uni.generate_networkx(uni.regions)
-        # save_graph(region_graph, uni, 'docs/default_regions.png')
-        # for region in uni.regions:
-            # system_list = []
-            # for constellation in region.constellations:
-                # system_list.extend(constellation.systems)
-            # inter_region_graph = uni.generate_networkx(system_list)
-            # save_graph(inter_region_graph, uni, 'docs/default_region_'+str(region.name)+'.png')
+#    def test_save_various_plots(self):
+#        uni = Universe('config/Universe_Config.json')
+#        region_graph = uni.generate_networkx(uni.regions)
+#        save_graph(region_graph, uni, 'docs/default_regions.png')
+#        for region in uni.regions:
+#            system_list = []
+#            for constellation in region.constellations:
+#                system_list.extend(constellation.systems)
+#            inter_region_graph = uni.generate_networkx(system_list)
+#            save_graph(inter_region_graph, uni, 'docs/default_region_'+str(region.name)+'.png')
 
     def test_consistent_generation(self):
         uni1 = Universe('config/Universe_config.json')
