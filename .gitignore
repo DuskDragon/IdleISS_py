@@ -41,9 +41,8 @@ nosetests.xml
 *~
 .*.swp
 
-# test generated files
-docs/default_regions.png
-docs/default_region_*.png
+# generated files
+output
 
 # Reminder Files
 env.txt

@@ -1,6 +1,7 @@
 import random
 import json
 import networkx as nx
+import matplotlib.pyplot as plt
 
 class SolarSystem(object):
     def __init__(self, random_state, universe, security, name, const, region):
@@ -827,6 +828,27 @@ class Universe(object):
         while self.name_exists(possible_name):
             possible_name = self._generate_nullsec_name()
         return possible_name
+
+    def draw_graph(self, graph):
+        nx.draw_networkx(graph, pos=nx.spring_layout(graph), with_labels=True)
+        plt.show()
+
+    def save_graph(self, graph, name_of_file):
+        plt.figure(figsize=(24,14))
+        color_array = []
+        for node in graph:
+            if self.master_dict[node].security == 'High':
+                color_array.append('b')
+            elif self.master_dict[node].security == 'Low':
+                color_array.append('y')
+            elif self.master_dict[node].security == 'Null':
+                color_array.append('r')
+            else:
+                raise ValueError(node + ": did not have a valid security rating")
+        nx.draw_networkx(graph, pos=nx.spring_layout(graph),
+            node_size=24, font_size=16, with_labels=True, node_color=color_array)
+        plt.savefig(name_of_file, bbox_inches='tight')
+        plt.close()
 
     #TODO: Distance floodfill?
     def flood(self, node):
