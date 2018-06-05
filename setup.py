@@ -1,25 +1,24 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.0'
+version = '0.0.1'
 
 long_description = open('README.rst').read()
 
 setup(name='idleiss',
       version=version,
-      description="",
+      description="Idle Internet Spaceships",
       long_description=long_description,
-      # Get more strings from
-      # http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
-        "Development Status :: 1 - Planning",
+        'Development Status :: 2 - Pre-Alpha',
+        'Programming Language :: Python :: 3.6',
         ],
-      keywords='',
+      keywords='idlerpg spaceships internetspaceships',
       author='DuskDragon',
       author_email='',
       url='https://github.com/DuskDragon/IdleISS/',
       license='gpl',
-      packages=find_packages('src'),
+      packages=find_packages('src/idleiss', exclude=['ez_setup', 'docs', 'config']),
       package_dir={'': 'src'},
       namespace_packages=[],
       include_package_data=True,
@@ -28,7 +27,9 @@ setup(name='idleiss',
           'setuptools',
           # -*- Extra requirements: -*-
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
-      )
+      entry_points={
+          'console_scripts': [
+              'idleiss = idleiss.main:run',
+          ],
+      },
+)
