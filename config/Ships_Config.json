@@ -1,0 +1,148 @@
+{
+    "sizes": {
+        "frigate": 40,
+        "destroyer": 85,
+        "cruiser": 135,
+        "battlecruiser": 275,
+        "battleship": 420,
+        "carrier": 1350,
+        "dreadnaught": 2500,
+        "titan": 3000
+    },
+    "hullclasses": [
+        "ecm frigate",
+        "tackle frigate",
+        "assault frigate",
+        "brawler frigate",
+        "logistic frigate",
+        "drone frigate",
+        "ecm destroyer",
+        "tackle destroyer",
+        "assault destroyer",
+        "brawler destroyer",
+        "logistic destroyer",
+        "interdictor destroyer",
+        "command destroyer",
+        "drone destroyer",
+        "ecm cruiser",
+        "tackle cruiser",
+        "assault cruiser",
+        "brawler cruiser",
+        "logistic cruiser",
+        "strategic cruiser",
+        "drone cruiser",
+        "sniper battlecruiser",
+        "assault battlecruiser",
+        "brawler battlecruiser",
+        "command battlecruiser",
+        "frontline battleship",
+        "attack battleship",
+        "ecm battleship",
+        "drone battleship",
+        "blackops battleship",
+        "marauder battleship",
+        "assault carrier",
+        "command carrier",
+        "superiority carrier",
+        "logistics capital",
+        "tracking dreadnaught",
+        "assault dreadnaught",
+        "tracking supercarrier",
+        "assault supercarrier",
+        "superiority supercarrier",
+        "tracking titan",
+        "assault titan",
+        "area-of-effect titan",
+        "other"
+    ],
+    "sortclasses": [
+        "frigate",
+        "destroyer",
+        "cruiser",
+        "battlecruiser",
+        "battleship",
+        "logistics capital",
+        "dreadnaught",
+        "supercarrier",
+        "titan",
+        "other"
+    ],
+    "ships": {
+        "Rifter": {
+            "hullclass": "assault frigate",
+            "sortclass": "frigate",
+            "shield": 100,
+            "armor": 100,
+            "hull": 100,
+            "weapons": [
+                {
+                    "weapon_name": "150mm Autocannon",
+                    "weapon_size": "frigate",
+                    "firepower": 50,
+                    "priority_targets": []
+                }
+            ],
+            "sensor_strength": 20,
+            "size": "frigate",
+            "buffs": {
+                "local_shield_repair": 10
+            }
+        },
+        "Incursus": {
+            "hullclass": "brawler frigate",
+            "sortclass": "frigate",
+            "shield": 100,
+            "armor": 10,
+            "hull": 100,
+            "weapons": [
+                {
+                    "weapon_name": "125mm Blaster",
+                    "weapon_size": "frigate",
+                    "firepower": 60,
+                    "priority_targets": []
+                }
+            ],
+            "sensor_strength": 20,
+            "size": "frigate",
+            "buffs": {
+                "local_shield_repair": 10
+            }
+        },
+        "Maller": {
+            "hullclass": "brawler cruiser",
+            "sortclass": "cruiser",
+            "shield": 200,
+            "armor": 200,
+            "hull": 200,
+            "weapons": [
+                {
+                    "weapon_name": "Medium Laser",
+                    "weapon_size": "cruiser",
+                    "firepower": 120,
+                    "priority_targets": []
+                }
+            ],
+            "sensor_strength": 27,
+            "size": "cruiser",
+            "buffs": {}
+        },
+        "Moa": {
+            "hullclass": "brawler cruiser",
+            "sortclass": "cruiser",
+            "shield": 200,
+            "armor": 200,
+            "hull": 200,
+            "weapons": [
+                {
+                    "weapon_name": "250mm Railgun",
+                    "weapon_size": "cruiser",
+                    "firepower": 80,
+                    "priority_targets": []
+                }
+            ],
+            "sensor_strength": 27,
+            "size": "cruiser",
+            "buffs": {}
+        }
+    }
+}

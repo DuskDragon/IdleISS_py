@@ -410,7 +410,7 @@ class ShipLibraryOrderMock(ShipLibrary):
                 "assault carrier",
                 "command carrier",
                 "superiority carrier",
-                "logistics capital"
+                "logistics capital",
                 "tracking dreadnaught",
                 "assault dreadnaught",
                 "tracking supercarrier",

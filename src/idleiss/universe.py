@@ -505,8 +505,8 @@ class Universe(object):
             raise ValueError("_build_universe: failed to connect all nodes")
         # done building universe
         # DEBUG LINE BLOCK
-        print('Remaining required systems generated.')
-        print('\nNew Totals:')
+        print('\nRemaining required systems generated.')
+        print('Final Totals:')
         print(f'{self.networkx_graph.number_of_nodes()} Systems')
         print(f'{self.networkx_graph.number_of_edges()} Connections')
         print(f'All systems connected: {nx.is_connected(self.networkx_graph)}')
