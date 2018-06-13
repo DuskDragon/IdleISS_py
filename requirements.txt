@@ -1,10 +1,9 @@
 # required
 networkx
+matplotlib
 
 # testing purposes only
 nose
 coverage
 
 # extras
-matplotlib
-

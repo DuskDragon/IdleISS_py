@@ -533,22 +533,22 @@ class Battle(object):
             outstr += "    ALL ATTACKING SHIPS DESTROYED\n"
         else:
             attacker_result = []
-            for key in attacker_fleet_result:
+            for key in attacker_ships:
                 attacker_result.append(key)
             attacker_result.sort()
             attacker_result.sort(key=lambda s: self.stored_library.get_ship_schemata(s).sortclass)
             for attacking_ship in attacker_result:
-                outstr += "    %s: %i (Lost: %i)\n" % (attacking_ship, attacker_fleet_result[attacking_ship], summary['attacker_losses'][attacking_ship])
+                outstr += "    %s: %i (Lost: %i)\n" % (attacking_ship, attacker_fleet_result.get(attacking_ship,0), summary['attacker_losses'][attacking_ship])
         outstr += "Defender:\n"
         defender_fleet_result = summary['defender_result']
         if len(defender_fleet_result) == 0:
             outstr += "    ALL DEFENDING SHIPS DESTROYED"
         else:
             defender_result = []
-            for key in defender_fleet_result:
+            for key in defender_ships:
                 defender_result.append(key)
             defender_result.sort()
             defender_result.sort(key=lambda s: self.stored_library.get_ship_schemata(s).sortclass)
             for defending_ship in defender_result:
-                outstr += "    %s: %i (Lost: %i)\n" % (defending_ship, defender_fleet_result[defending_ship], summary['defender_losses'][defending_ship])
+                outstr += "    %s: %i (Lost: %i)\n" % (defending_ship, defender_fleet_result.get(defending_ship,0), summary['defender_losses'][defending_ship])
         return outstr.rstrip()

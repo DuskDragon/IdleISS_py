@@ -1153,6 +1153,46 @@ class BattleTestCase(TestCase):
 
         self.assertEqual(output_lines, battle_instance.generate_summary_text())
 
+    def test_summary_text_lists_all_ships(self):
+        attacker = {
+            "Rifter": 60,
+            "Incursus": 60,
+            "Maller": 60,
+            "Moa": 60
+        }
+        defender = {
+            "Rifter": 60,
+            "Incursus": 60,
+            "Maller": 60,
+            "Moa": 60
+        }
+        max_rounds = 19
+        library = ShipLibraryOrderMock()
+        random.seed(2)
+        battle_instance = Battle(attacker, defender, max_rounds, library)
+
+        output_lines = "Attacker:\n" +\
+            "    Incursus: 60\n" +\
+            "    Rifter: 60\n" +\
+            "    Maller: 60\n" +\
+            "    Moa: 60\n" +\
+            "Defender:\n" +\
+            "    Incursus: 60\n" +\
+            "    Rifter: 60\n" +\
+            "    Maller: 60\n" +\
+            "    Moa: 60\n" +\
+            "\n" +\
+            "Result:\n" +\
+            "Attacker:\n" +\
+            "    Incursus: 4 (Lost: 56)\n" +\
+            "    Rifter: 9 (Lost: 51)\n" +\
+            "    Maller: 0 (Lost: 60)\n" +\
+            "    Moa: 1 (Lost: 59)\n" +\
+            "Defender:\n" +\
+            "    ALL DEFENDING SHIPS DESTROYED"
+
+        self.assertEqual(output_lines, battle_instance.generate_summary_text())
+
 
 class SimBase(object):
 
