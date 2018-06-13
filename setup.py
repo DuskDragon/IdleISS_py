@@ -31,7 +31,7 @@ setup(name='idleiss',
       include_package_data=True,
       zip_safe=False,
       install_requires=requirements,
-      extras_requires={'test': test_requirements},
+      extras_require={'test': test_requirements},
       entry_points={
           'console_scripts': [
               'idleiss = idleiss.main:run',
