@@ -61,7 +61,7 @@ class Constellation(object):
             for x in range(universe.systems_per_constellation - len(self.systems)):
                 new_sys = SolarSystem(random_state, universe, security, universe.generate_unused_nullsec_name(), self.name, region)
                 self.systems.append(new_sys)
-        #print("idleiss.universe._build_universe: calling stitch nodes on: "+region+": "+self.name+": systems: "+str(len(self.systems)))#DEBUG LINE
+        #self.debug_output += "idleiss.universe._build_universe: calling stitch nodes on: "+region+": "+self.name+": systems: "+str(len(self.systems))+"\n"#DEBUG LINE
         self.systems = universe.stitch_nodes(self.systems)
         self.rand = random_state
         self.region = region
@@ -119,7 +119,7 @@ class Region(object):
             for x in range(universe.constellations_per_region - len(self.constellations)):
                 new_const = Constellation(random_state, universe, [], security, universe.generate_unused_nullsec_name(), self.name)
                 self.constellations.append(new_const)
-        #print("idleiss.universe._build_universe: calling stitch nodes on: "+self.name+": constellations: "+str(len(self.constellations)))#DEBUG LINE
+        #self.debug_output += "idleiss.universe._build_universe: calling stitch nodes on: "+self.name+": constellations: "+str(len(self.constellations))+'\n'#DEBUG LINE
         self.constellations = universe.stitch_nodes(self.constellations)
         self.rand = random_state
         self.connections = []
@@ -199,6 +199,7 @@ class Universe(object):
         self.current_unused_system_id = 0
         self.current_unused_constellation_id = 0
         self.current_unused_region_id = 0
+        self.debug_output = ''
         if filename:
             self.load(filename)
 
@@ -362,13 +363,13 @@ class Universe(object):
                     self.register_name(system)
                     systems_verified += 1
 
-        print("\nSuccessfully imported the following:")
-        print(str(regions_verified)+" regions")
-        print(f'\t{highsec_regions} High Security')
-        print(f'\t{lowsec_regions} Low Security')
-        print(f'\t{nullsec_regions} Null Security')
-        print(f'{constellations_verified} constellations')
-        print(f'{systems_verified} systems')
+        self.debug_output += "\nSuccessfully imported the following:\n"
+        self.debug_output += str(regions_verified)+" regions\n"
+        self.debug_output += f'\t{highsec_regions} High Security\n'
+        self.debug_output += f'\t{lowsec_regions} Low Security\n'
+        self.debug_output += f'\t{nullsec_regions} Null Security\n'
+        self.debug_output += f'{constellations_verified} constellations\n'
+        self.debug_output += f'{systems_verified} systems\n'
 
         self.used_names = []
         #TODO remove initial name loading ^^^^^^^^^^
@@ -405,7 +406,7 @@ class Universe(object):
         G.add_nodes_from(orphan_list)
         ## TODO: clean up when not needed
         ## debug info
-        #print("Nodes: "+str(G.number_of_nodes())+", Edges: "+str(G.number_of_edges()))
+        #self.debug_output += "Nodes: "+str(G.number_of_nodes())+", Edges: "+str(G.number_of_edges())+'\n'
         #import matplotlib.pyplot as plt
         #plt.subplot(111)
         #nx.draw_networkx(G, with_labels=True)
@@ -505,11 +506,11 @@ class Universe(object):
             raise ValueError("_build_universe: failed to connect all nodes")
         # done building universe
         # DEBUG LINE BLOCK
-        print('\nRemaining required systems generated.')
-        print('Final Totals:')
-        print(f'{self.networkx_graph.number_of_nodes()} Systems')
-        print(f'{self.networkx_graph.number_of_edges()} Connections')
-        print(f'All systems connected: {nx.is_connected(self.networkx_graph)}')
+        self.debug_output += '\nRemaining required systems generated.\n'
+        self.debug_output += 'Final Totals:\n'
+        self.debug_output += f'{self.networkx_graph.number_of_nodes()} Systems\n'
+        self.debug_output += f'{self.networkx_graph.number_of_edges()} Connections\n'
+        self.debug_output += f'All systems connected: {nx.is_connected(self.networkx_graph)}\n'
         # END DEBUG LINE BLOCK
 
     def galaxy_stitch(self, region_list):

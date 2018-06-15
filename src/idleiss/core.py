@@ -4,6 +4,7 @@ from math import log
 from .user import User
 from .ship import ShipLibrary
 from .event import GameEngineEvent
+from .universe import Universe
 
 
 class TimeOutofBounds(Exception):
@@ -15,9 +16,10 @@ class TimeOutofBounds(Exception):
 
 class GameEngine(object):
 
-    def __init__(self, library_filename):
+    def __init__(self, universe_filename, library_filename):
         self.users = {}
         self.current_online_list = []
+        self.universe = Universe(universe_filename)
         self.library = ShipLibrary(library_filename)
 
         # The current world_timestamp - only updated whenever the world

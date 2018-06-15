@@ -1,6 +1,7 @@
 from idleiss.universe import Universe
 from idleiss.ship import ShipLibrary
 from idleiss.battle import Battle
+from idleiss.interpreter import Interpreter
 import argparse
 import os
 import json
@@ -33,6 +34,7 @@ def run():
     if args.uniconfig != default_universe_config:
         print(f'Generating universe using alternate config: {args.uniconfig}')
     uni = Universe(args.uniconfig)
+    print(uni.debug_output)
     print(f'\nUniverse successfully loaded from {args.uniconfig}')
     if args.shipsconfig != default_ships_config:
         print(f'Loading starships using alternate config: {args.shipsconfig}')
@@ -74,8 +76,9 @@ def run():
         print(f'\nBattle lasted {len(battle_instance.round_results)} rounds.')
 
     if not one_shot_only and not args.quickrun:
-        pass
         # execute interpreter
+        interp = Interpreter(args.uniconfig, args.shipsconfig)
+        interp.run()
 
     # one_shot_only is True or interpreter has exited
     print('\nIdleISS exiting')
