@@ -24,6 +24,8 @@ def run():
     parser.add_argument('--simulate-battle', default=None, dest='simbattle',
         const=example_fleet_fight, nargs='?', action='store', type=str,
         help='Simulate a fleet fight between two fleets using a file and exit. Example file: {0}'.format(example_fleet_fight))
+    parser.add_argument('-q', '--quick', action='store_true', dest='quickrun',
+        help='Do not run the interpreter, only verify config files')
 
     one_shot_only = False
 
@@ -52,7 +54,7 @@ def run():
             for constellation in region.constellations:
                 system_list.extend(constellation.systems)
             inter_region_graph = uni.generate_networkx(system_list)
-            uni.save_graph(inter_region_graph, 'output/maps/default_region_'+str(region.name)+'.png')
+            uni.save_graph(inter_region_graph, f'output/maps/default_region_{str(region.name)}.png')
             print('=', end='', flush=True)
         print('')
     # battle simulation
@@ -71,7 +73,7 @@ def run():
         print(str(battle_instance.generate_summary_text()))
         print(f'\nBattle lasted {len(battle_instance.round_results)} rounds.')
 
-    if not one_shot_only:
+    if not one_shot_only and not args.quickrun:
         pass
         # execute interpreter
 
