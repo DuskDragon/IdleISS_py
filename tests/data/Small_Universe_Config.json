@@ -1,0 +1,121 @@
+{
+    "Universe Seed": 42,
+    "System Count": 36,
+    "Constellation Count": 12,
+    "Systems Per Constellation": 3,
+    "Region Count": 6,
+    "Constellations Per Region": 2,
+    "Systems Per Region": 6,
+    "High Security Systems": 12,
+    "High Security Regions": 2,
+    "Low Security Systems": 12,
+    "Low Security Regions": 2,
+    "Null Security Systems": 12,
+    "Null Security Regions": 2,
+    "Connectedness": 0.75,
+    "Low-High Bonus Connections": 0.2,
+    "Low-Null Bonus Connections": 0.3,
+    "High-Null Bonus Connections": 0.1,
+    "Null-Low Depth Ratio": 1.5,
+    "Universe Structure":
+    {
+        "LowReg1":
+        {
+            "Security": "Low",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "LowCon1":
+                [
+                    "Low1",
+                    "Low2",
+                    "Low3"
+                ],
+                "LowCon2":
+                [
+                    "Low4",
+                    "Low5",
+                    "Low6"
+                ]
+            }
+        },
+        "LowReg2":
+        {
+            "Security": "Low",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "LowCon3":
+                [
+                    "Low7",
+                    "Low8",
+                    "Low9"
+                ],
+                "LowCon4":
+                [
+                    "Low10",
+                    "Low11",
+                    "Low12"
+                ]
+            }
+        },
+        "NullReg1":
+        {
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
+        },
+        "NullReg2":
+        {
+            "Security": "Null",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations": {}
+        },
+        "HighReg1":
+        {
+            "Security": "High",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "HighCon1":
+                [
+                    "High1",
+                    "High2",
+                    "High3"
+                ],
+                "HighCon2":
+                [
+                    "High4",
+                    "High5",
+                    "High6"
+                ]                
+            }
+        },
+        "HighReg2":
+        {
+            "Security": "High",
+            "Orphan Systems": [],
+            "Special Systems": {},
+            "Constellations":
+            {
+                "HighCon3":
+                [
+                    "High7",
+                    "High8",
+                    "High9"
+                ],
+                "HighCon5":
+                [
+                    "High10",
+                    "High11",
+                    "High12"
+                ]                
+            }
+        }
+    }
+}

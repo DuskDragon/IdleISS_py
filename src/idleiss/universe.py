@@ -538,7 +538,7 @@ class Universe(object):
         self.rand.shuffle(nullsec_regions)
         # first pick a highsec region to act as the central region
         central_highsec_region = self.rand.choice(highsec_regions)
-        highsec_ring = highsec_regions
+        highsec_ring = highsec_regions[:]
         highsec_ring.remove(central_highsec_region)
         # form the ring using the self.connectedness metric to determine
         #   when a spoke or arc exists
@@ -583,6 +583,8 @@ class Universe(object):
             lowsec_pos = (x+1)
             if len(highsec_ring) == 0:
                 inward = central_highsec_region
+            elif len(highsec_ring) == 1:
+                inward = highsec_ring[0]
             elif len(lowsec_regions) >= len(highsec_ring):
                 inward = highsec_ring[int(lowsec_pos/len(highsec_ring))]
             else: #len(lowsec_regions) < len(highsec_ring):
@@ -591,6 +593,10 @@ class Universe(object):
                 inward = self.rand.choice(highsec_ring[inner_start:inner_end])
             #determine rightside
             if x == len(lowsec_regions)-1: #last node
+                rightside = highsec_ring[0]
+            elif len(lowsec_regions) == 1:
+                rightside = highsec_ring[0]
+            elif len(highsec_ring) == 1:
                 rightside = highsec_ring[0]
             else:
                 rightside = highsec_ring[x+1]
