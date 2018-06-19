@@ -249,6 +249,18 @@ def strucutre_list(input_fleet):
             continue
     return subfleet
 
+def no_structure_list(input_fleet):
+    """
+    returns a list of ships where ship.schema.is_structure is False
+    """
+    subfleet = []
+    for x in range(len(input_fleet)):
+        if input_fleet[x].schema.is_structure == False:
+            subfleet.append(x)
+        else:
+            continue
+    return subfleet
+
 def repair_fleet(input_fleet):
     """
     Have logistics ships do their job and repair other ships in the fleet
@@ -322,8 +334,8 @@ def fleet_attack(fleet_a, fleet_b, current_round_number):
     each ship in fleet_a.
     """
 
-    # if fleet b is empty
-    if not fleet_b.ships:
+    # if fleet b is only structures (empty):
+    if not no_structure_list(fleet_b.ships):
         return AttackResult(fleet_a, fleet_b.ships, 0, 0)
 
     result = []
