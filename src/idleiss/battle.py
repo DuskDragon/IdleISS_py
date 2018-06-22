@@ -237,7 +237,7 @@ def priority_target_list(input_fleet, priority):
             continue
     return subfleet
 
-def strucutre_list(input_fleet):
+def only_strucutre_list(input_fleet):
     """
     returns a list of ships where ship.schema.is_structure is True
     """
@@ -249,7 +249,7 @@ def strucutre_list(input_fleet):
             continue
     return subfleet
 
-def no_structure_list(input_fleet):
+def remove_structures_list(input_fleet):
     """
     returns a list of ships where ship.schema.is_structure is False
     """
@@ -334,8 +334,8 @@ def fleet_attack(fleet_a, fleet_b, current_round_number):
     each ship in fleet_a.
     """
 
-    # if fleet b is only structures (empty):
-    if not no_structure_list(fleet_b.ships):
+    # if fleet b is only structures:
+    if not remove_structures_list(fleet_b.ships):
         return AttackResult(fleet_a, fleet_b.ships, 0, 0)
 
     result = []
@@ -363,7 +363,7 @@ def fleet_attack(fleet_a, fleet_b, current_round_number):
                 shots += 1
 
             aoe_hit_list = []
-            structures = strucutre_list(result)
+            structures = only_strucutre_list(result)
             #repeat for each "area_of_effect" count
             for area_of_effect in range(weapon['area_of_effect']):
                 # check if there are priority targets

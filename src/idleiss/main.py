@@ -35,7 +35,7 @@ def run():
         print(f'Generating universe using alternate config: {args.uniconfig}')
     uni = Universe(args.uniconfig)
     print(uni.debug_output)
-    print(f'\nUniverse successfully loaded from {args.uniconfig}')
+    print(f'Universe successfully loaded from {args.uniconfig}')
     if args.shipsconfig != default_ships_config:
         print(f'Loading starships using alternate config: {args.shipsconfig}')
     library = ShipLibrary(args.shipsconfig)
