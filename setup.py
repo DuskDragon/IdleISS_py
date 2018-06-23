@@ -22,6 +22,7 @@ setup(name='idleiss',
       package_dir={'': 'src'},
       namespace_packages=[],
       include_package_data=True,
+      test_suite='nose.collector',
       zip_safe=False,
       install_requires=[
           'setuptools',

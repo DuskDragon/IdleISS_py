@@ -1,9 +1,12 @@
+import os
 from unittest import TestCase
-import networkx as nx
+
 import matplotlib.pyplot as plt
-import json
+import networkx as nx
 
 from idleiss.universe import Universe
+
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 def draw_graph(graph):
     nx.draw_networkx(graph, pos=nx.spring_layout(graph), with_labels=True)
@@ -32,7 +35,7 @@ class UserTestCase(TestCase):
         pass
 
     def test_load_universe_config(self):
-        uni = Universe('config/Universe_Config.json')
+        uni = Universe(os.path.join(__location__, 'config/Universe_Config.json'))
         graph = uni.generate_networkx(uni.systems)
         self.assertEqual(graph.number_of_nodes(), 5100)
         self.assertTrue(nx.is_connected(graph))
@@ -49,8 +52,8 @@ class UserTestCase(TestCase):
 #            save_graph(inter_region_graph, uni, 'docs/default_region_'+str(region.name)+'.png')
 
     def test_consistent_generation(self):
-        uni1 = Universe('config/Universe_config.json')
-        uni2 = Universe('config/Universe_config.json')
+        uni1 = Universe(os.path.join(__location__, 'config/Universe_Config.json'))
+        uni2 = Universe(os.path.join(__location__, 'config/Universe_Config.json'))
         g1 = uni1.generate_networkx(uni1.systems)
         g2 = uni2.generate_networkx(uni2.systems)
         d1 = nx.symmetric_difference(g1, g2)
@@ -61,7 +64,7 @@ class UserTestCase(TestCase):
         self.assertEqual(d2.number_of_edges(),0)
 
     def test_highsec_is_connected(self):
-        uni = Universe('config/Universe_Config.json')
+        uni = Universe(os.path.join(__location__, 'config/Universe_Config.json'))
         highsec_regions_only = [r for r in uni.regions if r.security == 'High']
         self.assertGreater(len(highsec_regions_only), 0)
         highsec_systems_only = []

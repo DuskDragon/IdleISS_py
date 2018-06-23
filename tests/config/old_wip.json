@@ -1,0 +1,962 @@
+{
+    "sizes": {
+        "frigate": 40,
+        "destroyer": 85,
+        "cruiser": 135,
+        "battlecruiser": 275,
+        "battleship": 420
+    },
+    "ships": {
+        "crucifier": {
+            "hullclass": "frigate",
+            "shield": 2798,
+            "armor": 871,
+            "hull": 875,
+            "buffs": {
+                "local_shield_repair": 210
+            },
+            "sensor_strength": 16.8,
+            "firepower": 45,
+            "size": 47,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "tracking_disruption": 1.2
+            },
+            "multishot": {
+            }
+        },
+        "griffin": {
+            "hullclass": "frigate",
+            "shield": 690,
+            "armor": 1669,
+            "hull": 313,
+            "buffs": {
+                "local_shield_repair": 60
+            },
+            "sensor_strength": 20.4,
+            "firepower": 0,
+            "size": 70,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "ECM": 9
+            },
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 3,
+                "cruiser": 3,
+                "battlecruiser": 3,
+                "battleship": 3
+            }
+        },
+        "maulus": {
+            "hullclass": "frigate",
+            "shield": 591,
+            "armor": 3219,
+            "hull": 1250,
+            "buffs": {
+                "local_shield_repair": 60
+            },
+            "sensor_strength": 19.2,
+            "firepower": 0,
+            "size": 40,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "web": 0.8
+            },
+            "multishot": {
+            }
+        },
+        "vigil": {
+            "hullclass": "frigate",
+            "shield": 4195,
+            "armor": 654,
+            "hull": 938,
+            "buffs": {
+                "local_shield_repair": 330
+            },
+            "sensor_strength": 14.4,
+            "firepower": 0,
+            "size": 46,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "target_painter": 0.52
+            },
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 3,
+                "cruiser": 3,
+                "battlecruiser": 3,
+                "battleship": 3
+            }
+        },
+        "executioner": {
+            "hullclass": "frigate",
+            "shield": 493,
+            "armor": 3267,
+            "hull": 1093,
+            "buffs": {
+                "local_shield_repair": 30
+            },
+            "sensor_strength": 9.6,
+            "firepower": 3510,
+            "size": 30,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "web": 0.4
+            },
+            "multishot": {
+            }
+        },
+        "condor": {
+            "hullclass": "frigate",
+            "shield": 5700,
+            "armor": 463,
+            "hull": 313,
+            "buffs": {
+                "local_shield_repair": 450
+            },
+            "sensor_strength": 10.8,
+            "firepower": 2133,
+            "size": 50,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "web": 0.4
+            },
+            "multishot": {
+            }
+        },
+        "slasher": {
+            "hullclass": "frigate",
+            "shield": 4857,
+            "armor": 556,
+            "hull": 375,
+            "buffs": {
+                "local_shield_repair": 360
+            },
+            "sensor_strength": 8.4,
+            "firepower": 2400,
+            "size": 48,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "web": 0.4
+            },
+            "multishot": {
+            }
+        },
+        "atron": {
+            "hullclass": "frigate",
+            "shield": 591,
+            "armor": 3389,
+            "hull": 1250,
+            "buffs": {
+                "local_shield_repair": 30
+            },
+            "sensor_strength": 9.6,
+            "firepower": 4000,
+            "size": 35,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "web": 0.4
+            },
+            "multishot": {
+            }
+        },
+        "rifter": {
+            "hullclass": "frigate",
+            "shield": 3024,
+            "armor": 969,
+            "hull": 1041,
+            "buffs": {
+                "local_shield_repair": 240
+            },
+            "sensor_strength": 9.6,
+            "firepower": 3900,
+            "size": 42,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 2,
+                "destroyer": 2,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "tormentor": {
+            "hullclass": "frigate",
+            "shield": 690,
+            "armor": 3883,
+            "hull": 1250,
+            "buffs": {
+                "local_shield_repair": 30
+            },
+            "sensor_strength": 10.8,
+            "firepower": 3500,
+            "size": 35,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 2,
+                "destroyer": 2,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "kestrel": {
+            "hullclass": "frigate",
+            "shield": 5928,
+            "armor": 648,
+            "hull": 500,
+            "buffs": {
+                "local_shield_repair": 450
+            },
+            "sensor_strength": 13.2,
+            "firepower": 2400,
+            "size": 57,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 2,
+                "destroyer": 2,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "tristan": {
+            "hullclass": "frigate",
+            "shield": 603,
+            "armor": 3549,
+            "hull": 813,
+            "buffs": {
+                "local_shield_repair": 30
+            },
+            "sensor_strength": 10.8,
+            "firepower": 3480,
+            "size": 41,
+            "weapon_size": 45,
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 3,
+                "cruiser": 3,
+                "battlecruiser": 3,
+                "battleship": 3
+            }
+        },
+        "punisher": {
+            "hullclass": "frigate",
+            "shield": 682,
+            "armor": 5905,
+            "hull": 1339,
+            "buffs": {
+                "local_shield_repair": 30
+            },
+            "sensor_strength": 10.8,
+            "firepower": 3510,
+            "size": 37,
+            "weapon_size": "frigate",
+            "multishot": {
+            }
+        },
+        "merlin": {
+            "hullclass": "frigate",
+            "shield": 7131,
+            "armor": 754,
+            "hull": 1190,
+            "buffs": {
+                "local_shield_repair": 570
+            },
+            "sensor_strength": 13.2,
+            "firepower": 4200,
+            "size": 51,
+            "weapon_size": "frigate",
+            "multishot": {
+            }
+        },
+        "incursus": {
+            "hullclass": "frigate",
+            "shield": 690,
+            "armor": 4520,
+            "hull": 625,
+            "buffs": {
+                "local_shield_repair": 30,
+                "local_armor_repair": 3270
+            },
+            "sensor_strength": 10.8,
+            "firepower": 4020,
+            "size": 42,
+            "weapon_size": "frigate",
+            "multishot": {
+            }
+        },
+        "breacher": {
+            "hullclass": "frigate",
+            "shield": 3858,
+            "armor": 763,
+            "hull": 1093,
+            "buffs": {
+                "local_shield_repair": 3200
+            },
+            "sensor_strength": 9.6,
+            "firepower": 1800,
+            "size": 35,
+            "weapon_size": "frigate",
+            "multishot": {
+            }
+        },
+        "inquisitor": {
+            "hullclass": "frigate",
+            "shield": 388,
+            "armor": 5827,
+            "hull": 413,
+            "sensor_strength": 12,
+            "firepower": 600,
+            "size": 34,
+            "weapon_size": "frigate",
+            "buffs": {
+                "local_shield_repair": 30,
+                "remote_armor_repair": 4320
+            },
+            "multishot": {
+            }
+        },
+        "bantam": {
+            "hullclass": "frigate",
+            "shield": 7674,
+            "armor": 490,
+            "hull": 969,
+            "sensor_strength": 12,
+            "firepower": 600,
+            "size": 44,
+            "weapon_size": "frigate",
+            "buffs": {
+                "local_shield_repair": 30,
+                "remote_shield_repair": 4800
+            },
+            "multishot": {
+            }
+        },
+        "navitas": {
+            "hullclass": "frigate",
+            "shield": 431,
+            "armor": 5333,
+            "hull": 419,
+            "buffs": {
+                "local_shield_repair": 30,
+                "remote_armor_repair": 4800
+            },
+            "sensor_strength": 13.2,
+            "firepower": 600,
+            "size": 36,
+            "weapon_size": "frigate",
+            "multishot": {
+            }
+        },
+        "burst": {
+            "hullclass": "frigate",
+            "shield": 7674,
+            "armor": 490,
+            "hull": 969,
+            "sensor_strength": 12,
+            "firepower": 600,
+            "size": 44,
+            "weapon_size": "frigate",
+            "buffs": {
+                "local_shield_repair": 30,
+                "remote_shield_repair": 4800
+            },
+            "multishot": {
+            }
+        },
+        "coercer": {
+            "hullclass": "destroyer",
+            "shield": 1206,
+            "armor": 2443,
+            "hull": 1000,
+            "buffs": {
+                "local_shield_repair": 90
+            },
+            "sensor_strength": 12,
+            "firepower": 4500,
+            "size": 62,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 5,
+                "destroyer": 5,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "cormorant": {
+            "hullclass": "destroyer",
+            "shield": 5429,
+            "armor": 1525,
+            "hull": 2187,
+            "buffs": {
+                "local_shield_repair": 450
+            },
+            "sensor_strength": 14.4,
+            "firepower": 4005,
+            "size": 82,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 5,
+                "destroyer": 5,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "catalyst": {
+            "hullclass": "destroyer",
+            "shield": 2179,
+            "armor": 1742,
+            "hull": 2812,
+            "buffs": {
+                "local_shield_repair": 150
+            },
+            "sensor_strength": 13.2,
+            "firepower": 4820,
+            "size": 82,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 7,
+                "destroyer": 7,
+                "cruiser": 3,
+                "battlecruiser": 3,
+                "battleship": 3
+            }
+        },
+        "thrasher": {
+            "hullclass": "destroyer",
+            "shield": 6413,
+            "armor": 1388,
+            "hull": 938,
+            "buffs": {
+                "local_shield_repair": 450
+            },
+            "sensor_strength": 10.8,
+            "firepower": 5400,
+            "size": 82,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 5,
+                "destroyer": 5,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "dragoon": {
+            "hullclass": "destroyer",
+            "shield": 1293,
+            "armor": 3612,
+            "hull": 1062,
+            "buffs": {
+                "local_shield_repair": 120
+            },
+            "sensor_strength": 12.0,
+            "firepower": 5800,
+            "size": 66,
+            "weapon_size": "frigate",
+            "debuffs": {
+                "tracking_disruption": 0.35
+            },
+            "multishot": {
+                "frigate": 2,
+                "destroyer": 2,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "corax": {
+            "hullclass": "destroyer",
+            "shield": 6013,
+            "armor": 1388,
+            "hull": 938,
+            "buffs": {
+                "local_shield_repair": 480
+            },
+            "sensor_strength": 14.4,
+            "firepower": 2000,
+            "size": 60,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 4,
+                "destroyer": 4,
+                "cruiser": 4,
+                "battlecruiser": 4,
+                "battleship": 4
+            }
+        },
+        "algos": {
+            "hullclass": "destroyer",
+            "shield": 1558,
+            "armor": 3404,
+            "hull": 2827,
+            "buffs": {
+                "local_shield_repair": 120
+            },
+            "sensor_strength": 13.2,
+            "firepower": 2550,
+            "size": 60,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 4,
+                "destroyer": 4,
+                "cruiser": 4,
+                "battlecruiser": 4,
+                "battleship": 4
+            }
+        },
+        "talwar": {
+            "hullclass": "destroyer",
+            "shield": 5381,
+            "armor": 1481,
+            "hull": 1000,
+            "buffs": {
+                "local_shield_repair": 450
+            },
+            "sensor_strength": 10.8,
+            "firepower": 7650,
+            "size": 71,
+            "weapon_size": "frigate",
+            "multishot": {
+                "frigate": 2,
+                "destroyer": 2,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "arbitrator": {
+            "hullclass": "cruiser",
+            "shield": 2167,
+            "armor": 29760,
+            "hull": 5000,
+            "buffs": {
+                "local_shield_repair": 90
+            },
+            "debuffs": {
+                "tracking_disruption": 0.8
+            },
+            "sensor_strength": 18.0,
+            "firepower": 4365,
+            "size": 130,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 5,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "blackbird": {
+            "hullclass": "cruiser",
+            "shield": 2293,
+            "armor": 10000,
+            "hull": 1750,
+            "buffs": {
+                "local_shield_repair": 90
+            },
+            "debuffs": {
+                "ECM": 10
+            },
+            "sensor_strength": 24,
+            "firepower": 400,
+            "size": 150,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 6,
+                "destroyer": 6,
+                "cruiser": 6,
+                "battlecruiser": 6,
+                "battleship": 6
+            }
+        },
+        "celestis": {
+            "hullclass": "cruiser",
+            "shield": 2482,
+            "armor": 25666,
+            "hull": 5312,
+            "buffs": {
+                "local_shield_repair": 90
+            },
+            "debuffs": {
+                "web": 0.8
+            },
+            "sensor_strength": 21.6,
+            "firepower": 2190,
+            "size": 135,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 4,
+                "destroyer": 5,
+                "cruiser": 4,
+                "battlecruiser": 4,
+                "battleship": 4
+            }
+        },
+        "bellicose": {
+            "hullclass": "cruiser",
+            "shield": 20295,
+            "armor": 2614,
+            "hull": 4687,
+            "buffs": {
+                "local_shield_repair": 900
+            },
+            "debuffs": {
+                "target_painter": 0.5
+            },
+            "sensor_strength": 16.8,
+            "firepower": 4160,
+            "size": 192,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 4,
+                "destroyer": 6,
+                "cruiser": 4,
+                "battlecruiser": 4,
+                "battleship": 4
+            }
+        },
+        "augoror": {
+            "hullclass": "cruiser",
+            "shield": 2068,
+            "armor": 18293,
+            "hull": 419,
+            "buffs": {
+                "local_shield_repair": 90,
+                "remote_armor_repair": 18720
+            },
+            "sensor_strength": 15.6,
+            "firepower": 2400,
+            "size": 90,
+            "weapon_size": "cruiser",
+            "multishot": {
+            }
+        },
+        "osprey": {
+            "hullclass": "cruiser",
+            "shield": 23844,
+            "armor": 1851,
+            "hull": 1812,
+            "buffs": {
+                "local_shield_repair": 780,
+                "remote_shield_repair": 18720
+            },
+            "sensor_strength": 15.6,
+            "firepower": 2400,
+            "size": 145,
+            "weapon_size": "cruiser",
+            "multishot": {
+            }
+        },
+        "exequror": {
+            "hullclass": "cruiser",
+            "shield": 1970,
+            "armor": 33000,
+            "hull": 5000,
+            "buffs": {
+                "local_shield_repair": 60,
+                "remote_armor_repair": 12180
+            },
+            "sensor_strength": 15.6,
+            "firepower": 4740,
+            "size": 80,
+            "weapon_size": "cruiser",
+            "multishot": {
+            }
+        },
+        "scythe": {
+            "hullclass": "cruiser",
+            "shield": 34124,
+            "armor": 2396,
+            "hull": 4062,
+            "buffs": {
+                "local_shield_repair": 1080,
+                "remote_shield_repair": 12180
+            },
+            "sensor_strength": 14.4,
+            "firepower": 4410,
+            "size": 127,
+            "weapon_size": "cruiser",
+            "multishot": {
+            }
+        },
+        "maller": {
+            "hullclass": "cruiser",
+            "shield": 1970,
+            "armor": 87117,
+            "hull": 5312,
+            "buffs": {
+                "local_shield_repair": 75
+            },
+            "debuffs": {
+                "web": 0.6
+            },
+            "sensor_strength": 16.0,
+            "firepower": 1000,
+            "size": 135,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "destroyer": 2
+            }
+        },
+        "moa": {
+            "hullclass": "cruiser",
+            "shield": 35643,
+            "armor": 2178,
+            "hull": 5000,
+            "buffs": {
+                "local_shield_repair": 3120
+            },
+            "sensor_strength": 17.0,
+            "firepower": 7217,
+            "size": 217,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 2,
+                "destroyer": 4,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "vexor": {
+            "hullclass": "cruiser",
+            "shield": 1896,
+            "armor": 23134,
+            "hull": 2500,
+            "buffs": {
+                "local_shield_repair": 150
+            },
+            "debuffs": {
+                "web": 0.3
+            },
+            "sensor_strength": 19.2,
+            "firepower": 6280,
+            "size": 217,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 5,
+                "cruiser": 3,
+                "battlecruiser": 3,
+                "battleship": 3
+            }
+        },
+        "stabber": {
+            "hullclass": "cruiser",
+            "shield": 20289,
+            "armor": 2407,
+            "hull": 1625,
+            "buffs": {
+                "local_shield_repair": 1800
+            },
+            "sensor_strength": 15.6,
+            "firepower": 11460,
+            "size": 130,
+            "weapon_size": 90,
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 4
+            }
+        },
+        "omen": {
+            "hullclass": "cruiser",
+            "shield": 2068,
+            "armor": 21852,
+            "hull": 1875,
+            "buffs": {
+                "local_shield_repair": 75
+            },
+            "sensor_strength": 18.0,
+            "firepower": 4750,
+            "size": 130,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 5,
+                "cruiser": 3,
+                "battlecruiser": 3,
+                "battleship": 3
+            }
+        },
+        "caracal": {
+            "hullclass": "cruiser",
+            "shield": 27719,
+            "armor": 2614,
+            "hull": 4375,
+            "buffs": {
+                "local_shield_repair": 2424
+            },
+            "sensor_strength": 19.2,
+            "firepower": 6195,
+            "size": 130,
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 5,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "thorax": {
+            "hullclass": "cruiser",
+            "shield": 2068,
+            "armor": 16420,
+            "hull": 2000,
+            "buffs": {
+                "local_shield_repair": 75
+            },
+            "sensor_strength": 18.0,
+            "firepower": 8250,
+            "size": 120,
+            "weapon_size": 90,
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 5,
+                "cruiser": 3,
+                "battlecruiser": 3,
+                "battleship": 3
+            }
+        },
+        "rupture": {
+            "hullclass": "cruiser",
+            "shield": 24175,
+            "armor": 3921,
+            "hull": 4687,
+            "buffs": {
+                "local_shield_repair": 1935
+            },
+            "sensor_strength": 18.0,
+            "firepower": 6045,
+            "size": 130,
+            "weapon_size": 60,
+            "multishot": {
+                "frigate": 3,
+                "destroyer": 5,
+                "cruiser": 2,
+                "battlecruiser": 2,
+                "battleship": 2
+            }
+        },
+        "oracle": {
+            "hullclass": "battlecruiser",
+            "shield": 3103,
+            "armor": 33725,
+            "hull": 6187,
+            "buffs": {
+                "local_shield_repair": 105
+            },
+            "sensor_strength": 21.6,
+            "firepower": 3757,
+            "size": 210,
+            "weapon_size": "battleship",
+            "multishot": {
+                "frigate": 9,
+                "destroyer": 9,
+                "cruiser": 9,
+                "battlecruiser": 9,
+                "battleship": 9
+            }
+        },
+        "naga": {
+            "hullclass": "battlecruiser",
+            "shield": 39069,
+            "armor": 2916,
+            "hull": 2193,
+            "buffs": {
+                "local_shield_repair": 1395
+            },
+            "sensor_strength": 21,
+            "firepower": 4406,
+            "size": 320,
+            "weapon_size": "battleship",
+            "multishot": {
+                "frigate": 9,
+                "destroyer": 9,
+                "cruiser": 9,
+                "battlecruiser": 9,
+                "battleship": 9
+            }
+        },
+        "talos": {
+            "hullclass": "battlecruiser",
+            "shield": 17802,
+            "armor": 3500,
+            "hull": 2160,
+            "buffs": {
+                "local_shield_repair": 600
+            },
+            "sensor_strength": 22.4,
+            "firepower": 3802,
+            "size": 320,
+            "weapon_size": 220,
+            "multishot": {
+                "frigate": 7,
+                "destroyer": 7,
+                "cruiser": 7,
+                "battlecruiser": 7,
+                "battleship": 9
+            }
+        },
+        "tornado": {
+            "hullclass": "battlecruiser",
+            "shield": 18895,
+            "armor": 3333,
+            "hull": 2250,
+            "buffs": {
+                "local_shield_repair": 675
+            },
+            "sensor_strength": 19.0,
+            "firepower": 2553,
+            "size": 259,
+            "weapon_size": "battleship",
+            "multishot": {
+                "frigate": 9,
+                "destroyer": 9,
+                "cruiser": 9,
+                "battlecruiser": 9,
+                "battleship": 9
+            }
+        },
+
+        "hurricane": {
+            "hullclass": "battlecruiser",
+            "shield": 4250,
+            "armor": 4500,
+            "hull": 3500,
+            "firepower": 3000,
+            "sensor_strength": 19.2,
+            "size": "battlecruiser",
+            "weapon_size": "cruiser",
+            "multishot": {
+                "frigate": 2,
+                "destroyer": 4,
+                "cruiser": 16,
+                "battlecruiser": 9,
+                "battleship": 25
+            }
+        },
+
+        "tempest": {
+            "hullclass": "battleship",
+            "shield": 6300,
+            "armor": 7000,
+            "hull": 6800,
+            "firepower": 8000,
+            "sensor_strength": 22.4,
+            "size": "battleship",
+            "weapon_size": "battleship",
+            "multishot": {
+                "cruiser": 2,
+                "battlecruiser": 5,
+                "battleship": 2
+            }
+        }
+    }
+}

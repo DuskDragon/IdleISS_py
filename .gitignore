@@ -48,3 +48,13 @@ output
 env.txt
 notepadpplayout
 temp.py
+
+# Circleci
+!.circleci
+
+# Virtualenv
+venv
+virtualenv
+
+# IDEA
+.idea
