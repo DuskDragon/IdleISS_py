@@ -33,7 +33,7 @@ jobs:
 
       - run:
           name: Make test directory
-          command: mkdir -p test-reports/
+          command: mkdir -p test-reports/python/
 
       - run:
           name: run tests
@@ -44,6 +44,6 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: test-reports
-
-
         
+      - store_test_results:
+          path: test-reports
