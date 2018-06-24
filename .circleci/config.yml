@@ -39,7 +39,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            python3 setup.py nosetests tests
+            python3 setup.py nosetests --tests tests
 
       - store_artifacts:
           path: test-reports

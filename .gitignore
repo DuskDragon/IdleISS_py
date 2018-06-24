@@ -58,3 +58,6 @@ virtualenv
 
 # IDEA
 .idea
+
+# Test Reports
+test-reports
