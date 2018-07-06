@@ -62,7 +62,7 @@ def run():
     # battle simulation
     if args.simbattle:
         one_shot_only = True
-        #this must be a one_shot_due to random being reseeded
+        # this must be a one_shot_due to random being reseeded
         random.seed()
         print(f'\nSimulating fleet fight using {args.simbattle}')
         raw_data = {}

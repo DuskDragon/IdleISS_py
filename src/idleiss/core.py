@@ -52,6 +52,8 @@ class GameEngine(object):
 
     # it's classic to penalize messages in IdleRPG, but we will be different
 
+    # TODO: remove LOGGED IN/LOGGED OUT due to slack/discord management of usserlist
+
     def user_logged_in(self, user_id, timestamp):
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
