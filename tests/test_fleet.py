@@ -39,23 +39,23 @@ class FleetTestCase(TestCase):
 
     def test_build_ship(self):
         fm = fleet.FleetManager(ships={})
-        fm.add_ship('ship1', 1)
-        self.assertEqual(fm.ships['ship1'], 1)
+        fm.add_ship("ship1", 1)
+        self.assertEqual(fm.ships["ship1"], 1)
 
     def test_ship_exists(self):
         fm = fleet.FleetManager(ships={})
-        fm.add_ship('ship1', 1)
-        self.assertEqual(fm.contains_ship('ship1'), True)
-        self.assertEqual(fm.contains_ship('ship2'), False)
+        fm.add_ship("ship1", 1)
+        self.assertEqual(fm.contains_ship("ship1"), True)
+        self.assertEqual(fm.contains_ship("ship2"), False)
 
     def test_remove_ship(self):
         fm = fleet.FleetManager()
-        self.assertEqual(fm.remove_ship('ship1', 1), False)
-        fm.add_ship('ship1', 1)
-        self.assertEqual(fm.remove_ship('ship1', 1), True)
-        self.assertEqual(fm.contains_ship('ship1'), False)
-        fm.add_ship('ship1', 1)
-        self.assertEqual(fm.remove_ship('ship1', 2), False)
-        fm.add_ship('ship1', 2)
-        self.assertEqual(fm.remove_ship('ship1', 2), True)
-        self.assertEqual(fm.ships['ship1'], 1)
+        self.assertEqual(fm.remove_ship("ship1", 1), False)
+        fm.add_ship("ship1", 1)
+        self.assertEqual(fm.remove_ship("ship1", 1), True)
+        self.assertEqual(fm.contains_ship("ship1"), False)
+        fm.add_ship("ship1", 1)
+        self.assertEqual(fm.remove_ship("ship1", 2), False)
+        fm.add_ship("ship1", 2)
+        self.assertEqual(fm.remove_ship("ship1", 2), True)
+        self.assertEqual(fm.ships["ship1"], 1)

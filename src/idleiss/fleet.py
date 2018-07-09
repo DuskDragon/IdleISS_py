@@ -1,7 +1,3 @@
-import random
-
-from idleiss.ship import ShipLibrary
-
 
 class FleetManager(object):
 

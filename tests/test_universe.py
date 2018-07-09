@@ -1,7 +1,6 @@
 from unittest import TestCase
 import networkx as nx
 import matplotlib.pyplot as plt
-import json
 
 from idleiss.universe import Universe
 
@@ -13,17 +12,17 @@ def save_graph(graph, universe, name_of_file):
     plt.figure(figsize=(24,14))
     color_array = []
     for node in graph:
-        if universe.master_dict[node].security == 'High':
-            color_array.append('b')
-        elif universe.master_dict[node].security == 'Low':
-            color_array.append('y')
-        elif universe.master_dict[node].security == 'Null':
-            color_array.append('r')
+        if universe.master_dict[node].security == "High":
+            color_array.append("b")
+        elif universe.master_dict[node].security == "Low":
+            color_array.append("y")
+        elif universe.master_dict[node].security == "Null":
+            color_array.append("r")
         else:
-            raise ValueError(node + ": did not have a valid security rating")
+            raise ValueError(f"{node} : did not have a valid security rating")
     nx.draw_networkx(graph, pos=nx.spring_layout(graph),
         node_size=24, font_size=16, with_labels=True, node_color=color_array)
-    plt.savefig(name_of_file, bbox_inches='tight')
+    plt.savefig(name_of_file, bbox_inches="tight")
     plt.close()
 
 class UserTestCase(TestCase):
@@ -32,25 +31,25 @@ class UserTestCase(TestCase):
         pass
 
     def test_load_universe_config(self):
-        uni = Universe('config/Universe_Config.json')
+        uni = Universe("config/Universe_Config.json")
         graph = uni.generate_networkx(uni.systems)
         self.assertEqual(graph.number_of_nodes(), 5100)
         self.assertTrue(nx.is_connected(graph))
 
 #    def test_save_various_plots(self):
-#        uni = Universe('config/Universe_Config.json')
+#        uni = Universe("config/Universe_Config.json")
 #        region_graph = uni.generate_networkx(uni.regions)
-#        save_graph(region_graph, uni, 'docs/default_regions.png')
+#        save_graph(region_graph, uni, "docs/default_regions.png")
 #        for region in uni.regions:
 #            system_list = []
 #            for constellation in region.constellations:
 #                system_list.extend(constellation.systems)
 #            inter_region_graph = uni.generate_networkx(system_list)
-#            save_graph(inter_region_graph, uni, 'docs/default_region_'+str(region.name)+'.png')
+#            save_graph(inter_region_graph, uni, f"docs/default_region_{region.name}.png")
 
     def test_consistent_generation(self):
-        uni1 = Universe('config/Universe_config.json')
-        uni2 = Universe('config/Universe_config.json')
+        uni1 = Universe("config/Universe_config.json")
+        uni2 = Universe("config/Universe_config.json")
         g1 = uni1.generate_networkx(uni1.systems)
         g2 = uni2.generate_networkx(uni2.systems)
         d1 = nx.symmetric_difference(g1, g2)
@@ -61,14 +60,14 @@ class UserTestCase(TestCase):
         self.assertEqual(d2.number_of_edges(),0)
 
     def test_highsec_is_connected(self):
-        uni = Universe('config/Universe_Config.json')
-        highsec_regions_only = [r for r in uni.regions if r.security == 'High']
+        uni = Universe("config/Universe_Config.json")
+        highsec_regions_only = [r for r in uni.regions if r.security == "High"]
         self.assertGreater(len(highsec_regions_only), 0)
         highsec_systems_only = []
         for r in highsec_regions_only:
             for c in r.constellations:
                 for solar in c.systems:
-                    if solar.security == 'High':
+                    if solar.security == "High":
                         highsec_systems_only.append(solar)
                         valid_adj = []
                         for adj_solar in solar.connections:
@@ -134,13 +133,13 @@ class UserTestCase(TestCase):
 ###########NetworkX##############
 #import networkx as nx
 #from idleiss.universe import Universe
-#uni = Universe('config/Universe_Config.json')
+#uni = Universe("config/Universe_Config.json")
 #systems = uni.generate_networkx(uni.systems)
-#print("Total System Nodes: "+str(systems.number_of_nodes())+", Edges: "+str(systems.number_of_edges()))
+#print(f"Total System Nodes: {systems.number_of_nodes()}, Edges: {systems.number_of_edges()}")
 #regions = uni.generate_networkx(uni.regions)
-#print("Total Region Nodes: "+str(regions.number_of_nodes())+", Edges: "+str(regions.number_of_edges()))
+#print(f"Total Region Nodes: {regions.number_of_nodes()}, Edges: {regions.number_of_edges()}")
 #constellations = uni.generate_networkx(uni.constellations)
-#print("Total Constellation Nodes: "+str(constellations.number_of_nodes())+", Edges: "+str(constellations.number_of_edges()))
+#print(f"Total Constellation Nodes: {constellations.number_of_nodes()}, Edges: {constellations.number_of_edges()}")
 #the_forge = [r for r in uni.regions if r.name == "The Forge"][0]
 #forge_systems = []
 #for const in the_forge.constellations:
@@ -148,7 +147,7 @@ class UserTestCase(TestCase):
 #        forge_systems.append(system)
 #
 #forge_graph = uni.generate_networkx(forge_systems)
-#print(f'The Forge Systems: {forge_graph.number_of_nodes()}, Edges: {forge_graph.number_of_edges()}')
+#print(f"The Forge Systems: {forge_graph.number_of_nodes()}, Edges: {forge_graph.number_of_edges()}")
 #
 #
 #nx.draw_networkx(forge_graph, pos=nx.spring_layout(forge_graph), with_labels=True)
@@ -164,7 +163,7 @@ class UserTestCase(TestCase):
 
 ###########Graph-Tool############
 #from idleiss.universe import Universe
-#uni = Universe('config/Universe_Config.json')
+#uni = Universe("config/Universe_Config.json")
 #graph = uni.generate_graph_tool(uni.systems)
 #from graph_tool.draw import graph_draw
 #graph_draw(graph, vertex_text=graph.vertex_properties["name"], vertex_font_size=10, edge_pen_width=1.2, output_size=(5000,5000), output="node_list.png")

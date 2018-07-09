@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 class SolarSystem(object):
     def __init__(self, random_state, universe, security, name, const, region):
         if universe.name_exists(name):
-            raise ValueError("SolarSystem __init__: "+name+" already exists")
+            raise ValueError(f"SolarSystem __init__: {name} already exists")
         self.name = name
         universe.register_name(self.name)
 
@@ -26,7 +26,7 @@ class SolarSystem(object):
         connections_str = ""
         for x in self.connections:
             connections_str += " " + str(x.name)
-        return f'idleiss.universe.SolarSystem: {self.name}\tConnections:{connections_str}'
+        return f"idleiss.universe.SolarSystem: {self.name}\tConnections:{connections_str}"
 
     def connection_exists(self, entity):
         return entity in self.connections
@@ -38,7 +38,7 @@ class SolarSystem(object):
         if system.connection_exists(self):
             raise ValueError("1-way System Connection: "+system.name+" to "+self.name)
         system.connections.append(self)
-        if system.security != 'High' and self.security != 'High':
+        if system.security != "High" and self.security != "High":
             system.cap_connections.append(self)
             self.cap_connections.append(system)
         return True # connection added
@@ -61,7 +61,7 @@ class Constellation(object):
             for x in range(universe.systems_per_constellation - len(self.systems)):
                 new_sys = SolarSystem(random_state, universe, security, universe.generate_unused_nullsec_name(), self.name, region)
                 self.systems.append(new_sys)
-        #self.debug_output += "idleiss.universe._build_universe: calling stitch nodes on: "+region+": "+self.name+": systems: "+str(len(self.systems))+"\n"#DEBUG LINE
+        #self.debug_output.append(f"idleiss.universe._build_universe: calling stitch nodes on: {region}: {self.name}: systems: {len(self.systems)}\n")#DEBUG LINE
         self.systems = universe.stitch_nodes(self.systems)
         self.rand = random_state
         self.region = region
@@ -75,7 +75,7 @@ class Constellation(object):
         connections_str = ""
         for x in self.connections:
             connections_str += " " + str(x.name)
-        return f'idleiss.universe.Constellation: {self.name}\tConnections:{connections_str}'
+        return f"idleiss.universe.Constellation: {self.name}\tConnections:{connections_str}"
 
     def connection_exists(self, constellation):
         return constellation in self.connections
@@ -96,7 +96,7 @@ class Constellation(object):
         dest.add_connection(jumpoff)
         dest.bordertype = connect_type
         jumpoff.bordertype = connect_type
-        if constellation.security != 'High' and self.security != 'High':
+        if constellation.security != "High" and self.security != "High":
             constellation.cap_connections.append(self)
             self.cap_connections.append(constellation)
         return True # connection added
@@ -119,7 +119,7 @@ class Region(object):
             for x in range(universe.constellations_per_region - len(self.constellations)):
                 new_const = Constellation(random_state, universe, [], security, universe.generate_unused_nullsec_name(), self.name)
                 self.constellations.append(new_const)
-        #self.debug_output += "idleiss.universe._build_universe: calling stitch nodes on: "+self.name+": constellations: "+str(len(self.constellations))+'\n'#DEBUG LINE
+        #self.debug_output.append(f"idleiss.universe._build_universe: calling stitch nodes on: {self.name}: constellations: {len(self.constellations)}\n")#DEBUG LINE
         self.constellations = universe.stitch_nodes(self.constellations)
         self.rand = random_state
         self.connections = []
@@ -133,7 +133,7 @@ class Region(object):
         connections_str = ""
         for x in self.connections:
             connections_str += " " + str(x.name)
-        return f'idleiss.universe.Region: {self.name}\tConnections:{connections_str}'
+        return f"idleiss.universe.Region: {self.name}\tConnections:{connections_str}"
 
     def connection_exists(self, region):
         return region in self.connections
@@ -152,38 +152,38 @@ class Region(object):
         dest = self.rand.choice(region.constellations)
         jumpoff = self.rand.choice(self.constellations)
         dest.add_connection(jumpoff, connect_type="Region", extra=extra)
-        if region.security != 'High' and self.security != 'High':
+        if region.security != "High" and self.security != "High":
             region.cap_connections.append(self)
             self.cap_connections.append(region)
         return True # connection added
 
 class Universe(object):
     _required_keys = [
-        'Universe Seed', #top level keys
-        'System Count',
-        'Constellation Count',
-        'Systems Per Constellation',
-        'Region Count',
-        'Constellations Per Region',
-        'Systems Per Region',
-        'High Security Systems',
-        'High Security Regions',
-        'Low Security Systems',
-        'Low Security Regions',
-        'Null Security Systems',
-        'Null Security Regions',
-        'Connectedness',
-        'Low-High Bonus Connections',
-        'Low-Null Bonus Connections',
-        'High-Null Bonus Connections',
-        'Null-Low Depth Ratio',
-        'Universe Structure'
+        "Universe Seed", #top level keys
+        "System Count",
+        "Constellation Count",
+        "Systems Per Constellation",
+        "Region Count",
+        "Constellations Per Region",
+        "Systems Per Region",
+        "High Security Systems",
+        "High Security Regions",
+        "Low Security Systems",
+        "Low Security Regions",
+        "Null Security Systems",
+        "Null Security Regions",
+        "Connectedness",
+        "Low-High Bonus Connections",
+        "Low-Null Bonus Connections",
+        "High-Null Bonus Connections",
+        "Null-Low Depth Ratio",
+        "Universe Structure"
     ]
     _required_region_keys = [
-        'Security',
-        'Orphan Systems',
-        'Special Systems',
-        'Constellations'
+        "Security",
+        "Orphan Systems",
+        "Special Systems",
+        "Constellations"
     ]
 
     def __init__(self, filename=None):
@@ -199,7 +199,7 @@ class Universe(object):
         self.current_unused_system_id = 0
         self.current_unused_constellation_id = 0
         self.current_unused_region_id = 0
-        self.debug_output = ''
+        self.debug_output = []
         if filename:
             self.load(filename)
 
@@ -223,13 +223,13 @@ class Universe(object):
         uni_provided_keys = set(universe_data.keys())
         missing = uni_required_keys - uni_provided_keys
         if missing:
-            return ', '.join(uni_required_keys - uni_provided_keys)
-        for region in universe_data['Universe Structure']:
+            return ", ".join(uni_required_keys - uni_provided_keys)
+        for region in universe_data["Universe Structure"]:
             region_required_keys = set(self._required_region_keys)
-            region_provided_keys = set(universe_data['Universe Structure'][region].keys())
+            region_provided_keys = set(universe_data["Universe Structure"][region].keys())
             missing = region_required_keys - region_provided_keys
             if missing:
-                return str(region)+": "+', '.join(missing)
+                return str(region)+": "+", ".join(missing)
         return False
 
     def load(self, filename):
@@ -240,13 +240,13 @@ class Universe(object):
     def _load(self, raw_data):
         missing = self._missing_universe_keys(raw_data)
         if missing:
-            raise ValueError(str(missing)+' not found in config')
+            raise ValueError(str(missing)+" not found in config")
 
-        self.rand.seed(raw_data['Universe Seed'])
-        self.system_count_target = raw_data['System Count']
-        self.constellation_count_target = raw_data['Constellation Count']
-        self.region_count_target = raw_data['Region Count']
-        self.connectedness = raw_data['Connectedness']
+        self.rand.seed(raw_data["Universe Seed"])
+        self.system_count_target = raw_data["System Count"]
+        self.constellation_count_target = raw_data["Constellation Count"]
+        self.region_count_target = raw_data["Region Count"]
+        self.connectedness = raw_data["Connectedness"]
         self.systems_per_constellation = raw_data["Systems Per Constellation"]
         self.constellations_per_region = raw_data["Constellations Per Region"]
         self.low_high_bonus = raw_data["Low-High Bonus Connections"]
@@ -268,7 +268,7 @@ class Universe(object):
             self.master_dict[system.name] = system
 
     def _verify_config_settings(self, raw_data):
-        universe_structure = raw_data['Universe Structure']
+        universe_structure = raw_data["Universe Structure"]
 
         if raw_data["System Count"] != raw_data["Constellation Count"] * raw_data["Systems Per Constellation"]:
             raise ValueError("System Count does not equal 'Constellation Count'*'Systems Per Constellation'")
@@ -276,35 +276,35 @@ class Universe(object):
             raise ValueError("System Count does not equal 'Region Count'*'Systems Per Region'")
         if raw_data["System Count"] != raw_data["Region Count"] * raw_data["Constellations Per Region"] * raw_data["Systems Per Constellation"]:
             raise ValueError("System Count does not equal 'Region Count'*'Constellations Per Region'*'Systems Per Constellation'")
-        if raw_data["High Security Systems"] != raw_data['High Security Regions'] * raw_data['Systems Per Region']:
+        if raw_data["High Security Systems"] != raw_data["High Security Regions"] * raw_data["Systems Per Region"]:
             raise ValueError("High Security System count does not match highsec_regions*systems_per_region")
-        if raw_data["Low Security Systems"] != raw_data['Low Security Regions'] * raw_data['Systems Per Region']:
+        if raw_data["Low Security Systems"] != raw_data["Low Security Regions"] * raw_data["Systems Per Region"]:
             raise ValueError("Low Security System count does not match lowsec_regions*systems_per_region")
-        if raw_data["Null Security Systems"] != raw_data['Null Security Regions'] * raw_data['Systems Per Region']:
+        if raw_data["Null Security Systems"] != raw_data["Null Security Regions"] * raw_data["Systems Per Region"]:
             raise ValueError("Null Security System count does not match nullsec_regions*systems_per_region")
-        if raw_data["Region Count"] != raw_data['High Security Regions'] + raw_data['Low Security Regions'] + raw_data['Null Security Regions']:
+        if raw_data["Region Count"] != raw_data["High Security Regions"] + raw_data["Low Security Regions"] + raw_data["Null Security Regions"]:
             raise ValueError("Region counts do not match with total region count")
         #count actual regions
         if raw_data["Region Count"] != len(universe_structure):
-            raise ValueError("Region Count in config: "+str(raw_data["Region Count"])+" does not match actual region count: "+str(len(universe_structure)))
+            raise ValueError(f"Region Count in config: {raw_data['Region Count']} does not match actual region count: {len(universe_structure)}")
 
         highsec_regions, lowsec_regions, nullsec_regions = 0,0,0
 
         for region in universe_structure:
             region_data = universe_structure[region]
-            if region_data['Security'] == "High":
+            if region_data["Security"] == "High":
                 highsec_regions += 1
-            elif region_data['Security'] == "Low":
+            elif region_data["Security"] == "Low":
                 lowsec_regions += 1
-            elif region_data['Security'] == "Null":
+            elif region_data["Security"] == "Null":
                 nullsec_regions += 1
 
         if raw_data["High Security Regions"] != highsec_regions:
-            raise ValueError("Highsec Region Count is "+str(highsec_regions)+" but should be: "+str(raw_data["High Security Regions"]))
+            raise ValueError(f"Highsec Region Count is {(highsec_regions)} but should be: {raw_data['High Security Regions']}")
         if raw_data["Low Security Regions"] != lowsec_regions:
-            raise ValueError("Lowsec Region Count is "+str(lowsec_regions)+" but should be: "+str(raw_data["Low Security Regions"]))
+            raise ValueError(f"Lowsec Region Count is {lowsec_regions} but should be: {raw_data['Low Security Regions']}")
         if raw_data["Null Security Regions"] != nullsec_regions:
-            raise ValueError("Nullsec Region Count is "+str(nullsec_regions)+" but should be: "+str(raw_data["Null Security Regions"]))
+            raise ValueError(f"Nullsec Region Count is {nullsec_regions} but should be: {raw_data['Null Security Regions']}")
 
         if self.low_high_bonus > 1.0 or self.low_high_bonus < 0.0:
             raise ValueError("Low-High Bonus connections must be in the range [0,1]")
@@ -320,26 +320,26 @@ class Universe(object):
         for region in universe_structure:
             region_data = universe_structure[region]
             if type(region_data["Orphan Systems"]) != list:
-                raise ValueError(region+": orphan systems is not a list.")
+                raise ValueError(f"{region}: orphan systems is not a list.")
             if type(region_data["Special Systems"]) != dict:
-                raise ValueError(region+": special systems is not a dictionary.")
-            if region_data['Security'] == "High" or region_data['Security'] == "Low":
+                raise ValueError(f"{region}: special systems is not a dictionary.")
+            if region_data["Security"] == "High" or region_data["Security"] == "Low":
                 if region_data["Orphan Systems"] != []:
-                    raise ValueError(region+" is a non-nullsec region with orphan systems which is not allowed.")
+                    raise ValueError(f"{region} is a non-nullsec region with orphan systems which is not allowed.")
                 if raw_data["Constellations Per Region"] != len(region_data["Constellations"]):
-                    raise ValueError(region+": contains "+str(len(region_data["Constellations"]))+" the expected value is "+str(raw_data["Constellations Per Region"]))
-                for constellation in region_data['Constellations']:
-                    if raw_data['Systems Per Constellation'] != len(region_data['Constellations'][constellation]):
-                        raise ValueError(region+': '+constellation+': contains '+str(len(region_data['Constellations'][constellation]))+' systems when it should have '+str(raw_data['Systems Per Constellation']))
+                    raise ValueError(f"{region}: contains {len(region_data['Constellations'])} the expected value is {raw_data['Constellations Per Region']}")
+                for constellation in region_data["Constellations"]:
+                    if raw_data["Systems Per Constellation"] != len(region_data["Constellations"][constellation]):
+                        raise ValueError(f"{region}: {constellation}: contains {len(region_data['Constellations'][constellation])} systems when it should have {raw_data['Systems Per Constellation']}")
             #null is more customiziable because it is filled in with random sys-names
-            elif region_data['Security'] == "Null":
+            elif region_data["Security"] == "Null":
                 if raw_data["Constellations Per Region"] < len(region_data["Constellations"]):
-                    raise ValueError(region+": contains "+str(len(region_data["Constellations"]))+" the expected value is less than or equal to "+str(raw_data["Constellations Per Region"]))
-                for constellation in region_data['Constellations']:
-                    if raw_data['Systems Per Constellation'] < len(region_data['Constellations'][constellation]):
-                        raise ValueError(region+': '+constellation+': contains '+str(len(region_data['Constellations'][constellation]))+' systems when it should have less than or equal to '+str(raw_data['Systems Per Constellation']))
+                    raise ValueError(f"{region}: contains {len(region_data['Constellations'])} the expected value is less than or equal to {raw_data['Constellations Per Region']}")
+                for constellation in region_data["Constellations"]:
+                    if raw_data["Systems Per Constellation"] < len(region_data["Constellations"][constellation]):
+                        raise ValueError(f"{region}: {constellation}: contains {len(region_data['Constellations'][constellation])} systems when it should have less than or equal to {raw_data['Systems Per Constellation']}")
             else:
-                raise ValueError(region+": contiains invalid Security rating.")
+                raise ValueError(f"{region}: contains invalid Security rating.")
 
         #TODO remove DEBUG initial name loading \/ \/ \/ \/
         systems_verified = 0
@@ -363,20 +363,20 @@ class Universe(object):
                     self.register_name(system)
                     systems_verified += 1
 
-        self.debug_output += "\nSuccessfully imported the following:\n"
-        self.debug_output += str(regions_verified)+" regions\n"
-        self.debug_output += f'\t{highsec_regions} High Security\n'
-        self.debug_output += f'\t{lowsec_regions} Low Security\n'
-        self.debug_output += f'\t{nullsec_regions} Null Security\n'
-        self.debug_output += f'{constellations_verified} constellations\n'
-        self.debug_output += f'{systems_verified} systems\n'
+        self.debug_output.append("\nSuccessfully imported the following:\n")
+        self.debug_output.append(f"{regions_verified} regions\n")
+        self.debug_output.append(f"\t{highsec_regions} High Security\n")
+        self.debug_output.append(f"\t{lowsec_regions} Low Security\n")
+        self.debug_output.append(f"\t{nullsec_regions} Null Security\n")
+        self.debug_output.append(f"{constellations_verified} constellations\n")
+        self.debug_output.append(f"{systems_verified} systems\n")
 
         self.used_names = []
         #TODO remove initial name loading ^^^^^^^^^^
 
     def register_name(self, name):
         if self.name_exists(name):
-            raise ValueError("Universe generation: entity name exists: "+name)
+            raise ValueError(f"Universe generation: entity name exists: {name}")
         else:
             self.used_names.append(name)
 
@@ -406,7 +406,7 @@ class Universe(object):
         G.add_nodes_from(orphan_list)
         ## TODO: clean up when not needed
         ## debug info
-        #self.debug_output += "Nodes: "+str(G.number_of_nodes())+", Edges: "+str(G.number_of_edges())+'\n'
+        #self.debug_output.append("Nodes: {G.number_of_nodes()}, Edges: {G.number_of_edges()}\n"}
         #import matplotlib.pyplot as plt
         #plt.subplot(111)
         #nx.draw_networkx(G, with_labels=True)
@@ -464,11 +464,11 @@ class Universe(object):
                     #connect all pre-def systems
                     for source, connections in systems.items():
                         if type(connections) != list:
-                            raise ValueError(f'_build_universe: {region}, {constellation} is a predefined constellation without a list of connecting systems')
+                            raise ValueError(f"_build_universe: {region}, {constellation} is a predefined constellation without a list of connecting systems")
                         for connection in connections:
                             dest = pre_def.get(connection,0)
                             if dest == 0:
-                                raise ValueError(f'_build_universe: {region}, {constellation}, {source}: contains a unlisted system as a connection: {connection}')
+                                raise ValueError(f"_build_universe: {region}, {constellation}, {source}: contains a unlisted system as a connection: {connection}")
                             pre_def[source].add_connection(dest)
                     #add all predefined systems to these_sys to be added to the constellation
                     for system_name, system_instance in pre_def.items():
@@ -506,11 +506,11 @@ class Universe(object):
             raise ValueError("_build_universe: failed to connect all nodes")
         # done building universe
         # DEBUG LINE BLOCK
-        self.debug_output += '\nRemaining required systems generated.\n'
-        self.debug_output += 'Final Totals:\n'
-        self.debug_output += f'{self.networkx_graph.number_of_nodes()} Systems\n'
-        self.debug_output += f'{self.networkx_graph.number_of_edges()} Connections\n'
-        self.debug_output += f'All systems connected: {nx.is_connected(self.networkx_graph)}\n'
+        self.debug_output.append("\nRemaining required systems generated.\n")
+        self.debug_output.append("Final Totals:\n")
+        self.debug_output.append(f"{self.networkx_graph.number_of_nodes()} Systems\n")
+        self.debug_output.append(f"{self.networkx_graph.number_of_edges()} Connections\n")
+        self.debug_output.append(f"All systems connected: {nx.is_connected(self.networkx_graph)}\n")
         # END DEBUG LINE BLOCK
 
     def galaxy_stitch(self, region_list):
@@ -531,7 +531,7 @@ class Universe(object):
             elif region.security == "Null":
                 nullsec_regions.append(region)
             else:
-                raise ValueError("galaxy_stitch: invalid security status: "+str(region.name))
+                raise ValueError(f"galaxy_stitch: invalid security status: {region.name}")
         # shuffle the region lists to prevent the order in the config from determing placement
         self.rand.shuffle(highsec_regions)
         self.rand.shuffle(lowsec_regions)
@@ -741,7 +741,7 @@ class Universe(object):
         does not add more edges than needed
         """
         if len(node_list) < 2:
-            raise ValueError("idleiss.universe.stitch_nodes: must have at least two systems for a connection. List provided was: "+str(node_list))
+            raise ValueError(f"idleiss.universe.stitch_nodes: must have at least two systems for a connection. List provided was: {node_list}")
         # floodfill
         if len(node_list[0].connections) == 0: #floodfill will start on orphan, avoid this
             node_list[0].add_connection(self.rand.choice(node_list[1:]))
@@ -775,7 +775,7 @@ class Universe(object):
         guarantees that a node_list discarding highsec will pass floodfill
         does not add more edges than needed
         """
-        node_list = [x for x in unpruned_node_list if x.security != 'High']
+        node_list = [x for x in unpruned_node_list if x.security != "High"]
         if len(node_list) < 2:
             raise ValueError("idleiss.universe.cap_stitch_nodes: must have at least two systems for a connection. List provided was: "+str(node_list))
         # floodfill
@@ -819,7 +819,7 @@ class Universe(object):
         return len(pruned_list)
 
     def generate_alphanumeric(self):
-        valid_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+        valid_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
         return self.rand.choice(valid_characters)
 
     def _generate_nullsec_name(self):
@@ -827,8 +827,8 @@ class Universe(object):
         #always uppercase letters
         #5 characters with a dash in the middle somewhere
         dash_position = self.rand.randint(1,4)
-        letters = ''.join((self.generate_alphanumeric() for x in range(5)))
-        return letters[0:dash_position] + '-' + letters[dash_position::]
+        letters = "".join((self.generate_alphanumeric() for x in range(5)))
+        return f"{letters[0:dash_position]}-{letters[dash_position::]}"
 
     def generate_unused_nullsec_name(self):
         possible_name = self._generate_nullsec_name()
@@ -844,17 +844,17 @@ class Universe(object):
         plt.figure(figsize=(24,14))
         color_array = []
         for node in graph:
-            if self.master_dict[node].security == 'High':
-                color_array.append('b')
-            elif self.master_dict[node].security == 'Low':
-                color_array.append('y')
-            elif self.master_dict[node].security == 'Null':
-                color_array.append('r')
+            if self.master_dict[node].security == "High":
+                color_array.append("b")
+            elif self.master_dict[node].security == "Low":
+                color_array.append("y")
+            elif self.master_dict[node].security == "Null":
+                color_array.append("r")
             else:
-                raise ValueError(node + ": did not have a valid security rating")
+                raise ValueError(f"{node}: did not have a valid security rating")
         nx.draw_networkx(graph, pos=nx.spring_layout(graph),
             node_size=24, font_size=16, with_labels=True, node_color=color_array)
-        plt.savefig(name_of_file, bbox_inches='tight')
+        plt.savefig(name_of_file, bbox_inches="tight")
         plt.close()
 
     #TODO: Distance floodfill?

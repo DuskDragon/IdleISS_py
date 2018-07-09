@@ -51,28 +51,28 @@ class User(object):
         # update idle time
         self.total_idle_time += timestamp - self.online_at
 
-    def init_conquer_new_system():
+    def init_conquer_new_system(self):
         """
         Construct an Infrastructure Control Hub which can be placed in an unclaimed system
         consumes Structure Gantry
         """
         pass
 
-    def construct_citadel():
+    def construct_citadel(self):
         """
         Citadels will function as money generators and basic material generators,
         consumes Structure Gantry
         """
         pass
 
-    def construct_drilling_platform():
+    def construct_drilling_platform(self):
         """
         Drilling Platforms will function as basic and advanced material generators,
         consumes Structure Gantry
         """
         pass
 
-    def construct_engineering_complex():
+    def construct_engineering_complex(self):
         """
         Engineering Complexes will produce ships and structures,
         consumes Structure Gantry

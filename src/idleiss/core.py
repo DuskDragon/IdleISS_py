@@ -1,10 +1,7 @@
-from os.path import join, dirname, abspath
-from math import log
-
-from .user import User
-from .ship import ShipLibrary
 from .event import GameEngineEvent
+from .ship import ShipLibrary
 from .universe import Universe
+from .user import User
 
 
 class TimeOutofBounds(Exception):
@@ -31,13 +28,13 @@ class GameEngine(object):
         self._engine_events = []
 
     def add_event(self, event_type, **kw):
-        if 'timestamp' in kw:
+        if "timestamp" in kw:
             # this is a bit of a magic as we assume that any keyword
             # arguments that are called `timestamp` relates to the
             # current time and not earlier.  We check that the engine hasn't
             # processed any timestamp older relative to world_timestamp.
             # If the timestamp is in the past then we force to world_timestamp
-            kw['timestamp'] = max(kw['timestamp'], self.world_timestamp)
+            kw["timestamp"] = max(kw["timestamp"], self.world_timestamp)
             # this means that events can only occur between ticks and if an
             # event occurs past the next tick we can safely ignore it until
             # the tick where it would "occur". This is very useful since
@@ -89,7 +86,7 @@ class GameEngine(object):
             return []
         if timestamp < self.world_timestamp:
             # can't go back in time for now.
-            raise TimeOutofBounds('already processed this timestamp')
+            raise TimeOutofBounds("already processed this timestamp")
 
         time_diff = timestamp - self.world_timestamp
 

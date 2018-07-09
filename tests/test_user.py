@@ -32,18 +32,18 @@ class LibraryStub(object):
         }
 
     def ship_shield(self, name):
-        return self.ship_data[name]['shield']
+        return self.ship_data[name]["shield"]
     def ship_armor(self, name):
-        return self.ship_data[name]['armor']
+        return self.ship_data[name]["armor"]
     def ship_hull(self, name):
-        return self.ship_data[name]['hull']
+        return self.ship_data[name]["hull"]
     def ship_firepower(self, name):
-        return self.ship_data[name]['firepower']
+        return self.ship_data[name]["firepower"]
 
 class UserTestCase(TestCase):
 
     def setUp(self):
-        self.user = User('an_user', LibraryStub())
+        self.user = User("an_user", LibraryStub())
 
     def test_log_in(self):
         user = self.user
