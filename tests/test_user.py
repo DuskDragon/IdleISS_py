@@ -47,13 +47,13 @@ class UserTestCase(TestCase):
 
     def test_log_in(self):
         user = self.user
-        user.log_in(100)
-        self.assertTrue(user.online)
-        self.assertEqual(user.online_at, 100)
+        user.join(100)
+        self.assertTrue(user.in_userlist)
+        self.assertEqual(user.join_time, 100)
 
         # already logged in, no effect on online_at
-        user.log_in(200)
-        self.assertNotEqual(user.online_at, 200)
+        user.join(200)
+        self.assertNotEqual(user.join_time, 200)
 
         # XXX game states will have to clean itself up from unclean
         # shutdowns - i.e. it could store the last time it was running as
@@ -62,23 +62,14 @@ class UserTestCase(TestCase):
 
     def test_log_out(self):
         user = self.user
-        user.log_out(100)
+        user.leave(100)
         # default state is not logged in, so can't log out.
-        self.assertNotEqual(user.offline_at, 100)
+        self.assertNotEqual(user.leave_time, 100)
 
-        user.log_in(100)
-        user.log_out(200)
-        self.assertFalse(user.online)
-        self.assertEqual(user.offline_at, 200)
-
-    def test_idle_duration(self):
-        user = self.user
-        user.log_in(100)
-        self.assertEqual(user.get_current_idle_duration(105), 5)
-
-        # user never idle when logged out
-        user.log_out(200)
-        self.assertEqual(user.get_current_idle_duration(205), 0)
+        user.join(100)
+        user.leave(200)
+        self.assertFalse(user.in_userlist)
+        self.assertEqual(user.leave_time, 200)
 
     def test_update(self):
         user = self.user
@@ -88,6 +79,6 @@ class UserTestCase(TestCase):
         # offline users won't get updated.
         self.assertEqual(user.resources.money, 0)
 
-        user.log_in(100)
+        user.join(100)
         user.update(107)
         self.assertEqual(user.resources.money, 7)

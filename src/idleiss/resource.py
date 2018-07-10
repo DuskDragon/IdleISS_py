@@ -36,6 +36,13 @@ class ResourceManager(object):
         #   }
         #}
 
+    def __str__(self):
+        outstr = f"""\
+resources: [{self.basic_materials}, {self.advanced_materials}, {self.money}]
+\tincome: [{self.basic_materials_income}, {self.advanced_materials_income}, {self.money_income}]
+\tsources: {self.income_sources}"""
+        return outstr
+
     def pay_resources(self, seconds):
         self.basic_materials += self.basic_materials_income*seconds
         self.advanced_materials += self.advanced_materials_income*seconds

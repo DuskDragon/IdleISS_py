@@ -6,38 +6,31 @@ class User(object):
         self.id = user_id
         self.fleet = FleetManager()
         self.resources = ResourceManager()
-        self.online = False
-        self.online_at = -1
-        #self.last_active = -1
-        self.offline_at = -1
-        self.total_idle_time = 0
-
+        self.in_userlist = False
+        self.join_time = -1
+        self.leave_time = -1
+        self.total_time = 0
         self.last_payout = 0
 
-    def get_current_idle_duration(self, timestamp):
-        if not self.online:
-            return 0
-        return timestamp - self.online_at
-
-    def log_in(self, timestamp):
-        if self.online:
-            # already logged in
+    def join(self, timestamp):
+        if self.in_userlist:
+            # already in userlist
             return
 
-        self.online = True
-        self.online_at = timestamp
+        self.in_userlist = True
+        self.join_time = timestamp
         self.last_payout = timestamp
 
-    def log_out(self, timestamp):
-        if not self.online:
-            # already logged out
+    def leave(self, timestamp):
+        if not self.in_userlist:
+            # already removed from userlist
             return
 
-        self.online = False
-        self.offline_at = timestamp
+        self.in_userlist = False
+        self.leave_time = timestamp
 
     def update(self, timestamp):
-        if not self.online:
+        if not self.in_userlist:
             # at least until there are some other things that affect an
             # offline user.  We may have to split this up into the two
             # parts when that happens.
@@ -47,9 +40,20 @@ class User(object):
         # XXX consider tracking the last payout time inside the resource
         # instance?
         self.resources.pay_resources(timestamp - self.last_payout)
+        self.total_time += timestamp - self.last_payout
         self.last_payout = timestamp
-        # update idle time
-        self.total_idle_time += timestamp - self.online_at
+
+    def inspect(self):
+        output_str = f"""inspect:
+id: {self.id}
+{self.fleet}
+{self.resources}
+in_userlist: {self.in_userlist}
+join_time: {self.join_time}
+leave_time = {self.leave_time}
+total_time = {self.total_time}
+last_payout = {self.last_payout}"""
+        return output_str
 
     def init_conquer_new_system(self):
         """

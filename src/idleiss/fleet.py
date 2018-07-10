@@ -9,6 +9,9 @@ class FleetManager(object):
             ships = {}
         self.ships = ships
 
+    def __str__(self):
+        return f"fleet: {self.ships}"
+
     def add_ship(self, ship_id, amount):
         if amount > 0:
             self.ships[ship_id] = self.ships.get(ship_id, 0) + amount

@@ -7,15 +7,19 @@ import re
 
 class Interpreter(object):
     def __init__(self, universe_filename, library_filename):
+        self.current_time = int(time.time())
         self.engine = GameEngine(universe_filename, library_filename)
         self.init_parser()
-        self.current_time = int(time.time())
+        self.userlist = []
+        self.is_started = False
 
     def init_parser(self):
         self.parser_regex = {}
         self.parser_command_list = "Commands: exit|e|q"
+        self.add_parser([r"init\s*$"], self.init_engine, "init")
         self.add_parser([r"add\s+(?P<username>.*)\s*$"], self.add_user, "add <username>")
         self.add_parser([r"inc_time\s+(?P<duration>.*)\s*$"], self.increment_time, "inc_time <length>")
+        self.add_parser([f"inspect\s+(?P<username>.*)\s*$"], self.inspect, "inspect <username>")
 
     def add_parser(self, phrases, callback, help_text):
         self.parser_command_list += f", {help_text}"
@@ -30,25 +34,48 @@ class Interpreter(object):
                 if len(reply_array) != 0:
                     reply_array.append("\n")
                 reply_array.append(f"{self.current_time}: {self.parser_regex[result](match)}")
+        if len(reply_array) == 0:
+            return self.parser_command_list
         return "".join(reply_array)
+
+    def init_engine(self, match):
+        if self.is_started:
+            return "error: init already done"
+        self.is_started = True
+        return f"core started: events:\n{self.engine.update_world(self.userlist, self.current_time)}"
 
     def add_user(self, match):
         username = match.group("username")
-        self.engine.user_logged_in(username, self.current_time)
+        if username not in self.userlist:
+            self.userlist.append(username)
         return f"user {username} logged in"
 
     def increment_time(self, match):
+        if not self.is_started:
+            return "error: use init first"
         duration = int(match.group("duration"))
         if type(duration) != int:
-            return "error: argument was not an int"
+            return "error: duration was not an int"
+        if duration < 1:
+            return "error: duration must be positive integer"
         self.current_time += duration
-        return f"time incremented by {duration} to {self.current_time}, events:\n{self.engine.update_world([], self.current_time)}"
+        return f"time incremented by {duration} to {self.current_time}, " \
+               f"events:\n{self.engine.update_world(self.userlist, self.current_time)}"
+
+    def inspect(self, match):
+        if not self.is_started:
+            return "error: use init first"
+        username = match.group("username")
+        return self.engine.inspect_user(username)
 
     def run(self):
         print("")
         print("IdleISS Interpreter: Send commands to IdleISS Core")
         print(self.parser_command_list)
-        command = input("> ")
+        command = input(f"{self.current_time}|| ")
         while not (command == "exit" or command == "e" or command == "q"):
             print(self.parse(command))
-            command = input("> ")
+            if not self.is_started:
+                command = input(f"{self.current_time}||")
+            else:
+                command = input(f"{self.current_time}> ")

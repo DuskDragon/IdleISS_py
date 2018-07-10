@@ -139,6 +139,30 @@ class CoreTestCase(TestCase):
         # bad things probably will happen.  Problem belongs to the user
         # of the engine, i.e. the chatroom interface.
 
+    def test_inspect_user(self):
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        user_list = set(["user1", "user2"])
+        engine.update_world(active_list=user_list, timestamp=1)
+        # manually setting income sources
+        engine.users["user1"].resources.basic_materials_income = 1
+        engine.users["user1"].resources.advanced_materials_income = 1
+        engine.users["user1"].resources.money_income = 1
+        # update for 10 seconds
+        engine.update_world(active_list=user_list, timestamp=11)
+        # inspect user1 and print all properties
+        expected_string = """inspect:
+id: user1
+fleet: {}
+resources: [10, 10, 10]
+\tincome: [1, 1, 1]
+\tsources: {}
+in_userlist: True
+join_time: 1
+leave_time = -1
+total_time = 10
+last_payout = 11"""
+        self.assertEqual(expected_string,engine.inspect_user("user1"))
+
     # def test_handle_incoming_thread_disaster(self):
         # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
         # engine.update_world(timestamp=100)

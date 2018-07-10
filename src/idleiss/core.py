@@ -15,13 +15,14 @@ class GameEngine(object):
 
     def __init__(self, universe_filename, library_filename):
         self.users = {}
-        self.current_online_list = []
+        self.current_channel_list = []
         self.universe = Universe(universe_filename)
         self.library = ShipLibrary(library_filename)
 
         # The current world_timestamp - only updated whenever the world
         # is updated by calling update_world with the current/latest
-        # simulated timestamp.
+        # simulated timestamp. Starts at 0 to show no update_world calls
+        # have occured yet
         self.world_timestamp = 0
 
         # this should be a dequeue and must be thread safe.
@@ -49,29 +50,32 @@ class GameEngine(object):
 
     # it's classic to penalize messages in IdleRPG, but we will be different
 
-    # TODO: remove LOGGED IN/LOGGED OUT due to slack/discord management of usserlist
-
-    def user_logged_in(self, user_id, timestamp):
+    def _user_joined(self, user_id, timestamp):
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
             self.users[user_id] = User(user_id, self.library)
 
-        self.users[user_id].log_in(timestamp)
+        self.users[user_id].join(timestamp)
 
-    def user_logged_out(self, user_id, timestamp):
+    def _user_left(self, user_id, timestamp):
         if user_id not in self.users:
             return
-        self.users[user_id].log_out(timestamp)
+        self.users[user_id].leave(timestamp)
 
-    def update_user_list(self, active_list, timestamp):
-        for member in self.current_online_list:
+    def _update_user_list(self, active_list, timestamp):
+        for member in self.current_channel_list:
             if member not in active_list:
-                self.user_logged_out(member, timestamp)
+                self._user_left(member, timestamp)
         for member in active_list:
-            if member not in self.current_online_list:
-                self.user_logged_in(member, timestamp)
+            if member not in self.current_channel_list:
+                self._user_joined(member, timestamp)
 
-        self.current_online_list = set(active_list)
+        self.current_channel_list = set(active_list)
+
+    def inspect_user(self, username):
+        if username not in self.users:
+            return "error: no such user"
+        return self.users[username].inspect()
 
     def update_world(self, active_list, timestamp):
         """
@@ -102,7 +106,7 @@ class GameEngine(object):
         #### Pay Resources and Update total_idle_time
         for user_id in self.users:
             user = self.users[user_id]
-            if not user.online:
+            if not user.in_userlist:
                 # skip offline users.
                 continue
 
@@ -113,6 +117,6 @@ class GameEngine(object):
             #### Produce Units
             #### Other Events?
 
-        self.update_user_list(active_list, timestamp)
+        self._update_user_list(active_list, timestamp)
         self.world_timestamp = timestamp
         return event_results
