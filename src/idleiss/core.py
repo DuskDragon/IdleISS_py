@@ -28,7 +28,7 @@ class GameEngine(object):
         # this should be a dequeue and must be thread safe.
         self._engine_events = []
 
-    def add_event(self, event_type, **kw):
+    def _add_event(self, event_type, **kw):
         if "timestamp" in kw:
             # this is a bit of a magic as we assume that any keyword
             # arguments that are called `timestamp` relates to the
@@ -50,10 +50,25 @@ class GameEngine(object):
 
     # it's classic to penalize messages in IdleRPG, but we will be different
 
+    def _register_new_user(self, user_id):
+        self.users[user_id] = user = User(user_id, self.library)
+        rand = self.universe.rand
+        # TODO: select starting system
+        starting_region = rand.choice(self.universe.highsec_regions)
+        starting_constellation = rand.choice(starting_region.constellations)
+        starting_system = rand.choice(starting_constellation.systems)
+        # TODO: build first structure for starting income
+        self._construct_structure()
+        # TODO: register user in control system to generate events
+
+    def _construct_structure(self):
+        pass
+        # TODO: implement
+
     def _user_joined(self, user_id, timestamp):
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
-            self.users[user_id] = User(user_id, self.library)
+            self._register_new_user(user_id)
 
         self.users[user_id].join(timestamp)
 

@@ -68,14 +68,39 @@ class Interpreter(object):
         username = match.group("username")
         return self.engine.inspect_user(username)
 
-    def run(self):
+    def run(self, preload_file=None, logs_enabled=False):
+        if logs_enabled:
+            log_fd = open("interpreter_log.txt", "w")
         print("")
         print("IdleISS Interpreter: Send commands to IdleISS Core")
         print(self.parser_command_list)
-        command = input(f"{self.current_time}|| ")
+
+        # check for preloaded commands
+        if preload_file:
+           with open(preload_file) as preload_fd:
+               for raw_line in preload_fd:
+                   line = raw_line.rstrip()
+                   if not self.is_started:
+                       print(f"{self.current_time}||{line}")
+                   else:
+                       print(f"{self.current_time}> {line}")
+                   if logs_enabled:
+                       log_fd.write(f"{line}\n")
+                   print(self.parse(line))
+
+        # switch to user control
+        if not self.is_started:
+            command = input(f"{self.current_time}||")
+        else:
+            command = input(f"{self.current_time}> ")
         while not (command == "exit" or command == "e" or command == "q"):
+            if logs_enabled:
+                log_fd.write(f"{command}\n")
             print(self.parse(command))
             if not self.is_started:
                 command = input(f"{self.current_time}||")
             else:
                 command = input(f"{self.current_time}> ")
+
+        if logs_enabled:
+            log_fd.close()

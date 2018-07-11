@@ -25,6 +25,11 @@ def run():
         help=f"Simulate a fleet fight between two fleets using a file and exit. Example file: {example_fleet_fight}")
     parser.add_argument("-q", "--quick", action="store_true", dest="quickrun",
         help="Do not run the interpreter, only verify config files")
+    parser.add_argument("--preload", dest="interpreter_preload", action="store", type=str,
+        help="if the interpreter is executed then this file will be used as the initial commands before control is "
+             "given to the user")
+    parser.add_argument("--log-interpreter", action="store_true", dest="interpreter_log_enable",
+        help="Enable interpreter logs for future playback. Logs are stored in interpreter_log.txt")
 
     one_shot_only = False
 
@@ -76,7 +81,17 @@ def run():
     if not one_shot_only and not args.quickrun:
         # execute interpreter
         interp = Interpreter(args.uniconfig, args.shipsconfig)
-        interp.run()
+        log_enable = False
+        if args.interpreter_log_enable:
+            log_enable = True
+        if args.interpreter_preload:
+            interp.run(preload_file=args.interpreter_preload, logs_enabled=log_enable)
+        else:
+            interp.run(logs_enabled=log_enable)
 
     # one_shot_only is True or interpreter has exited
     print("\nIdleISS exiting")
+
+
+if __name__ == "__main__":
+    run()

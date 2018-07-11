@@ -113,7 +113,7 @@ class CoreTestCase(TestCase):
             return name
 
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
-        engine.add_event(some_event, name="foo")
+        engine._add_event(some_event, name="foo")
         self.assertEqual(engine._engine_events[0].func, some_event)
         self.assertEqual(engine._engine_events[0].kw, {"name": "foo"})
 
@@ -127,7 +127,7 @@ class CoreTestCase(TestCase):
 
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
         engine.update_world(active_list=set(), timestamp=100)
-        engine.add_event(time_dependent_event, timestamp=50)
+        engine._add_event(time_dependent_event, timestamp=50)
         # timestamp argument magically forced to be the last time the
         # world was updated.
 

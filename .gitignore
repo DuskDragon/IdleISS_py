@@ -43,6 +43,8 @@ nosetests.xml
 
 # generated files
 output
+interpreter_log.txt
+interpreter_preload.txt
 
 # pycharm
 .idea

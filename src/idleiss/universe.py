@@ -372,7 +372,6 @@ class Universe(object):
         self.debug_output.append(f"{systems_verified} systems\n")
 
         self.used_names = []
-        #TODO remove initial name loading ^^^^^^^^^^
 
     def register_name(self, name):
         if self.name_exists(name):
@@ -404,7 +403,6 @@ class Universe(object):
         # add collected nodes
         G.add_edges_from(pruned_list)
         G.add_nodes_from(orphan_list)
-        ## TODO: clean up when not needed
         ## debug info
         #self.debug_output.append("Nodes: {G.number_of_nodes()}, Edges: {G.number_of_edges()}\n"}
         #import matplotlib.pyplot as plt
@@ -486,7 +484,6 @@ class Universe(object):
             new_region = Region(self.rand, self, these_const, region, regions[region]["Security"])
             these_const = self.region_stitch(these_const)
             these_region.append(new_region)
-            #TODO: Force in guaranteed system names
 
         #build final connected listing
         #   connect regions using region-specific connection method
@@ -532,6 +529,9 @@ class Universe(object):
                 nullsec_regions.append(region)
             else:
                 raise ValueError(f"galaxy_stitch: invalid security status: {region.name}")
+        self.highsec_regions = highsec_regions
+        self.lowsec_regions = lowsec_regions
+        self.nullsec_regions = nullsec_regions
         # shuffle the region lists to prevent the order in the config from determing placement
         self.rand.shuffle(highsec_regions)
         self.rand.shuffle(lowsec_regions)
