@@ -5,7 +5,7 @@ import json
 ship_schema_fields = ["hullclass", "shield", "armor", "hull", "weapons", "size", "sensor_strength",]
 ship_schema_optional_fields = ["buffs", "debuffs", "sortclass", "is_structure", "ecm_immune"]
 
-structure_schema_fields = ["produces", "reinforce_cycles", "structure_tier", "shipyard"]
+structure_schema_fields = ["produces", "reinforce_cycles", "structure_tier", "shipyard", "security"]
 
 buff_effects = ["local_shield_repair", "local_armor_repair",
     "remote_shield_repair", "remote_armor_repair",]
@@ -21,6 +21,8 @@ ShipDebuffs = namedtuple("ShipDebuffs", debuff_effects)
 
 ShipSchema = namedtuple("ShipSchema", ["name"] + ship_schema_fields +
     ship_schema_optional_fields)
+
+StructureSchema = namedtuple("StructureSchema", ["name"] + structure_schema_fields)
 
 ShipAttributes = namedtuple("ShipAttributes", ["shield", "armor", "hull"])
 
@@ -50,9 +52,9 @@ def Ship(schema, attributes, debuffs=None):
 class ShipLibrary(object):
 
     _required_keys = {
-        "": ["sizes", "hullclasses", "ships",],  # top level keys
+        "": ["sizes", "hullclasses", "ships", "structures"],  # top level keys
         "ships": ship_schema_fields,
-        "structure": structure_schema_fields,
+        "structures": structure_schema_fields + ship_schema_fields,
     }
     # Optional top level keys: "sortclasses"
 
@@ -92,8 +94,26 @@ class ShipLibrary(object):
             self.sortclasses_exists = False
             self.sortclasses_data = self.hullclasses_data
         self.ship_data = {}
+        self.structure_data = {}
 
+        # verify "structures" and "ships" have no name conflicts:
+        if len(set(raw_data["ships"].keys()).intersection(set(raw_data["structures"].keys()))) != 0:
+            raise ValueError(f"ships and structures have an item with the same name:\n"
+                             f"{set(raw_data['ships'].keys()).intersection(set(raw_data['structures'].keys()))}")
+
+        # tag all structures as structures before merging into ships:
+        for structure_name, data in raw_data["structures"].items():
+            data["is_structure"] = True
+            data["ecm_immune"] = True
+
+        # tag all ships as not structures:
         for ship_name, data in raw_data["ships"].items():
+            data["is_structure"] = False
+
+        # merge "structures" and "ships" since they need to be treated as ships in combat
+        ships_and_structures = {**raw_data["ships"], **raw_data["structures"]}
+
+        for ship_name, data in ships_and_structures.items():
             missing = self._check_missing_keys("ships", data)
             if missing:
                 raise ValueError(f"{ship_name} does not have {', '.join(missing)} attribute")
@@ -178,13 +198,17 @@ class ShipLibrary(object):
                 updates["is_structure"] = False
             # Structure specific attributes
             if data.get("is_structure", False):
-                missing = self._check_missing_keys("structure", data)
+                missing = self._check_missing_keys("structures", data)
                 if missing:
                     raise ValueError(f"{ship_name} does not have {', '.join(missing)} attribute")
+
+                # add to structure_data
+                self.structure_data[ship_name] = _construct_tuple(StructureSchema, data)
 
             # final schema object to limit side effects.
             data.update(updates)
             self.ship_data[ship_name] = _construct_tuple(ShipSchema, data)
+        # end for loop: ship_name, data in ships_and_structures.items():
 
         self.ordered_ship_data = sorted(self.ship_data.values(), key=lambda s: s.sortclass)
 

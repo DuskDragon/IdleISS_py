@@ -359,6 +359,7 @@ class ShipLibraryMock(ShipLibrary):
                     "size": "ship1",
                 },
             },
+            "structures": {}
         })
 
 class ShipLibraryOrderMock(ShipLibrary):
@@ -515,6 +516,7 @@ class ShipLibraryOrderMock(ShipLibrary):
                     "buffs": {},
                 },
             },
+            "structures": {}
         })
 
 class BattleTestCase(TestCase):

@@ -53,6 +53,10 @@
         "tracking titan",
         "assault titan",
         "area-of-effect titan",
+        "small structure",
+        "medium structure",
+        "large structure",
+        "extra large structure",
         "other"
     ],
     "sortclasses": [
@@ -143,6 +147,125 @@
             "sensor_strength": 27,
             "size": "cruiser",
             "buffs": {}
+        }
+    },
+    "structures": {
+        "Astrahaus": {
+            "hullclass": "medium structure",
+            "shield": 1500000,
+            "armor": 1500000,
+            "hull": 1500000,
+            "weapons": [
+                {
+                    "weapon_name": "Standup Proximity Defense System",
+                    "weapon_size": "frigate",
+                    "firepower": 400,
+                    "area_of_effect": 20,
+                    "priority_targets": [
+                        [
+                            "ecm frigate",
+                            "tackle frigate",
+                            "assault frigate",
+                            "brawler frigate",
+                            "logistic frigate",
+                            "drone frigate",
+                            "ecm destroyer",
+                            "tackle destroyer",
+                            "assault destroyer",
+                            "brawler destroyer",
+                            "logistic destroyer",
+                            "interdictor destroyer",
+                            "command destroyer",
+                            "drone destroyer"
+                        ]
+                    ]
+                },
+                {
+                    "weapon_name": "Standup Anti-Capital Missile Launcher",
+                    "weapon_size": "carrier",
+                    "firepower": 80000,
+                    "priority_targets": [
+                        [
+                            "logistics capital"
+                        ],
+                        [
+                            "assault dreadnaught"
+                        ],
+                        [
+                            "assault supercarrier"
+                        ],
+                        [
+                            "assault titan"
+                        ]
+                    ]
+                }
+            ],
+            "size": "medium structure",
+            "produces": {
+                "money": 10,
+                "basic_materials": 10,
+                "advanced_materials": 0
+            },
+            "reinforce_cycles": 2,
+            "structure_tier": 1,
+            "shipyard": [
+                "tackle frigate"
+            ],
+            "security": "high"
+        },
+        "Fortizar": {
+            "produces": {
+                "money": 100,
+                "basic_materials": 100,
+                "advanced_materials": 0
+            },
+            "reinforce_cycles": 2,
+            "structure_tier": 2,
+            "shipyard": [
+                "tackle cruiser"
+            ],
+            "security": "low"
+        },
+        "Keepstar": {
+            "produces": {
+                "money": 1000,
+                "basic_materials": 1000,
+                "advanced_materials": 0
+            },
+            "reinforce_cycles": 2,
+            "structure_tier": 3,
+            "shipyard": [
+                "frontline battleship"
+            ],
+            "security": "null"
+        },
+        "Raitaru": {
+            "produces": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            },
+            "reinforce_cycles": 2,
+            "structure_tier": 1,
+            "shipyard": [
+                "ecm frigate",
+                "tackle frigate",
+                "assault frigate",
+                "brawler frigate"
+            ],
+            "security": "high"
+        },
+        "Azbel": {
+
+        },
+        "Sotiyo": {
+
+        },
+        "Athanor": {
+
+        },
+        "Tatara": {
+
         }
     }
 }

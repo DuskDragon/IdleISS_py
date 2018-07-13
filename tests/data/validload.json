@@ -121,5 +121,6 @@
                 "local_shield_repair": 50
             }
         }
-    }
+    },
+    "structures": {}
 }

@@ -81,7 +81,8 @@ class FleetLibraryTestCase(TestCase):
                     "size": "frigate",
                     "sensor_strength": 9.6,
                 },
-
+            },
+            "structures": {
                 "Astrahaus": {
                     "hullclass": "medium structure",
                     "shield": 1_500_000,
@@ -119,6 +120,7 @@ class FleetLibraryTestCase(TestCase):
                     "structure_tier": 1,
                     "shipyard": [],
                     "sensor_strength": 1,
+                    "security": "high"
                 },
             },
         })
@@ -200,6 +202,7 @@ class FleetLibraryTestCase(TestCase):
                 },
 
             },
+            "structures": {}
         })
 
         self.assertEqual([schema.name for schema in library.ordered_ship_data],
