@@ -48,8 +48,8 @@ class UserTestCase(TestCase):
 #            save_graph(inter_region_graph, uni, f"docs/default_region_{region.name}.png")
 
     def test_consistent_generation(self):
-        uni1 = Universe("config/Universe_config.json")
-        uni2 = Universe("config/Universe_config.json")
+        uni1 = Universe("config/Universe_Config.json")
+        uni2 = Universe("config/Universe_Config.json")
         g1 = uni1.generate_networkx(uni1.systems)
         g2 = uni2.generate_networkx(uni2.systems)
         d1 = nx.symmetric_difference(g1, g2)
