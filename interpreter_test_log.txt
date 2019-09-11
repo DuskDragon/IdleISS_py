@@ -1,0 +1,9 @@
+add test
+add test2
+init
+inspect test
+inspect test2
+inc_time 1
+inspect test
+inspect test2
+e

@@ -77,16 +77,18 @@ class Interpreter(object):
 
         # check for preloaded commands
         if preload_file:
-           with open(preload_file) as preload_fd:
-               for raw_line in preload_fd:
-                   line = raw_line.rstrip()
-                   if not self.is_started:
-                       print(f"{self.current_time}||{line}")
-                   else:
-                       print(f"{self.current_time}> {line}")
-                   if logs_enabled:
-                       log_fd.write(f"{line}\n")
-                   print(self.parse(line))
+            with open(preload_file) as preload_fd:
+                for raw_line in preload_fd:
+                    line = raw_line.rstrip()
+                    if not self.is_started:
+                        print(f"{self.current_time}||{line}")
+                    else:
+                        print(f"{self.current_time}> {line}")
+                    if logs_enabled:
+                        log_fd.write(f"{line}\n")
+                    if line == "exit" or line == "e" or line == "q":
+                        return
+                    print(self.parse(line))
 
         # switch to user control
         if not self.is_started:

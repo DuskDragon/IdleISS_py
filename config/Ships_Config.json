@@ -7,7 +7,10 @@
         "battleship": 420,
         "carrier": 1350,
         "dreadnaught": 2500,
-        "titan": 3000
+        "titan": 3000,
+        "medium structure": 5000,
+        "large structure": 10000,
+        "extra large structure": 20000
     },
     "hullclasses": [
         "ecm frigate",
@@ -69,6 +72,9 @@
         "dreadnaught",
         "supercarrier",
         "titan",
+        "medium structure",
+        "large structure",
+        "extra large structure",
         "other"
     ],
     "ships": {
@@ -152,6 +158,8 @@
     "structures": {
         "Astrahaus": {
             "hullclass": "medium structure",
+            "sortclass": "medium structure",
+            "size": "medium structure",
             "shield": 1500000,
             "armor": 1500000,
             "hull": 1500000,
@@ -200,7 +208,6 @@
                     ]
                 }
             ],
-            "size": "medium structure",
             "produces": {
                 "money": 10,
                 "basic_materials": 10,
@@ -211,9 +218,62 @@
             "shipyard": [
                 "tackle frigate"
             ],
-            "security": "high"
+            "security": "high",
+            "sensor_strength": 1,
+            "ecm_immune": true
         },
         "Fortizar": {
+            "hullclass": "large structure",
+            "sortclass": "large structure",
+            "size": "large structure",
+            "shield": 3000000,
+            "armor": 3000000,
+            "hull": 3000000,
+            "weapons": [
+                {
+                    "weapon_name": "Standup Proximity Defense System",
+                    "weapon_size": "frigate",
+                    "firepower": 400,
+                    "area_of_effect": 40,
+                    "priority_targets": [
+                        [
+                            "ecm frigate",
+                            "tackle frigate",
+                            "assault frigate",
+                            "brawler frigate",
+                            "logistic frigate",
+                            "drone frigate",
+                            "ecm destroyer",
+                            "tackle destroyer",
+                            "assault destroyer",
+                            "brawler destroyer",
+                            "logistic destroyer",
+                            "interdictor destroyer",
+                            "command destroyer",
+                            "drone destroyer"
+                        ]
+                    ]
+                },
+                {
+                    "weapon_name": "Standup Anti-Capital Missile Launcher",
+                    "weapon_size": "carrier",
+                    "firepower": 120000,
+                    "priority_targets": [
+                        [
+                            "logistics capital"
+                        ],
+                        [
+                            "assault dreadnaught"
+                        ],
+                        [
+                            "assault supercarrier"
+                        ],
+                        [
+                            "assault titan"
+                        ]
+                    ]
+                }
+            ],
             "produces": {
                 "money": 100,
                 "basic_materials": 100,
@@ -224,9 +284,62 @@
             "shipyard": [
                 "tackle cruiser"
             ],
-            "security": "low"
+            "security": "low",
+            "sensor_strength": 1,
+            "ecm_immune": true
         },
         "Keepstar": {
+            "hullclass": "extra large structure",
+            "sortclass": "extra large structure",
+            "size": "extra large structure",
+            "shield": 6000000,
+            "armor": 6000000,
+            "hull": 6000000,
+            "weapons": [
+                {
+                    "weapon_name": "Standup Proximity Defense System",
+                    "weapon_size": "frigate",
+                    "firepower": 400,
+                    "area_of_effect": 60,
+                    "priority_targets": [
+                        [
+                            "ecm frigate",
+                            "tackle frigate",
+                            "assault frigate",
+                            "brawler frigate",
+                            "logistic frigate",
+                            "drone frigate",
+                            "ecm destroyer",
+                            "tackle destroyer",
+                            "assault destroyer",
+                            "brawler destroyer",
+                            "logistic destroyer",
+                            "interdictor destroyer",
+                            "command destroyer",
+                            "drone destroyer"
+                        ]
+                    ]
+                },
+                {
+                    "weapon_name": "Standup Anti-Capital Missile Launcher",
+                    "weapon_size": "carrier",
+                    "firepower": 160000,
+                    "priority_targets": [
+                        [
+                            "logistics capital"
+                        ],
+                        [
+                            "assault dreadnaught"
+                        ],
+                        [
+                            "assault supercarrier"
+                        ],
+                        [
+                            "assault titan"
+                        ]
+                    ]
+                }
+            ],
             "produces": {
                 "money": 1000,
                 "basic_materials": 1000,
@@ -237,9 +350,62 @@
             "shipyard": [
                 "frontline battleship"
             ],
-            "security": "null"
+            "security": "null",
+            "sensor_strength": 1,
+            "ecm_immune": true
         },
         "Raitaru": {
+            "hullclass": "medium structure",
+            "sortclass": "medium structure",
+            "size": "medium structure",
+            "shield": 750000,
+            "armor": 750000,
+            "hull": 750000,
+            "weapons": [
+                {
+                    "weapon_name": "Standup Proximity Defense System",
+                    "weapon_size": "frigate",
+                    "firepower": 400,
+                    "area_of_effect": 5,
+                    "priority_targets": [
+                        [
+                            "ecm frigate",
+                            "tackle frigate",
+                            "assault frigate",
+                            "brawler frigate",
+                            "logistic frigate",
+                            "drone frigate",
+                            "ecm destroyer",
+                            "tackle destroyer",
+                            "assault destroyer",
+                            "brawler destroyer",
+                            "logistic destroyer",
+                            "interdictor destroyer",
+                            "command destroyer",
+                            "drone destroyer"
+                        ]
+                    ]
+                },
+                {
+                    "weapon_name": "Standup Anti-Capital Missile Launcher",
+                    "weapon_size": "carrier",
+                    "firepower": 30000,
+                    "priority_targets": [
+                        [
+                            "logistics capital"
+                        ],
+                        [
+                            "assault dreadnaught"
+                        ],
+                        [
+                            "assault supercarrier"
+                        ],
+                        [
+                            "assault titan"
+                        ]
+                    ]
+                }
+            ],
             "produces": {
                 "money": 0,
                 "basic_materials": 0,
@@ -251,21 +417,315 @@
                 "ecm frigate",
                 "tackle frigate",
                 "assault frigate",
-                "brawler frigate"
+                "brawler frigate",
+                "logistic frigate",
+                "drone frigate",
+                "ecm destroyer",
+                "tackle destroyer",
+                "assault destroyer",
+                "brawler destroyer",
+                "logistic destroyer",
+                "interdictor destroyer",
+                "command destroyer",
+                "drone destroyer"
             ],
-            "security": "high"
+            "security": "high",
+            "sensor_strength": 1,
+            "ecm_immune": true
         },
         "Azbel": {
-
+            "hullclass": "large structure",
+            "sortclass": "large structure",
+            "size": "large structure",
+            "shield": 1000000,
+            "armor": 1000000,
+            "hull": 1000000,
+            "weapons": [
+                {
+                    "weapon_name": "Standup Proximity Defense System",
+                    "weapon_size": "frigate",
+                    "firepower": 400,
+                    "area_of_effect": 7,
+                    "priority_targets": [
+                        [
+                            "ecm frigate",
+                            "tackle frigate",
+                            "assault frigate",
+                            "brawler frigate",
+                            "logistic frigate",
+                            "drone frigate",
+                            "ecm destroyer",
+                            "tackle destroyer",
+                            "assault destroyer",
+                            "brawler destroyer",
+                            "logistic destroyer",
+                            "interdictor destroyer",
+                            "command destroyer",
+                            "drone destroyer"
+                        ]
+                    ]
+                },
+                {
+                    "weapon_name": "Standup Anti-Capital Missile Launcher",
+                    "weapon_size": "carrier",
+                    "firepower": 60000,
+                    "priority_targets": [
+                        [
+                            "logistics capital"
+                        ],
+                        [
+                            "assault dreadnaught"
+                        ],
+                        [
+                            "assault supercarrier"
+                        ],
+                        [
+                            "assault titan"
+                        ]
+                    ]
+                }
+            ],
+            "produces": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            },
+            "reinforce_cycles": 2,
+            "structure_tier": 2,
+            "shipyard": [
+                "ecm frigate",
+                "tackle frigate",
+                "assault frigate",
+                "brawler frigate",
+                "logistic frigate",
+                "drone frigate",
+                "ecm destroyer",
+                "tackle destroyer",
+                "assault destroyer",
+                "brawler destroyer",
+                "logistic destroyer",
+                "interdictor destroyer",
+                "command destroyer",
+                "drone destroyer",
+                "ecm cruiser",
+                "tackle cruiser",
+                "assault cruiser",
+                "brawler cruiser",
+                "logistic cruiser",
+                "strategic cruiser",
+                "drone cruiser",
+                "sniper battlecruiser",
+                "assault battlecruiser",
+                "brawler battlecruiser",
+                "command battlecruiser",
+                "frontline battleship",
+                "attack battleship",
+                "ecm battleship",
+                "drone battleship",
+                "blackops battleship",
+                "marauder battleship",
+                "assault carrier",
+                "command carrier",
+                "superiority carrier",
+                "logistics capital",
+                "tracking dreadnaught",
+                "assault dreadnaught"
+            ],
+            "security": "low",
+            "sensor_strength": 1,
+            "ecm_immune": true
         },
         "Sotiyo": {
-
+            "hullclass": "extra large structure",
+            "sortclass": "extra large structure",
+            "size": "extra large structure",
+            "shield": 2000000,
+            "armor": 2000000,
+            "hull": 2000000,
+            "weapons": [
+                {
+                    "weapon_name": "Standup Proximity Defense System",
+                    "weapon_size": "frigate",
+                    "firepower": 400,
+                    "area_of_effect": 12,
+                    "priority_targets": [
+                        [
+                            "ecm frigate",
+                            "tackle frigate",
+                            "assault frigate",
+                            "brawler frigate",
+                            "logistic frigate",
+                            "drone frigate",
+                            "ecm destroyer",
+                            "tackle destroyer",
+                            "assault destroyer",
+                            "brawler destroyer",
+                            "logistic destroyer",
+                            "interdictor destroyer",
+                            "command destroyer",
+                            "drone destroyer"
+                        ]
+                    ]
+                },
+                {
+                    "weapon_name": "Standup Anti-Capital Missile Launcher",
+                    "weapon_size": "carrier",
+                    "firepower": 100000,
+                    "priority_targets": [
+                        [
+                            "logistics capital"
+                        ],
+                        [
+                            "assault dreadnaught"
+                        ],
+                        [
+                            "assault supercarrier"
+                        ],
+                        [
+                            "assault titan"
+                        ]
+                    ]
+                }
+            ],
+            "produces": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            },
+            "reinforce_cycles": 2,
+            "structure_tier": 3,
+            "shipyard": [
+                "ecm frigate",
+                "tackle frigate",
+                "assault frigate",
+                "brawler frigate",
+                "logistic frigate",
+                "drone frigate",
+                "ecm destroyer",
+                "tackle destroyer",
+                "assault destroyer",
+                "brawler destroyer",
+                "logistic destroyer",
+                "interdictor destroyer",
+                "command destroyer",
+                "drone destroyer",
+                "ecm cruiser",
+                "tackle cruiser",
+                "assault cruiser",
+                "brawler cruiser",
+                "logistic cruiser",
+                "strategic cruiser",
+                "drone cruiser",
+                "sniper battlecruiser",
+                "assault battlecruiser",
+                "brawler battlecruiser",
+                "command battlecruiser",
+                "frontline battleship",
+                "attack battleship",
+                "ecm battleship",
+                "drone battleship",
+                "blackops battleship",
+                "marauder battleship",
+                "assault carrier",
+                "command carrier",
+                "superiority carrier",
+                "logistics capital",
+                "tracking dreadnaught",
+                "assault dreadnaught"
+            ],
+            "security": "null",
+            "sensor_strength": 1,
+            "ecm_immune": true
         },
         "Athanor": {
-
+            "hullclass": "medium structure",
+            "sortclass": "medium structure",
+            "size": "medium structure",
+            "shield": 300000,
+            "armor": 300000,
+            "hull": 300000,
+            "weapons": [
+                {
+                    "weapon_name": "Standup Proximity Defense System",
+                    "weapon_size": "frigate",
+                    "firepower": 400,
+                    "area_of_effect": 3,
+                    "priority_targets": [
+                        [
+                            "ecm frigate",
+                            "tackle frigate",
+                            "assault frigate",
+                            "brawler frigate",
+                            "logistic frigate",
+                            "drone frigate",
+                            "ecm destroyer",
+                            "tackle destroyer",
+                            "assault destroyer",
+                            "brawler destroyer",
+                            "logistic destroyer",
+                            "interdictor destroyer",
+                            "command destroyer",
+                            "drone destroyer"
+                        ]
+                    ]
+                }
+            ],
+            "produces": {
+                "money": 0,
+                "basic_materials": 5000,
+                "advanced_materials": 1000
+            },
+            "reinforce_cycles": 1,
+            "structure_tier": 1,
+            "shipyard": [],
+            "security": "high",
+            "sensor_strength": 1,
+            "ecm_immune": true
         },
         "Tatara": {
-
+            "hullclass": "large structure",
+            "sortclass": "large structure",
+            "size": "large structure",
+            "shield": 700000,
+            "armor": 700000,
+            "hull": 700000,
+            "weapons": [
+                {
+                    "weapon_name": "Standup Proximity Defense System",
+                    "weapon_size": "frigate",
+                    "firepower": 400,
+                    "area_of_effect": 5,
+                    "priority_targets": [
+                        [
+                            "ecm frigate",
+                            "tackle frigate",
+                            "assault frigate",
+                            "brawler frigate",
+                            "logistic frigate",
+                            "drone frigate",
+                            "ecm destroyer",
+                            "tackle destroyer",
+                            "assault destroyer",
+                            "brawler destroyer",
+                            "logistic destroyer",
+                            "interdictor destroyer",
+                            "command destroyer",
+                            "drone destroyer"
+                        ]
+                    ]
+                }
+            ],
+            "produces": {
+                "money": 0,
+                "basic_materials": 8000,
+                "advanced_materials": 5000
+            },
+            "reinforce_cycles": 1,
+            "structure_tier": 2,
+            "shipyard": [],
+            "security": "low",
+            "sensor_strength": 1,
+            "ecm_immune": true
         }
     }
 }
