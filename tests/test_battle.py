@@ -25,7 +25,8 @@ class ShipLibraryMock(ShipLibrary):
                 "ship4": 4,
                 "priority_test_ship": 5,
                 "priority_test_not_target": 6,
-                "priority_test_target": 7
+                "priority_test_target": 7,
+                "test_structure": 8
             },
             "hullclasses": [
                 "generic",
@@ -36,7 +37,8 @@ class ShipLibraryMock(ShipLibrary):
                 "ewar_test",
                 "ewar_ecm_test",
                 "ewar_test_target",
-                "ewar_test_target2"
+                "ewar_test_target2",
+                "test_structure"
             ],
             "ships": {
                 "area_of_effect_test": {
@@ -359,7 +361,23 @@ class ShipLibraryMock(ShipLibrary):
                     "size": "ship1",
                 },
             },
-            "structures": {}
+            "structures": {
+                "test_structure": {
+                    "shield": 1,
+                    "armor": 1,
+                    "hull": 1,
+                    "sensor_strength": 1,
+                    "weapons": [],
+                    "hullclass": "test_structure",
+                    "sortclass": "test_structure",
+                    "size": "test_structure",
+                    "structure_tier": 0,
+                    "reinforce_cycles": 1,
+                    "security": "high",
+                    "shipyard": [],
+                    "produces": {}
+                }
+            }
         })
 
 class ShipLibraryOrderMock(ShipLibrary):
@@ -374,7 +392,8 @@ class ShipLibraryOrderMock(ShipLibrary):
                 "battleship": 420,
                 "carrier": 1_350,
                 "dreadnaught": 2_500,
-                "titan": 3_000
+                "titan": 3_000,
+                "structure": 5_000
             },
             "hullclasses": [
                 "ecm frigate",
@@ -516,7 +535,23 @@ class ShipLibraryOrderMock(ShipLibrary):
                     "buffs": {},
                 },
             },
-            "structures": {}
+            "structures": {
+                "test_structure": {
+                    "shield": 1,
+                    "armor": 1,
+                    "hull": 1,
+                    "sensor_strength": 1,
+                    "weapons": [],
+                    "hullclass": "other",
+                    "sortclass": "other",
+                    "size": "structure",
+                    "structure_tier": 0,
+                    "reinforce_cycles": 1,
+                    "security": "high",
+                    "shipyard": [],
+                    "produces": {}
+                }
+            }
         })
 
 class BattleTestCase(TestCase):

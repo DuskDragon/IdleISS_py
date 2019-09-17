@@ -2,6 +2,10 @@ from unittest import TestCase
 
 from idleiss.user import User
 
+class SolarSystemStub(object):
+    def __init__(self):
+        self.name = "SolarStub"
+
 class LibraryStub(object):
     def __init__(self):
         self.size_data = [
@@ -43,7 +47,7 @@ class LibraryStub(object):
 class UserTestCase(TestCase):
 
     def setUp(self):
-        self.user = User("an_user", LibraryStub())
+        self.user = User("an_user", SolarSystemStub())
 
     def test_log_in(self):
         user = self.user

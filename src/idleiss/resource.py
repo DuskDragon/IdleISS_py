@@ -21,15 +21,16 @@ class ResourceManager(object):
         self.money_income = 0
         self.income_sources = {}
         #income sources are a nested dict of
-        # {starsystem:{
-        #       location:
-        #           [type (moon, station, belt, or other),
+        # {
+        #   starsystem:{
+        #       'structure': [
         #           basic_income,
         #           adv_income,
         #           money income
         #       ]
-        #   }
-        #}
+        #    }
+        # }
+        #
         #example:
         #{"START SYSTEM": {
         #   "ISS": ["station", 2, 1, 1]
@@ -48,7 +49,7 @@ resources: [{self.basic_materials}, {self.advanced_materials}, {self.money}]
         self.advanced_materials += self.advanced_materials_income*seconds
         self.money += self.money_income*seconds
 
-    def add_income_source(self, system, location, source_type, basic_income,
+    def add_income_source(self, system_name, structure_name, basic_income,
                           adv_income, money_income):
         if basic_income < 0 or adv_income < 0 or money_income < 0:
             raise ValueError("Income for an income source cannot be negative")
@@ -56,42 +57,42 @@ resources: [{self.basic_materials}, {self.advanced_materials}, {self.money}]
         self.basic_materials_income += basic_income
         self.advanced_materials_income += adv_income
         self.money_income += money_income
-        if system in self.income_sources:
-            if location in self.income_sources[system]:
-                raise Location_Already_Exists(f"{location}@{system} already exists.")
+        if system_name in self.income_sources:
+            if structure_name in self.income_sources[system_name]:
+                raise Location_Already_Exists(f"{structure_name}@{system_name} already exists.")
             else:
-                self.income_sources[system].update({location: [source_type, basic_income, adv_income, money_income]})
+                self.income_sources[system_name].update({structure_name: [basic_income, adv_income, money_income]})
         else:
-            self.income_sources.update({system: {location: [source_type, basic_income, adv_income, money_income]}})
+            self.income_sources.update({system_name: {structure_name: [basic_income, adv_income, money_income]}})
 
-    def remove_income_source(self, system, location):
-        if system in self.income_sources:
-            if location in self.income_sources[system]:
-                type, b_i, a_i, m_i = self.income_sources[system][location]
+    def remove_income_source(self, system_name, structure_name):
+        if system_name in self.income_sources:
+            if structure_name in self.income_sources[system_name]:
+                b_i, a_i, m_i = self.income_sources[system_name][structure_name]
                 self.basic_materials_income -= b_i
                 self.advanced_materials_income -= a_i
                 self.money_income -= m_i
                 if self.basic_materials_income < 0 or self.advanced_materials_income < 0 or self.money_income < 0:
-                    raise ValueError(f"Income is negative after removing income source {location}@{system}: {self.basic_materials_income} {self.advanced_materials_income} {self.money_income}")
-                self.income_sources[system].pop(location)
-                if len(self.income_sources[system]) == 0:
-                    self.income_sources.pop(system)
+                    raise ValueError(f"Income is negative after removing income source {structure_name}@{system_name}: {self.basic_materials_income} {self.advanced_materials_income} {self.money_income}")
+                self.income_sources[system_name].pop(structure_name)
+                if len(self.income_sources[system_name]) == 0:
+                    self.income_sources.pop(system_name)
             else:
-                raise Location_Does_Not_Exist(f"{location}@{system} does not exist.")
+                raise Location_Does_Not_Exist(f"{structure_name}@{system_name} does not exist.")
         else:
-            raise Location_Does_Not_Exist(f"{location}@{system} does not exist.")
+            raise Location_Does_Not_Exist(f"{structure_name}@{system_name} does not exist.")
 
-    def update_income_source(self, system, location, basic_income, adv_income, money_income):
+    def update_income_source(self, system_name, structure_name, basic_income, adv_income, money_income):
         if basic_income < 0 or adv_income < 0 or money_income < 0:
             raise ValueError("Income for an income source cannot be negative")
 
-        if system in self.income_sources:
-            if location in self.income_sources[system]:
-                type, b_i, a_i, m_i = self.income_sources[system][location]
+        if system_name in self.income_sources:
+            if structure_name in self.income_sources[system_name]:
+                b_i, a_i, m_i = self.income_sources[system_name][structure_name]
                 self.basic_materials_income += basic_income - b_i
                 self.advanced_materials_income += adv_income - a_i
                 self.money_income += money_income - m_i
             else:
-                raise Location_Does_Not_Exist(f"{location}@{system} does not exist.")
+                raise Location_Does_Not_Exist(f"{structure_name}@{system_name} does not exist.")
         else:
-            raise Location_Does_Not_Exist(f"{location}@{system} does not exist.")
+            raise Location_Does_Not_Exist(f"{structure_name}@{system_name} does not exist.")

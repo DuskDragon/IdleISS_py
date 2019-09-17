@@ -79,6 +79,7 @@ class ShipLibrary(object):
         self._load(raw_data)
 
     def _load(self, raw_data):
+        self.starting_structure = None
         missing = self._check_missing_keys("", raw_data)
         if missing:
             raise ValueError(", ".join(missing) + " not found")
@@ -101,6 +102,13 @@ class ShipLibrary(object):
             raise ValueError(f"ships and structures have an item with the same name:\n"
                              f"{set(raw_data['ships'].keys()).intersection(set(raw_data['structures'].keys()))}")
 
+        # verify that only one starting structure exists (tier:0)
+        for structure_name, data in raw_data["structures"].items():
+            if data["structure_tier"] == 0:
+                if self.starting_structure == None:
+                    self.starting_structure = raw_data["structures"][structure_name]
+                else:
+                    raise ValueError(f"{structure_name}: second structure with 'structure_tier' = 0 found, only one starting structure can exist")
         # tag all structures as structures before merging into ships:
         for structure_name, data in raw_data["structures"].items():
             data["is_structure"] = True
@@ -211,6 +219,9 @@ class ShipLibrary(object):
         # end for loop: ship_name, data in ships_and_structures.items():
 
         self.ordered_ship_data = sorted(self.ship_data.values(), key=lambda s: s.sortclass)
+        # verify that we have loaded a starting_structure
+        if self.starting_structure == None:
+            raise ValueError("_load: ship config file does not contain a starting structure with structure_tier = 0")
 
     def get_ship_schemata(self, ship_name):
         return self.ship_data[ship_name]

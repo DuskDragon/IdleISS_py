@@ -214,7 +214,7 @@
                 "advanced_materials": 0
             },
             "reinforce_cycles": 2,
-            "structure_tier": 1,
+            "structure_tier": 0,
             "shipyard": [
                 "tackle frigate"
             ],
@@ -280,7 +280,7 @@
                 "advanced_materials": 0
             },
             "reinforce_cycles": 2,
-            "structure_tier": 2,
+            "structure_tier": 3,
             "shipyard": [
                 "tackle cruiser"
             ],
@@ -346,7 +346,7 @@
                 "advanced_materials": 0
             },
             "reinforce_cycles": 2,
-            "structure_tier": 3,
+            "structure_tier": 5,
             "shipyard": [
                 "frontline battleship"
             ],
@@ -593,7 +593,7 @@
                 "advanced_materials": 0
             },
             "reinforce_cycles": 2,
-            "structure_tier": 3,
+            "structure_tier": 4,
             "shipyard": [
                 "ecm frigate",
                 "tackle frigate",

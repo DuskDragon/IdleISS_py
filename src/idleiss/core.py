@@ -51,17 +51,27 @@ class GameEngine(object):
     # it's classic to penalize messages in IdleRPG, but we will be different
 
     def _register_new_user(self, user_id):
-        self.users[user_id] = user = User(user_id, self.library)
         rand = self.universe.rand
         # TODO: select starting system
         starting_region = rand.choice(self.universe.highsec_regions)
         starting_constellation = rand.choice(starting_region.constellations)
         starting_system = rand.choice(starting_constellation.systems)
+        self.users[user_id] = user = User(user_id, starting_system)
         # TODO: build first structure for starting income
-        self._construct_structure()
+        user.construct_starting_structure(self.library.starting_structure)
         # TODO: register user in control system to generate events
 
-    def _construct_structure(self):
+    def _construct_structure(self, user, system, structure):
+        # for highsec systems the system can be owned by anyone,
+        # but only one of each per user.
+        built_structures = user.resources.income_sources
+        if system.security == "High":
+            if user.has_structure(system, structure):
+                pass
+            else:
+                pass
+                #user.resource.
+        # for low and nullsec systems the system must be owned
         pass
         # TODO: implement
 

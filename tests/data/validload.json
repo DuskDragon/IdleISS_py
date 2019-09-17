@@ -122,5 +122,24 @@
             }
         }
     },
-    "structures": {}
+    "structures": {
+        "test_starting_structure": {
+            "shield": 1,
+            "armor": 1,
+            "hull": 1,
+            "sensor_strength": 1,
+            "weapons": [],
+            "hullclass": "Espionage Probe",
+            "size": "Espionage Probe",
+            "structure_tier": 0,
+            "reinforce_cycles": 1,
+            "security": "high",
+            "shipyard": [],
+            "produces": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
+        }
+    }
 }

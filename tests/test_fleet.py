@@ -28,9 +28,13 @@ class ShipLibraryMock(ShipLibrary):
                 ],
                 "sensor_strength": 1,
                 "size": "one",
+            },
+            "structures": {
+                "test_starting_structure": {
+                    "structure_tier": 0
+                }
             }
         }
-
 
 class FleetTestCase(TestCase):
 

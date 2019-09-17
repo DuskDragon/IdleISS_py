@@ -1,6 +1,7 @@
 {
     "Universe Seed": 42,
     "System Count": 5100,
+    "Connection Target": 6779,
     "Constellation Count": 340,
     "Systems Per Constellation": 15,
     "Region Count": 68,
@@ -12,10 +13,10 @@
     "Low Security Regions": 10,
     "Null Security Systems": 3375,
     "Null Security Regions": 45,
-    "Connectedness": 0.75,
-    "Low-High Bonus Connections": 0.2,
-    "Low-Null Bonus Connections": 0.3,
-    "High-Null Bonus Connections": 0.1,
+    "Connectedness": 1.7,
+    "Low-High Bonus Connections": 0.4,
+    "Low-Null Bonus Connections": 0.5,
+    "High-Null Bonus Connections": 0.2,
     "Null-Low Depth Ratio": 1.5,
     "Universe Structure":
     {

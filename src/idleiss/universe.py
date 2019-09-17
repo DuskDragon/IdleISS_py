@@ -21,6 +21,7 @@ class SolarSystem(object):
         self.id = universe.get_next_system_id()
         self.flooded = False
         self.cap_flooded = False
+        self.owned_by = None
 
     def __str__(self):
         connections_str = ""

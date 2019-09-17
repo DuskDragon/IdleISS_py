@@ -117,7 +117,7 @@ class FleetLibraryTestCase(TestCase):
                         "money": 1,
                     },
                     "reinforce_cycles": 2,
-                    "structure_tier": 1,
+                    "structure_tier": 0,
                     "shipyard": [],
                     "sensor_strength": 1,
                     "security": "high"
@@ -134,11 +134,13 @@ class FleetLibraryTestCase(TestCase):
                 "frigate": 35,
                 "cruiser": 100,
                 "battleship": 360,
+                "test_structure": 1000
             },
             "hullclasses": [
                 "frigate",
                 "cruiser",
-                "battleship"
+                "battleship",
+                "test_structure"
             ],
             "ships": {
                 "rifter": {
@@ -202,8 +204,23 @@ class FleetLibraryTestCase(TestCase):
                 },
 
             },
-            "structures": {}
+            "structures": {
+                "test_starting_structure": {
+                "shield": 1,
+                "armor": 1,
+                "hull": 1,
+                "sensor_strength": 1,
+                "weapons": [],
+                "hullclass": "test_structure",
+                "size": "test_structure",
+                "structure_tier": 0,
+                "reinforce_cycles": 1,
+                "security": "high",
+                "shipyard": [],
+                "produces": {}
+                }
+            }
         })
 
         self.assertEqual([schema.name for schema in library.ordered_ship_data],
-            ["rifter", "stabber", "tempest"])
+            ["rifter", "stabber", "tempest", "test_starting_structure"])

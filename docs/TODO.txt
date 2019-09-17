@@ -1,4 +1,4 @@
-nosetests --with-coverage --cover-package=IdleISS --cover-html
+nosetests --with-coverage --cover-package=idleiss --cover-html
 
 Brand New Player Steps:
 Find Highsec system
@@ -21,6 +21,24 @@ Find Highsec system
     Late
     Construct large engineering complexes for supercapital ships
     Construct large citadels to hold control of ICH
+
+Structure Tier:
+0------
+Astrahaus
+1------
+ICH
+Ritaru
+Athanor
+2------
+Azbel
+Tatara
+3------
+Fortizar
+4------
+Sotiyo
+5------
+Keepstar
+------
 
  - Player Interaction
     Uses point system

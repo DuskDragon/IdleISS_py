@@ -150,17 +150,22 @@ class CoreTestCase(TestCase):
         # update for 10 seconds
         engine.update_world(active_list=user_list, timestamp=11)
         # inspect user1 and print all properties
-        expected_string = """inspect:
+        starting_system_name = engine.users["user1"].starting_system.name
+        # formatting of a dict in a string is a mess so here is a bad workaround:
+        sources_string = r"{'"+f"{starting_system_name}"+r"': {'test_starting_structure': [0, 0, 0]}}"
+        expected_string = f"""inspect:
 id: user1
-fleet: {}
+fleet: {{}}
 resources: [10, 10, 10]
 \tincome: [1, 1, 1]
-\tsources: {}
+\tsources: {sources_string}
 in_userlist: True
 join_time: 1
 leave_time = -1
 total_time = 10
-last_payout = 11"""
+last_payout = 11
+starting_system = {starting_system_name}
+"""
         self.assertEqual(expected_string,engine.inspect_user("user1"))
 
     # def test_handle_incoming_thread_disaster(self):
