@@ -52,12 +52,10 @@ class GameEngine(object):
 
     def _register_new_user(self, user_id):
         rand = self.universe.rand
-        # TODO: select starting system
         starting_region = rand.choice(self.universe.highsec_regions)
         starting_constellation = rand.choice(starting_region.constellations)
         starting_system = rand.choice(starting_constellation.systems)
         self.users[user_id] = user = User(user_id, starting_system)
-        # TODO: build first structure for starting income
         user.construct_starting_structure(self.library.starting_structure)
         # TODO: register user in control system to generate events
 
@@ -101,6 +99,12 @@ class GameEngine(object):
         if username not in self.users:
             return "error: no such user"
         return self.users[username].inspect()
+
+    def info_system(self, system_name):
+        for system in self.universe.systems:
+            if system_name == system.name:
+                return system.inspect()
+        return "error: no such system"
 
     def update_world(self, active_list, timestamp):
         """

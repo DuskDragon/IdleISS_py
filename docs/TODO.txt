@@ -23,10 +23,11 @@ Find Highsec system
     Construct large citadels to hold control of ICH
 
 Structure Tier:
+-1-----
+ICH (if not highsec)
 0------
 Astrahaus
 1------
-ICH
 Ritaru
 Athanor
 2------

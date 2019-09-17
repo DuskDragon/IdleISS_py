@@ -20,6 +20,7 @@ class Interpreter(object):
         self.add_parser([r"add\s+(?P<username>.*)\s*$"], self.add_user, "add <username>")
         self.add_parser([r"inc_time\s+(?P<duration>.*)\s*$"], self.increment_time, "inc_time <length>")
         self.add_parser([f"inspect\s+(?P<username>.*)\s*$"], self.inspect, "inspect <username>")
+        self.add_parser([f"info\s+(?P<system_name>.*)\s*$"], self.info, "info <system_name>")
 
     def add_parser(self, phrases, callback, help_text):
         self.parser_command_list += f", {help_text}"
@@ -67,6 +68,12 @@ class Interpreter(object):
             return "error: use init first"
         username = match.group("username")
         return self.engine.inspect_user(username)
+
+    def info(self, match):
+        if not self.is_started:
+            return "error: use init first"
+        system_name = match.group("system_name")
+        return self.engine.info_system(system_name)
 
     def run(self, preload_file=None, logs_enabled=False):
         if logs_enabled:

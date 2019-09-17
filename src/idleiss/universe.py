@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 class SolarSystem(object):
     def __init__(self, random_state, universe, security, name, const, region):
         if universe.name_exists(name):
-            raise ValueError(f"SolarSystem __init__: {name} already exists")
+            raise ValueError(f"idleiss.universe.SolarSystem __init__: {name} already exists")
         self.name = name
         universe.register_name(self.name)
 
@@ -22,12 +22,35 @@ class SolarSystem(object):
         self.flooded = False
         self.cap_flooded = False
         self.owned_by = None
+        self.structures = {}
+        # structures are stored by 'user.id': [structure1, structure2, structure3]
 
     def __str__(self):
         connections_str = ""
         for x in self.connections:
             connections_str += " " + str(x.name)
         return f"idleiss.universe.SolarSystem: {self.name}\tConnections:{connections_str}"
+
+    def inspect(self):
+        connection_list = ''
+        for connection in self.connections:
+            connection_list += (connection.name + ' ')
+        output_str = f"""inspect:
+name: {self.name}
+constellation: {self.constellation}
+region: {self.region}
+entitytype: {self.entitytype}
+bordertype: {self.bordertype}
+security: {self.security}
+connections: {connection_list}
+cap connections: {self.cap_connections}
+id: {self.id}
+flooded: {self.flooded}
+cap flooded: {self.cap_flooded}
+owned by: {self.owned_by}
+structures: {self.structures}
+"""
+        return output_str
 
     def connection_exists(self, entity):
         return entity in self.connections
@@ -43,6 +66,16 @@ class SolarSystem(object):
             system.cap_connections.append(self)
             self.cap_connections.append(system)
         return True # connection added
+
+    def add_structure(self, user_id, structure):
+        if structure['name'] in self.structures.get(user_id, []):
+            raise ValueError(f"idleiss.universe.SolarSystem.add_structure: {structure['name']} already built for {user_id} in {self.name}")
+        if self.security != 'High':
+            if self.owned_by != user_id:
+                raise ValueError(f"idleiss.universe.SolarSystem.add_structure: {structure['name']} cannot be built for {user_id} as {self.name} is owned by {self.owned_by}")
+        temp = self.structures.get(user_id, [])
+        temp.append(structure['name'])
+        self.structures[user_id] = temp
 
 class Constellation(object):
     def __init__(self, random_state, universe, systems, security, name, region):

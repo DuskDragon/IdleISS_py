@@ -6,4 +6,6 @@ inspect test2
 inc_time 1
 inspect test
 inspect test2
+info Ameinaka
+info Misneden
 e
