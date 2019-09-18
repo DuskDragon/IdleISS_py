@@ -8,4 +8,5 @@ inspect test
 inspect test2
 info Ameinaka
 info Misneden
+inc_time 1
 e

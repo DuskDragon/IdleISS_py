@@ -35,6 +35,9 @@ class SolarSystem(object):
         connection_list = ''
         for connection in self.connections:
             connection_list += (connection.name + ' ')
+        cap_connection_list = ''
+        for connection in self.cap_connections:
+            cap_connection_list += (connection.name + ' ')
         output_str = f"""inspect:
 name: {self.name}
 constellation: {self.constellation}
@@ -43,7 +46,7 @@ entitytype: {self.entitytype}
 bordertype: {self.bordertype}
 security: {self.security}
 connections: {connection_list}
-cap connections: {self.cap_connections}
+cap connections: {cap_connection_list}
 id: {self.id}
 flooded: {self.flooded}
 cap flooded: {self.cap_flooded}

@@ -31,7 +31,8 @@ class ShipLibraryMock(ShipLibrary):
             },
             "structures": {
                 "test_starting_structure": {
-                    "structure_tier": 0
+                    "structure_tier": 0,
+                    "sov_structure": True
                 }
             }
         }

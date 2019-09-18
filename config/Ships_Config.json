@@ -8,6 +8,7 @@
         "carrier": 1350,
         "dreadnaught": 2500,
         "titan": 3000,
+        "small structure": 4000,
         "medium structure": 5000,
         "large structure": 10000,
         "extra large structure": 20000
@@ -72,6 +73,7 @@
         "dreadnaught",
         "supercarrier",
         "titan",
+        "small structure",
         "medium structure",
         "large structure",
         "extra large structure",
@@ -156,6 +158,27 @@
         }
     },
     "structures": {
+        "Infrastructure Control Hub": {
+            "hullclass": "small structure",
+            "sortclass": "small structure",
+            "size": "small structure",
+            "shield": 150000,
+            "armor": 150000,
+            "hull": 150000,
+            "weapons": [],
+            "produces": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            },
+            "reinforce_cycles": 0,
+            "structure_tier": -1,
+            "shipyard": [],
+            "security": "low",
+            "sensor_strength": 1,
+            "ecm_immune": true,
+            "sov_structure": true
+        },
         "Astrahaus": {
             "hullclass": "medium structure",
             "sortclass": "medium structure",
@@ -220,7 +243,8 @@
             ],
             "security": "high",
             "sensor_strength": 1,
-            "ecm_immune": true
+            "ecm_immune": true,
+            "sov_structure": false
         },
         "Fortizar": {
             "hullclass": "large structure",
@@ -286,7 +310,8 @@
             ],
             "security": "low",
             "sensor_strength": 1,
-            "ecm_immune": true
+            "ecm_immune": true,
+            "sov_structure": false
         },
         "Keepstar": {
             "hullclass": "extra large structure",
@@ -352,7 +377,8 @@
             ],
             "security": "null",
             "sensor_strength": 1,
-            "ecm_immune": true
+            "ecm_immune": true,
+            "sov_structure": false
         },
         "Raitaru": {
             "hullclass": "medium structure",
@@ -431,7 +457,8 @@
             ],
             "security": "high",
             "sensor_strength": 1,
-            "ecm_immune": true
+            "ecm_immune": true,
+            "sov_structure": false
         },
         "Azbel": {
             "hullclass": "large structure",
@@ -533,7 +560,8 @@
             ],
             "security": "low",
             "sensor_strength": 1,
-            "ecm_immune": true
+            "ecm_immune": true,
+            "sov_structure": false
         },
         "Sotiyo": {
             "hullclass": "extra large structure",
@@ -635,7 +663,8 @@
             ],
             "security": "null",
             "sensor_strength": 1,
-            "ecm_immune": true
+            "ecm_immune": true,
+            "sov_structure": false
         },
         "Athanor": {
             "hullclass": "medium structure",
@@ -680,7 +709,8 @@
             "shipyard": [],
             "security": "high",
             "sensor_strength": 1,
-            "ecm_immune": true
+            "ecm_immune": true,
+            "sov_structure": false
         },
         "Tatara": {
             "hullclass": "large structure",
@@ -725,7 +755,8 @@
             "shipyard": [],
             "security": "low",
             "sensor_strength": 1,
-            "ecm_immune": true
+            "ecm_immune": true,
+            "sov_structure": false
         }
     }
 }

@@ -120,7 +120,8 @@ class FleetLibraryTestCase(TestCase):
                     "structure_tier": 0,
                     "shipyard": [],
                     "sensor_strength": 1,
-                    "security": "high"
+                    "security": "high",
+                    "sov_structure": True
                 },
             },
         })
@@ -217,7 +218,8 @@ class FleetLibraryTestCase(TestCase):
                 "reinforce_cycles": 1,
                 "security": "high",
                 "shipyard": [],
-                "produces": {}
+                "produces": {},
+                "sov_structure": True
                 }
             }
         })

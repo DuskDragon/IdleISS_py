@@ -5,7 +5,7 @@ import json
 ship_schema_fields = ["hullclass", "shield", "armor", "hull", "weapons", "size", "sensor_strength",]
 ship_schema_optional_fields = ["buffs", "debuffs", "sortclass", "is_structure", "ecm_immune"]
 
-structure_schema_fields = ["produces", "reinforce_cycles", "structure_tier", "shipyard", "security"]
+structure_schema_fields = ["produces", "reinforce_cycles", "structure_tier", "shipyard", "security", "sov_structure"]
 
 buff_effects = ["local_shield_repair", "local_armor_repair",
     "remote_shield_repair", "remote_armor_repair",]
@@ -80,6 +80,7 @@ class ShipLibrary(object):
 
     def _load(self, raw_data):
         self.starting_structure = None
+        self.sov_structure = None
         missing = self._check_missing_keys("", raw_data)
         if missing:
             raise ValueError(", ".join(missing) + " not found")
@@ -109,6 +110,14 @@ class ShipLibrary(object):
                     self.starting_structure = raw_data["structures"][structure_name]
                 else:
                     raise ValueError(f"{structure_name}: second structure with 'structure_tier' = 0 found, only one starting structure can exist")
+        # verify that only one sov_structure exists ("sov_structure" = true)
+        for structure_name, data in raw_data["structures"].items():
+            if data.get("sov_structure", False) == True:
+                if self.sov_structure == None:
+                    self.sov_structure = raw_data["structures"][structure_name]
+                else:
+                    raise ValueError(f"{structure_name}: second structure with 'sov_structure' = true found, only one sov_structure can exist")
+
         # tag all structures as structures before merging into ships:
         for structure_name, data in raw_data["structures"].items():
             data["is_structure"] = True

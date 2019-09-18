@@ -139,7 +139,8 @@
                 "money": 0,
                 "basic_materials": 0,
                 "advanced_materials": 0
-            }
+            },
+            "sov_structure": true
         }
     }
 }

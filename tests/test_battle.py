@@ -375,7 +375,8 @@ class ShipLibraryMock(ShipLibrary):
                     "reinforce_cycles": 1,
                     "security": "high",
                     "shipyard": [],
-                    "produces": {}
+                    "produces": {},
+                    "sov_structure": True
                 }
             }
         })
@@ -549,7 +550,8 @@ class ShipLibraryOrderMock(ShipLibrary):
                     "reinforce_cycles": 1,
                     "security": "high",
                     "shipyard": [],
-                    "produces": {}
+                    "produces": {},
+                    "sov_structure": True
                 }
             }
         })

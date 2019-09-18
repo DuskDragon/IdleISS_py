@@ -72,23 +72,27 @@ starting_system = {self.starting_system.name}
     def construct_citadel(self, system, structure):
         if self.has_structure(system, structure):
             raise ValueError(f"idleiss.user.User.construct_citadel: {structure['name']} already built for {self.id} in {system.name}")
-        if system.security != 'High':
-            if not self.init_conquer_new_system(system):
-                raise ValueError(f"")
         system_name = system.name
         structure_name = structure['name']
         money_income = structure['produces']['money']
         basic_income = structure['produces']['basic_materials']
         adv_income = structure['produces']['advanced_materials']
+        # update user
         self.resources.add_income_source(system_name, structure_name, basic_income, adv_income, money_income)
+        # update system
         system.add_structure(self.id, structure)
 
-    def init_conquer_new_system(self, system):
+    def conquer_new_system(self, system, structure):
         """
         Construct an Infrastructure Control Hub which can be placed in an unclaimed system
         consumes Structure Gantry
         """
-        pass
+        if not structure['sov_structure']:
+            raise ValueError(f"idleiss.user.User.conquer_new_system: {self.id}: {structure['name']} is not a sov_structure")
+        if system.owned_by != None:
+            raise ValueError(f"idleiss.user.User.conquer_new_system: {user.id}: {system.name} is not free to be conquered")
+        system.owned_by = self.id
+        self.construct_citadel(system, structure)
 
     def construct_drilling_platform(self):
         """
