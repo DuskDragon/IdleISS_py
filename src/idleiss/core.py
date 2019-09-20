@@ -35,7 +35,7 @@ class GameEngine(object):
             # current time and not earlier.  We check that the engine hasn't
             # processed any timestamp older relative to world_timestamp.
             # If the timestamp is in the past then we force to world_timestamp
-            kw["timestamp"] = max(kw["timestamp"], self.world_timestamp)
+            kw["timestamp"] = max(kw.get("timestamp",0), self.world_timestamp)
             # this means that events can only occur between ticks and if an
             # event occurs past the next tick we can safely ignore it until
             # the tick where it would "occur". This is very useful since
@@ -126,6 +126,9 @@ class GameEngine(object):
                 return system.inspect()
         return "error: no such system"
 
+    def _sort_engine_events(self):
+        self._engine_events.sort(key=(lambda x:(x.kw["timestamp"])))
+
     def update_world(self, active_list, timestamp):
         """
         update_world will be the one point of intersection as far as data
@@ -141,16 +144,23 @@ class GameEngine(object):
             # can't go back in time for now.
             raise TimeOutofBounds("already processed this timestamp")
 
-        time_diff = timestamp - self.world_timestamp
+        self._sort_engine_events()
+        # update_world seporated from _update_world in order to only sort the event list once
+        event_results = self._update_world(timestamp)
+        # only update user list after we update the worldstate
+        self._update_user_list(active_list, timestamp)
+        return event_results
 
+    def _update_world(self, timestamp):
         event_results = []
 
-        # give the _engine_events a fresh start and grab everything that
-        # has happened so far that needed our immediate attention.
-        # XXX this is also probably not thread safe...  we fix this later.
-        self._engine_events, engine_events = [], self._engine_events
-        for engine_event in engine_events:
-            event_results.append(engine_event())
+        # recursive magic to hit each event in the future as queued
+        if len(self._engine_events) > 0:
+            # evaulate that event as if it happened at that timestamp if
+            # it's between self.world_timestamp and our new eval target
+            if self._engine_events[0].kw["timestamp"] < timestamp:
+                next_event_timestamp = self._engine_events[0].kw["timestamp"]
+                event_results.extend(self._update_world(next_event_timestamp))
 
         #### Pay Resources and Update total_idle_time
         for user_id in self.users:
@@ -166,6 +176,15 @@ class GameEngine(object):
             #### Produce Units
             #### Other Events?
 
-        self._update_user_list(active_list, timestamp)
+        time_diff = timestamp - self.world_timestamp
+        engine_events = self._engine_events.copy()
+        for engine_event in engine_events:
+            # we know the engine_events are sorted so as soon as we hit one in the future, eject
+            if engine_event.kw["timestamp"] > timestamp:
+                break
+            else: # if not a future event, process it
+                event_results.append(f"{self.world_timestamp}: {engine_event()}")
+                self._engine_events.remove(engine_event)
+
         self.world_timestamp = timestamp
         return event_results
