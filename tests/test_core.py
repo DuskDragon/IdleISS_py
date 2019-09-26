@@ -115,7 +115,7 @@ class CoreTestCase(TestCase):
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
         engine._add_event(some_event, name="foo")
         self.assertEqual(engine._engine_events[0].func, some_event)
-        self.assertEqual(engine._engine_events[0].kw, {"name": "foo"})
+        self.assertEqual(engine._engine_events[0].kw["name"], "foo")
 
     def test_event_engine_backwards_in_time(self):
         def time_dependent_event(timestamp):
@@ -167,6 +167,25 @@ last_payout = 11
 starting_system = {starting_system_name}
 """
         self.assertEqual(expected_string,engine.inspect_user("user1"))
+
+    def test_events_occur_in_order(self):
+        def func_a(timestamp):
+            return 'a'
+        def func_b(timestamp):
+            return 'b'
+        def func_c(timestamp):
+            return 'c'
+        def func_d(timestamp):
+            return 'd'
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        user_list = set(["user1", "user2"])
+        engine.update_world(active_list=user_list, timestamp=1)
+        engine._add_event(func_a, timestamp=2)
+        engine._add_event(func_b, timestamp=3)
+        engine._add_event(func_c, timestamp=4)
+        engine._add_event(func_d, timestamp=5)
+        expected_val = ['2: a','3: b', '4: c', '5: d']
+        self.assertEqual(expected_val, engine.update_world(active_list=user_list, timestamp=5))
 
     # def test_handle_incoming_thread_disaster(self):
         # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))

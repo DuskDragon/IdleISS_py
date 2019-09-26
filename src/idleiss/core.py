@@ -29,24 +29,21 @@ class GameEngine(object):
         self._engine_events = []
 
     def _add_event(self, event_type, **kw):
-        if "timestamp" in kw:
-            # this is a bit of a magic as we assume that any keyword
-            # arguments that are called `timestamp` relates to the
-            # current time and not earlier.  We check that the engine hasn't
-            # processed any timestamp older relative to world_timestamp.
-            # If the timestamp is in the past then we force to world_timestamp
-            kw["timestamp"] = max(kw.get("timestamp",0), self.world_timestamp)
-            # this means that events can only occur between ticks and if an
-            # event occurs past the next tick we can safely ignore it until
-            # the tick where it would "occur". This is very useful since
-            # it allows us to schedule future events by simpily placing them
-            # into this queue. Hopefully this does not lead to a queue
-            # which is overly large and stuffed full of future events
-
-            # it may be a good idea to sort the queue once all
-            # the events that are scheduled for this tick have been called
+        # this is a bit of a magic as we assume that any keyword
+        # arguments that are called `timestamp` relates to the
+        # current time and not earlier.  We check that the engine hasn't
+        # processed any timestamp older relative to world_timestamp.
+        # If the timestamp is in the past then we force to world_timestamp
+        kw["timestamp"] = max(kw.get("timestamp",0), self.world_timestamp)
+        # this means that events can only occur between ticks and if an
+        # event occurs past the next tick we can safely ignore it until
+        # the tick where it would "occur". This is very useful since
+        # it allows us to schedule future events by simpily placing them
+        # into this queue. Hopefully this does not lead to a queue
+        # which is overly large and stuffed full of future events
 
         self._engine_events.append(GameEngineEvent(event_type, **kw))
+        self._sort_engine_events()
 
     def _global_message(self, msg, timestamp):
         return msg
@@ -54,7 +51,7 @@ class GameEngine(object):
     def _debug_message(self, msg, timestamp):
         pass
 
-    def _register_new_user(self, user_id):
+    def _register_new_user(self, user_id, timestamp):
         rand = self.universe.rand
         starting_region = rand.choice(self.universe.highsec_regions)
         starting_constellation = rand.choice(starting_region.constellations)
@@ -64,8 +61,8 @@ class GameEngine(object):
         structure = self.library.starting_structure
         system = starting_system
         # announce new user has entered the game
-        message = f"{user.id} has constructed their first structure, an {structure['name']} in {system.name}. Their journey in the universe begins here."
-        self._add_event(self._global_message, msg=message, timestamp=self.world_timestamp)
+        message = f"{timestamp}: {user.id} has constructed their first structure, an {structure['name']} in {system.name}. Their journey in the universe begins here."
+        return [message]
         # TODO: register user in control system to generate events
 
     def _construct_structure(self, user, system, structure):
@@ -91,29 +88,39 @@ class GameEngine(object):
             message = f"{system.name} has been conquered by {user.id} with the construction of a {structure['name']}"
         else:
             message = f"{user.id} has constructed a new {structure['name']} in {system.name}"
-        self._add_event(self._global_message, msg=message, timestamp=self.world_timestamp)
+        return [message]
 
     def _user_joined(self, user_id, timestamp):
+        messages = []
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
-            self._register_new_user(user_id)
+            messages.extend(self._register_new_user(user_id, timestamp))
 
         self.users[user_id].join(timestamp)
+        return messages
 
     def _user_left(self, user_id, timestamp):
+        messages = []
         if user_id not in self.users:
-            return
+            return messages
         self.users[user_id].leave(timestamp)
+        return messages
 
     def _update_user_list(self, active_list, timestamp):
+        messages = []
         for member in self.current_channel_list:
             if member not in active_list:
-                self._user_left(member, timestamp)
+                temp = self._user_left(member, timestamp)
+                if temp != None and temp != []:
+                    messages.extend(temp)
         for member in active_list:
             if member not in self.current_channel_list:
-                self._user_joined(member, timestamp)
+                temp = self._user_joined(member, timestamp)
+                if temp != None and temp != []:
+                    messages.extend(temp)
 
         self.current_channel_list = set(active_list)
+        return messages
 
     def inspect_user(self, username):
         if username not in self.users:
@@ -141,14 +148,12 @@ class GameEngine(object):
         if timestamp == self.world_timestamp:
             return []
         if timestamp < self.world_timestamp:
-            # can't go back in time for now.
+            # can't go back in time.
             raise TimeOutofBounds("already processed this timestamp")
 
-        self._sort_engine_events()
-        # update_world seporated from _update_world in order to only sort the event list once
         event_results = self._update_world(timestamp)
         # only update user list after we update the worldstate
-        self._update_user_list(active_list, timestamp)
+        event_results.extend(self._update_user_list(active_list, timestamp))
         return event_results
 
     def _update_world(self, timestamp):
@@ -158,7 +163,7 @@ class GameEngine(object):
         if len(self._engine_events) > 0:
             # evaulate that event as if it happened at that timestamp if
             # it's between self.world_timestamp and our new eval target
-            if self._engine_events[0].kw["timestamp"] < timestamp:
+            while self._engine_events[0].kw["timestamp"] < timestamp:
                 next_event_timestamp = self._engine_events[0].kw["timestamp"]
                 event_results.extend(self._update_world(next_event_timestamp))
 
@@ -183,7 +188,9 @@ class GameEngine(object):
             if engine_event.kw["timestamp"] > timestamp:
                 break
             else: # if not a future event, process it
-                event_results.append(f"{self.world_timestamp}: {engine_event()}")
+                result = engine_event()
+                if result != None and result != '':
+                    event_results.append(f"{timestamp}: {result}")
                 self._engine_events.remove(engine_event)
 
         self.world_timestamp = timestamp

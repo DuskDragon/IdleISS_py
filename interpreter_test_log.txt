@@ -1,12 +1,13 @@
-add test
+add test1
 add test2
 init
-inspect test
+inspect test1
 inspect test2
 inc_time 1
-inspect test
+inspect test1
 inspect test2
 info Ameinaka
 info Misneden
+add test3
 inc_time 1
 e
