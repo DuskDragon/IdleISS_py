@@ -11,6 +11,102 @@ class TimeOutofBounds(Exception):
         return repr(self.value)
 
 
+class MessageManager(object):
+    valid_types = ['broadcast', 'debug', 'admin']
+    container_order = ['time', 'mess_type', 'message']
+    def __init__(self, message=None, mess_type=None, time=None):
+        self.container = []
+        if message == None or mess_type == None or time == None:
+            return
+        if mess_type not in self.valid_types:
+            raise ValueError(f"MessageManager: passed an invalid message type: {mess_type}")
+        if message != None and message != '':
+            self.container.append([time, mess_type, message])
+
+    def extend(self, messages):
+        if type(messages) != type(self):
+            raise ValueError(f"MessageManager.extend: passed a non-MessageManager object")
+        self.container.extend(messages.container)
+
+    def append(self, message, mess_type, time):
+        if mess_type not in self.valid_types:
+            raise ValueError(f"MessageManager.append: passed an invalid message type: {mess_type}")
+        if message != None and message != '':
+            self.container.append([time, mess_type, message])
+
+    def append(self, engine_event, timestamp):
+        if type(engine_event) != GameEngineEvent:
+            raise ValueError(f"MessageManager.append: passed a non-engine_event")
+        mess_type = engine_event.kw.get('message_type', 'broadcast')
+        self.container.append([timestamp, mess_type, engine_event()])
+
+    @staticmethod
+    def human_time_diff(time):
+        if time == 0:
+            return ''
+        suffix = "ago: "
+        if time < 0:
+            suffix = "in the future: "
+            time = time * -1
+        if time < 90:
+            return f"{time}s {suffix}"
+        if time < 90*60:
+            return f"{int(time/60)}m {suffix}"
+        if time < 36*60*60:
+            return f"{int(time/60/60)}h {suffix}"
+        else:
+            return f"{int(time/60/60/24)}d {suffix}"
+
+    def get_broadcasts_with_time_diff(self, time):
+        messages = []
+        for mes in self.container:
+            time_diff = time - mes[0]
+            temp = f"{self.human_time_diff(time_diff)}{mes[2]}"
+            messages.append(temp)
+        return messages
+
+    @property
+    def is_empty(self):
+        if self.container == []:
+            return True
+        else:
+            return False
+
+    @property
+    def broadcasts(self):
+        messages = []
+        for mes in self.container:
+            if mes[1] == 'broadcast':
+                messages.append(mes[2])
+        return messages
+
+    @property
+    def debug(self):
+        messages = [None] * len(self.container)
+        for mes in self.container:
+            temp = f"{mes[0]}: {mes[1]}: {mes[2]}"
+            messages.append(temp)
+        return messages
+
+    @property
+    def admin(self):
+        messages = []
+        for mes in self.container:
+            if mes[1] == 'admin':
+                temp = f"{mes[0]}: {mes[2]}"
+                messages.append(temp)
+        return messages
+
+    @property
+    def broadcasts_with_times(self):
+        messages = []
+        for mes in self.container:
+            if mes[1] == 'broadcast':
+                temp = f"{mes[0]}: {mes[2]}"
+                messages.append(temp)
+        return messages
+
+
 class GameEngine(object):
 
     def __init__(self, universe_filename, library_filename):
@@ -45,12 +141,6 @@ class GameEngine(object):
         self._engine_events.append(GameEngineEvent(event_type, **kw))
         self._sort_engine_events()
 
-    def _global_message(self, msg, timestamp):
-        return msg
-
-    def _debug_message(self, msg, timestamp):
-        pass
-
     def _register_new_user(self, user_id, timestamp):
         rand = self.universe.rand
         starting_region = rand.choice(self.universe.highsec_regions)
@@ -61,8 +151,8 @@ class GameEngine(object):
         structure = self.library.starting_structure
         system = starting_system
         # announce new user has entered the game
-        message = f"{timestamp}: {user.id} has constructed their first structure, an {structure['name']} in {system.name}. Their journey in the universe begins here."
-        return [message]
+        message = f"{user.id} has constructed their first structure, an {structure['name']} in {system.name}. Their journey in the universe begins here."
+        return MessageManager(message, 'broadcast', timestamp)
         # TODO: register user in control system to generate events
 
     def _construct_structure(self, user, system, structure):
@@ -88,10 +178,10 @@ class GameEngine(object):
             message = f"{system.name} has been conquered by {user.id} with the construction of a {structure['name']}"
         else:
             message = f"{user.id} has constructed a new {structure['name']} in {system.name}"
-        return [message]
+        return MessageManager(message, 'broadcast', timestamp)
 
     def _user_joined(self, user_id, timestamp):
-        messages = []
+        messages = MessageManager()
         if user_id not in self.users:
             # create a user if that user_id is never seen before.
             messages.extend(self._register_new_user(user_id, timestamp))
@@ -100,24 +190,19 @@ class GameEngine(object):
         return messages
 
     def _user_left(self, user_id, timestamp):
-        messages = []
         if user_id not in self.users:
-            return messages
+            return MessageManager(f"{user_id} called _user_left without being added", 'debug', timestamp)
         self.users[user_id].leave(timestamp)
-        return messages
+        return MessageManager()
 
     def _update_user_list(self, active_list, timestamp):
-        messages = []
+        messages = MessageManager()
         for member in self.current_channel_list:
             if member not in active_list:
-                temp = self._user_left(member, timestamp)
-                if temp != None and temp != []:
-                    messages.extend(temp)
+                messages.extend(self._user_left(member, timestamp))
         for member in active_list:
             if member not in self.current_channel_list:
-                temp = self._user_joined(member, timestamp)
-                if temp != None and temp != []:
-                    messages.extend(temp)
+                messages.extend(self._user_joined(member, timestamp))
 
         self.current_channel_list = set(active_list)
         return messages
@@ -146,7 +231,7 @@ class GameEngine(object):
         (direct control by user may never be implemented, but may be automatic)
         """
         if timestamp == self.world_timestamp:
-            return []
+            return MessageManager()
         if timestamp < self.world_timestamp:
             # can't go back in time.
             raise TimeOutofBounds("already processed this timestamp")
@@ -157,7 +242,7 @@ class GameEngine(object):
         return event_results
 
     def _update_world(self, timestamp):
-        event_results = []
+        event_results = MessageManager()
 
         # recursive magic to hit each event in the future as queued
         if len(self._engine_events) > 0:
@@ -188,9 +273,7 @@ class GameEngine(object):
             if engine_event.kw["timestamp"] > timestamp:
                 break
             else: # if not a future event, process it
-                result = engine_event()
-                if result != None and result != '':
-                    event_results.append(f"{timestamp}: {result}")
+                event_results.append(engine_event, timestamp)
                 self._engine_events.remove(engine_event)
 
         self.world_timestamp = timestamp

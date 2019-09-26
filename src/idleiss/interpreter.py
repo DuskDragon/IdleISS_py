@@ -43,7 +43,8 @@ class Interpreter(object):
         if self.is_started:
             return "error: init already done"
         self.is_started = True
-        return f"core started: events:\n{self.engine.update_world(self.userlist, self.current_time)}"
+        mes_manager = self.engine.update_world(self.userlist, self.current_time)
+        return f"core started: events:\n{mes_manager.get_broadcasts_with_time_diff(self.current_time)}"
 
     def add_user(self, match):
         username = match.group("username")
@@ -60,8 +61,9 @@ class Interpreter(object):
         if duration < 1:
             return "error: duration must be positive integer"
         self.current_time += duration
+        mes_manager = self.engine.update_world(self.userlist, self.current_time)
         return f"time incremented by {duration} to {self.current_time}, " \
-               f"events:\n{self.engine.update_world(self.userlist, self.current_time)}"
+               f"events:\n{mes_manager.get_broadcasts_with_time_diff(self.current_time)}"
 
     def inspect(self, match):
         if not self.is_started:

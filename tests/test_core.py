@@ -185,7 +185,8 @@ starting_system = {starting_system_name}
         engine._add_event(func_c, timestamp=4)
         engine._add_event(func_d, timestamp=5)
         expected_val = ['2: a','3: b', '4: c', '5: d']
-        self.assertEqual(expected_val, engine.update_world(active_list=user_list, timestamp=5))
+        mes_manager = engine.update_world(active_list=user_list, timestamp=5)
+        self.assertEqual(expected_val, mes_manager.broadcasts_with_times)
 
     # def test_handle_incoming_thread_disaster(self):
         # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
