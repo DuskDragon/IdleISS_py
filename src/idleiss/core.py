@@ -141,12 +141,50 @@ class GameEngine(object):
         self._engine_events.append(GameEngineEvent(event_type, **kw))
         self._sort_engine_events()
 
+    def _can_construct_structure(self, user, system, structure):
+        """
+        verify that a user can construct a structure in a system
+            structures can not be built multiple times in the same system
+            highsec can have multiple users' structures
+            low and null can only have one user's structures
+            structures can only be built in order of tier unless their tiers are below 0
+        """
+        # for highsec systems the system can not be owned, the structures are
+        # still limited to only one of each per user.
+        if user.has_structure(system, structure):
+            return (False, "duplicate", f"{user.id} already owns a {structure['name']} in {system.name}")
+        if system.security != "High":
+            # for low and nullsec systems the system must be owned
+            if system.owned_by == None:
+                # system can be conquered
+                if structure['sov_structure']:
+                    # conquering structure:
+                    return (True, "")
+            # if not sov granting structure:
+            if system.owned_by != user.id:
+                return (False, "unowned", f"{user.id} does not own the system {system.name}")
+        # verify that structures are being built in order
+        # structures of tier higher than 0 must be built in order
+        if structure['structure_tier'] > 0:
+            struct_list = system.structures[user.id]
+            tier_list = []
+            for struct in struct_list:
+                if type(struct['structure_tier']) == int:
+                    tier_list.append(struct['structure_tier'])
+                for num in range(1,structure['structure_tier']):
+                    if num not in tier_list:
+                        return (False, "order" f"{user.id} does not have the prerequisite buildings in {system.name}")
+        return (True, "")
+
     def _register_new_user(self, user_id, timestamp):
         rand = self.universe.rand
         starting_region = rand.choice(self.universe.highsec_regions)
         starting_constellation = rand.choice(starting_region.constellations)
         starting_system = rand.choice(starting_constellation.systems)
         self.users[user_id] = user = User(user_id, starting_system)
+        can_build = self._can_construct_structure(user, starting_system, self.library.starting_structure)
+        if not can_build[0]:
+            raise ValueError(can_build[2])
         user.construct_starting_structure(self.library.starting_structure)
         structure = self.library.starting_structure
         system = starting_system
@@ -157,22 +195,11 @@ class GameEngine(object):
 
     def _construct_structure(self, user, system, structure):
         new_conquered_system = False
-        # for highsec systems the system can not be owned, the structures are
-        # still limited to only one of each per user.
-        if user.has_structure(system, structure):
-            raise ValueError(f"{user.id} already owns a {structure['name']} in {system.name}")
-        if system.security != "High":
-            # for low and nullsec systems the system must be owned
-            if system.owned_by == None:
-                # system can be conquered
-                if structure['sov_structure']:
-                    # conquering structure:
-                    user.conquer_new_system(system, structure)
-                    new_conquered_system = True
-            # if not sov granting structure:
-            if system.owned_by != user.id:
-                raise ValueError(f"{user.id} does not own the system {system.name}")
-        user.construct_citadel(system, structure)
+        can_build = self._can_construct_structure(user, system, structure)
+        if can_build[0]:
+            user.construct_citadel(system, structure)
+        else:
+            raise ValueError(can_build[2])
         message = ''
         if new_conquered_system:
             message = f"{system.name} has been conquered by {user.id} with the construction of a {structure['name']}"
