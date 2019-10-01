@@ -67,11 +67,11 @@ starting_system = {self.starting_system.name}
         Construct a starting structure in the starting system
         """
         system = self.starting_system
-        self.construct_citadel(system, structure)
+        self.construct_building(system, structure)
 
-    def construct_citadel(self, system, structure):
+    def construct_building(self, system, structure):
         if self.has_structure(system, structure):
-            raise ValueError(f"idleiss.user.User.construct_citadel: {structure['name']} already built for {self.id} in {system.name}")
+            raise ValueError(f"idleiss.user.User.construct_building: {structure['name']} already built for {self.id} in {system.name}")
         system_name = system.name
         structure_name = structure['name']
         money_income = structure['produces']['money']
@@ -93,17 +93,3 @@ starting_system = {self.starting_system.name}
             raise ValueError(f"idleiss.user.User.conquer_new_system: {user.id}: {system.name} is not free to be conquered")
         system.owned_by = self.id
         self.construct_citadel(system, structure)
-
-    def construct_drilling_platform(self):
-        """
-        Drilling Platforms will function as basic and advanced material generators,
-        consumes Structure Gantry
-        """
-        pass
-
-    def construct_engineering_complex(self):
-        """
-        Engineering Complexes will produce ships and structures,
-        consumes Structure Gantry
-        """
-        pass
