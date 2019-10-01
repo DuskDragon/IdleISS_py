@@ -14,22 +14,22 @@ example_fleet_fight = "config/Example_Fleet_Fight.json"
 
 def run():
     parser = argparse.ArgumentParser(description="IdleISS: The Internet Spaceships IdleRPG")
+    parser.add_argument("-o", "--log-interpreter", action="store_true", dest="interpreter_log_enable",
+        help="Enable interpreter logs for future playback. Logs are stored in interpreter_log.txt")
+    parser.add_argument("-q", "--quick", action="store_true", dest="quickrun",
+        help="Do not run the interpreter, only verify config files")
+    parser.add_argument("-m", "--gen-maps", action="store_true", dest="genmaps",
+        help="Generate the universe maps and put them in output/maps/ then exit")
     parser.add_argument("-u", "--universe", default=default_universe_config, dest="uniconfig", action="store", type=str,
         help=f"Set json universe settings file, if not provided the default {default_universe_config} will be used")
     parser.add_argument("-s", "--ships", default=default_ships_config, dest="shipsconfig", action="store", type=str,
         help=f"Set json ships settings file, if not provided the default {default_ships_config} will be used")
-    parser.add_argument("--gen-maps", action="store_true", dest="genmaps",
-        help="Generate the universe maps and put them in output/maps/ then exit")
-    parser.add_argument("--simulate-battle", default=None, dest="simbattle",
+    parser.add_argument("-b", "--simulate-battle", default=None, dest="simbattle",
         const=example_fleet_fight, nargs="?", action="store", type=str,
         help=f"Simulate a fleet fight between two fleets using a file and exit. Example file: {example_fleet_fight}")
-    parser.add_argument("-q", "--quick", action="store_true", dest="quickrun",
-        help="Do not run the interpreter, only verify config files")
-    parser.add_argument("--preload", dest="interpreter_preload", action="store", type=str,
+    parser.add_argument("-p", "--preload", dest="interpreter_preload", action="store", type=str,
         help="if the interpreter is executed then this file will be used as the initial commands before control is "
              "given to the user")
-    parser.add_argument("--log-interpreter", action="store_true", dest="interpreter_log_enable",
-        help="Enable interpreter logs for future playback. Logs are stored in interpreter_log.txt")
 
     one_shot_only = False
 
@@ -81,13 +81,10 @@ def run():
     if not one_shot_only and not args.quickrun:
         # execute interpreter
         interp = Interpreter(args.uniconfig, args.shipsconfig)
-        log_enable = False
-        if args.interpreter_log_enable:
-            log_enable = True
         if args.interpreter_preload:
-            interp.run(preload_file=args.interpreter_preload, logs_enabled=log_enable)
+            interp.run(preload_file=args.interpreter_preload, logs_enabled=args.interpreter_log_enable)
         else:
-            interp.run(logs_enabled=log_enable)
+            interp.run(logs_enabled=args.interpreter_log_enable)
 
     # one_shot_only is True or interpreter has exited
     print("\nIdleISS exiting")
