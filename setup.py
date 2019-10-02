@@ -5,6 +5,13 @@ version = '0.0.1'
 
 long_description = open('README.rst').read()
 
+def clean_lines(filename):
+    with open(filename) as fd:
+        return [line.strip() for line in fd.readlines()]
+
+requirements = clean_lines('requirements.txt')
+test_requirements = clean_lines('requirements-test.txt')
+
 setup(name='idleiss',
       version=version,
       description="Idle Internet Spaceships",
@@ -23,10 +30,8 @@ setup(name='idleiss',
       namespace_packages=[],
       include_package_data=True,
       zip_safe=False,
-      install_requires=[
-          'setuptools',
-          # -*- Extra requirements: -*-
-      ],
+      install_requires=requirements,
+      extras_require={'test': test_requirements},
       entry_points={
           'console_scripts': [
               'idleiss = idleiss.main:run',
