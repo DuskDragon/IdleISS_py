@@ -1,9 +1,25 @@
+REMINDER:
 nosetests --with-coverage --cover-package=idleiss --cover-html
 
-Brand New Player Steps:
-Find Highsec system
+TODO:
+    BUILDING PRODUCTION
+        setup future events to try to build buildings
+        add building production logic to user
+            setup 'modes'
+                economic
+                    produce structures
+                defensive
+                    produce fleets
+                offensive
+                    conquer systems
+    DEBRIS FIELD
+        add debris field generation to battle
+        add solar system support for debris field
+        implement cargosize on ships
+        develop fleet management system
+        allow dispaches to debris field
 
-
+DOCS:
  - Progression:
     Basic Income
 
@@ -62,6 +78,32 @@ Keepstar
             make most money
         No player protections
 
+ - Pilot simulation?
+    skill level, "effort", timezone, "morale", spies?, inventory?
+
+ - Security designation:
+        Manual?
+
+        Need to use NetworkX or graph-tool to find a "measure of center", then using a counting floodfill assign high, low, and null
+        Then update region names based on overall security of region
+        Then update constellation names based on region names (high, low, null)
+        Then update system names based on constellation names (high, low)
+        Keep null system names randomly generated
+
+ - Winning a universe round?
+    should IdleISS be perpetual? or run Monthly rounds?
+    Victory conditions?
+        Most Systems
+        Most Ships Killed
+        Most Resources/Points Killed
+        Most Resources/Points Efficient
+        Most Resources Acquired
+
+    Universe seed: (placeholder)
+
+42
+
+ARCHIVE:
  - Solar System Layout
     Universe config sanity check
         Check there are NO name collisions at all (constellations, regions, systems, etc)
@@ -80,28 +122,3 @@ Keepstar
         sparsely connect constellations within regions (1-2 per constellation, floodfill verified)
         sparsely connect regions within the universe (4 per region, floodfill verified)
         use graph-tool to draw universe map
-
-    security designation:
-        Manual?
-
-        Need to use NetworkX or graph-tool to find a "measure of center", then using a counting floodfill assign high, low, and null
-        Then update region names based on overall security of region
-        Then update constellation names based on region names (high, low, null)
-        Then update system names based on constellation names (high, low)
-        Keep null system names randomly generated
-
- - Pilot simulation?
-    skill level, "effort", timezone, "morale", spies?, inventory?
-
- - Winning a universe round?
-    should IdleISS be perpetual? or run Monthly rounds?
-    Victory conditions?
-        Most Systems
-        Most Ships Killed
-        Most Resources/Points Killed
-        Most Resources/Points Efficient
-        Most Resources Acquired
-
-    Universe seed: (placeholder)
-
-42
