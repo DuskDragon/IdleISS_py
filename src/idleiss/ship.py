@@ -2,7 +2,7 @@ from collections import namedtuple
 from os.path import join, dirname, abspath
 import json
 
-ship_schema_fields = ["hullclass", "shield", "armor", "hull", "weapons", "size", "sensor_strength",]
+ship_schema_fields = ["hullclass", "shield", "armor", "hull", "weapons", "size", "sensor_strength", "cost"]
 ship_schema_optional_fields = ["buffs", "debuffs", "sortclass", "is_structure", "ecm_immune"]
 
 structure_schema_fields = ["produces", "reinforce_cycles", "structure_tier", "shipyard", "security", "sov_structure"]
@@ -169,6 +169,12 @@ class ShipLibrary(object):
             updates["debuffs"] = _construct_tuple(ShipDebuffs, data.get("debuffs", {}))
 
             updates["name"] = ship_name
+
+            valid_cost_types = ["money", "basic_materials", "advanced_materials"]
+            # verify "cost" contains: money, basic_materials, and advanced_materials
+            for cost_type in valid_cost_types:
+                if data["cost"].get(cost_type, None) == None:
+                    raise ValueError(f"{ship_name} cost attribue does not contain {cost_type} attribute")
 
             # validation for weapon systems
             weapons_list = data["weapons"]

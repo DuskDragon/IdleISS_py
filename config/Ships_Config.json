@@ -98,6 +98,11 @@
             "size": "frigate",
             "buffs": {
                 "local_shield_repair": 10
+            },
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
             }
         },
         "Incursus": {
@@ -118,6 +123,11 @@
             "size": "frigate",
             "buffs": {
                 "local_shield_repair": 10
+            },
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
             }
         },
         "Maller": {
@@ -136,7 +146,12 @@
             ],
             "sensor_strength": 27,
             "size": "cruiser",
-            "buffs": {}
+            "buffs": {},
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Moa": {
             "hullclass": "brawler cruiser",
@@ -154,7 +169,12 @@
             ],
             "sensor_strength": 27,
             "size": "cruiser",
-            "buffs": {}
+            "buffs": {},
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         }
     },
     "structures": {
@@ -177,7 +197,12 @@
             "security": "low",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": true
+            "sov_structure": true,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Astrahaus": {
             "hullclass": "medium structure",
@@ -244,7 +269,12 @@
             "security": "high",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": false
+            "sov_structure": false,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Fortizar": {
             "hullclass": "large structure",
@@ -311,7 +341,12 @@
             "security": "low",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": false
+            "sov_structure": false,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Keepstar": {
             "hullclass": "extra large structure",
@@ -378,7 +413,12 @@
             "security": "null",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": false
+            "sov_structure": false,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Raitaru": {
             "hullclass": "medium structure",
@@ -458,7 +498,12 @@
             "security": "high",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": false
+            "sov_structure": false,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Azbel": {
             "hullclass": "large structure",
@@ -561,7 +606,12 @@
             "security": "low",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": false
+            "sov_structure": false,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Sotiyo": {
             "hullclass": "extra large structure",
@@ -664,7 +714,12 @@
             "security": "null",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": false
+            "sov_structure": false,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Athanor": {
             "hullclass": "medium structure",
@@ -710,7 +765,12 @@
             "security": "high",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": false
+            "sov_structure": false,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         },
         "Tatara": {
             "hullclass": "large structure",
@@ -756,7 +816,12 @@
             "security": "low",
             "sensor_strength": 1,
             "ecm_immune": true,
-            "sov_structure": false
+            "sov_structure": false,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         }
     }
 }

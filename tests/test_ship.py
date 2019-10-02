@@ -24,6 +24,7 @@ class FleetLibraryTestCase(TestCase):
         schema = self.library.get_ship_schemata("Small Cargo")
         self.assertEqual(schema, ship.ShipSchema("Small Cargo", "Small Cargo",
             10, 0, 200, [], 3, 1,
+            {'money': 0, 'basic_materials': 0, 'advanced_materials':0},
             ship.ShipBuffs(10, 0, 0, 0),
             ship.ShipDebuffs(0, 0, 0, 0), 2, False, False))
 
@@ -80,6 +81,11 @@ class FleetLibraryTestCase(TestCase):
                     ],
                     "size": "frigate",
                     "sensor_strength": 9.6,
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
             },
             "structures": {
@@ -121,7 +127,12 @@ class FleetLibraryTestCase(TestCase):
                     "shipyard": [],
                     "sensor_strength": 1,
                     "security": "high",
-                    "sov_structure": True
+                    "sov_structure": True,
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
             },
         })
@@ -162,6 +173,11 @@ class FleetLibraryTestCase(TestCase):
                     ],
                     "size": "frigate",
                     "sensor_strength": 9.6,
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
 
                 "stabber": {
@@ -182,6 +198,11 @@ class FleetLibraryTestCase(TestCase):
                     ],
                     "size": "cruiser",
                     "sensor_strength": 13,
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
 
                 "tempest": {
@@ -202,6 +223,11 @@ class FleetLibraryTestCase(TestCase):
                     ],
                     "size": "battleship",
                     "sensor_strength": 22.4,
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
 
             },
@@ -219,7 +245,12 @@ class FleetLibraryTestCase(TestCase):
                 "security": "high",
                 "shipyard": [],
                 "produces": {},
-                "sov_structure": True
+                "sov_structure": True,
+                "cost": {
+                    "money": 0,
+                    "basic_materials": 0,
+                    "advanced_materials": 0
+                    }
                 }
             }
         })

@@ -58,6 +58,11 @@
             "size": "Small Cargo",
             "buffs": {
                 "local_shield_repair": 10
+            },
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
             }
         },
         "Light Fighter": {
@@ -77,6 +82,11 @@
             "size": "Light Fighter",
             "buffs": {
                 "local_shield_repair": 10
+            },
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
             }
         },
         "Heavy Fighter": {
@@ -98,6 +108,11 @@
             "size": "Heavy Fighter",
             "buffs": {
                 "local_shield_repair": 25
+            },
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
             }
         },
         "Cruiser": {
@@ -119,6 +134,11 @@
             "size": "Cruiser",
             "buffs": {
                 "local_shield_repair": 50
+            },
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
             }
         }
     },
@@ -140,7 +160,12 @@
                 "basic_materials": 0,
                 "advanced_materials": 0
             },
-            "sov_structure": true
+            "sov_structure": true,
+            "cost": {
+                "money": 0,
+                "basic_materials": 0,
+                "advanced_materials": 0
+            }
         }
     }
 }

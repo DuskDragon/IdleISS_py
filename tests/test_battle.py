@@ -60,7 +60,11 @@ class ShipLibraryMock(ShipLibrary):
                     "buffs": {
                         "local_shield_repair": 10,
                     },
-
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "ship1": {
                     "hullclass": "generic",
@@ -80,7 +84,11 @@ class ShipLibraryMock(ShipLibrary):
                     "buffs": {
                         "local_shield_repair": 10,
                     },
-
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
 
                 "ship2": {
@@ -101,7 +109,11 @@ class ShipLibraryMock(ShipLibrary):
                     "buffs": {
                         "local_shield_repair": 100,
                     },
-
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
 
                 "ship3": {
@@ -123,7 +135,11 @@ class ShipLibraryMock(ShipLibrary):
                     "size": "ship3",
                     "buffs": {
                     },
-
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
 
                 "ship4": {
@@ -144,6 +160,11 @@ class ShipLibraryMock(ShipLibrary):
                     "buffs": {
                         "local_shield_repair": 1_000_000,
                     },
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
 
                 "local_rep_test": {
@@ -165,6 +186,11 @@ class ShipLibraryMock(ShipLibrary):
                         "local_shield_repair": 5,
                         "local_armor_repair": 5,
                     },
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "remote_rep_test": {
                     "hullclass": "remote_rep_test",
@@ -185,6 +211,11 @@ class ShipLibraryMock(ShipLibrary):
                         "remote_shield_repair": 10,
                         "remote_armor_repair": 10,
                     },
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "ewar_test": {
                     "hullclass": "ewar_test",
@@ -237,6 +268,11 @@ class ShipLibraryMock(ShipLibrary):
                     ],
                     "sensor_strength": 1,
                     "size": "ship1",
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "ewar_ecm_test": {
                     "hullclass": "ewar_ecm_test",
@@ -262,6 +298,11 @@ class ShipLibraryMock(ShipLibrary):
                     ],
                     "sensor_strength": 1,
                     "size": "ship1",
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "ewar_test_target": {
                     "hullclass": "ewar_test_target",
@@ -278,6 +319,11 @@ class ShipLibraryMock(ShipLibrary):
                     ],
                     "sensor_strength": 0,
                     "size": "ship1",
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "ewar_test_target2": {
                     "hullclass": "ewar_test_target2",
@@ -294,6 +340,11 @@ class ShipLibraryMock(ShipLibrary):
                     ],
                     "sensor_strength": 0.1,
                     "size": "ship1",
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "priority_test_ship": {
                     "hullclass": "generic",
@@ -313,6 +364,11 @@ class ShipLibraryMock(ShipLibrary):
                     ],
                     "sensor_strength": 0.1,
                     "size": "ship1",
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "priority_test_not_target": {
                     "hullclass": "priority_test_not_target",
@@ -322,6 +378,11 @@ class ShipLibraryMock(ShipLibrary):
                     "weapons": [],
                     "sensor_strength": 0.1,
                     "size": "priority_test_not_target",
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "priority_test_target": {
                     "hullclass": "priority_test_target",
@@ -331,6 +392,11 @@ class ShipLibraryMock(ShipLibrary):
                     "weapons": [],
                     "sensor_strength": 0.1,
                     "size": "priority_test_target",
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "multiple_weapon_test": {
                     "hullclass": "generic",
@@ -359,6 +425,11 @@ class ShipLibraryMock(ShipLibrary):
                     ],
                     "sensor_strength": 1,
                     "size": "ship1",
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
             },
             "structures": {
@@ -376,7 +447,12 @@ class ShipLibraryMock(ShipLibrary):
                     "security": "high",
                     "shipyard": [],
                     "produces": {},
-                    "sov_structure": True
+                    "sov_structure": True,
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 }
             }
         })
@@ -474,7 +550,11 @@ class ShipLibraryOrderMock(ShipLibrary):
                     "buffs": {
                         "local_shield_repair": 10,
                     },
-
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
                 "Incursus": {
                     "hullclass": "brawler frigate",
@@ -495,9 +575,12 @@ class ShipLibraryOrderMock(ShipLibrary):
                     "buffs": {
                         "local_shield_repair": 10,
                     },
-
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
-
                 "Maller": {
                     "hullclass": "brawler cruiser",
                     "sortclass": "cruiser",
@@ -515,8 +598,12 @@ class ShipLibraryOrderMock(ShipLibrary):
                     "sensor_strength": 27,
                     "size": "cruiser",
                     "buffs": {},
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
-
                 "Moa": {
                     "hullclass": "brawler cruiser",
                     "sortclass": "cruiser",
@@ -534,6 +621,11 @@ class ShipLibraryOrderMock(ShipLibrary):
                     "sensor_strength": 27,
                     "size": "cruiser",
                     "buffs": {},
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 },
             },
             "structures": {
@@ -551,7 +643,12 @@ class ShipLibraryOrderMock(ShipLibrary):
                     "security": "high",
                     "shipyard": [],
                     "produces": {},
-                    "sov_structure": True
+                    "sov_structure": True,
+                    "cost": {
+                        "money": 0,
+                        "basic_materials": 0,
+                        "advanced_materials": 0
+                    }
                 }
             }
         })
