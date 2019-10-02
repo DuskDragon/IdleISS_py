@@ -3,7 +3,7 @@ set -e # Exit with nonzero exit code if anything fails
 
 # Run setup.py to install IdleISS
 echo "Installing IdleISS"
-python setup.py develop
+pip install -e .[dev]
 
 # Run tests
 echo "Running Tests"
