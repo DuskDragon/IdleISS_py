@@ -149,6 +149,9 @@ class GameEngine(object):
             low and null can only have one user's structures
             structures can only be built in order of tier unless their tiers are below 0
         """
+        # verify user has enough resources
+        if not user.can_afford(structure):
+            return (False, "cost", f"{user.id} does not have enough resources")
         # for highsec systems the system can not be owned, the structures are
         # still limited to only one of each per user.
         if user.has_structure(system, structure):

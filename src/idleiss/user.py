@@ -40,7 +40,7 @@ class User(object):
         # pay out resources
         # XXX consider tracking the last payout time inside the resource
         # instance?
-        self.resources.pay_resources(timestamp - self.last_payout)
+        self.resources.produce_income(timestamp - self.last_payout)
         self.total_time += timestamp - self.last_payout
         self.last_payout = timestamp
 
@@ -58,6 +58,18 @@ starting_system = {self.starting_system.name}
 """
         return output_str
 
+    def can_afford(self, ship_or_structure):
+        money = ship_or_structure['cost']['money']
+        basic = ship_or_structure['cost']['basic_materials']
+        advanced = ship_or_structure['cost']['advanced_materials']
+        return self.resources.can_afford(money, basic, advanced)
+
+    def spend(self, ship_or_structure):
+        money = ship_or_structure['cost']['money']
+        basic = ship_or_structure['cost']['basic_materials']
+        advanced = ship_or_structure['cost']['advanced_materials']
+        return self.resources.spend(money, basic, advanced)
+
     def has_structure(self, system, structure):
         sources = self.resources.income_sources
         return structure['name'] in sources.get(system.name, {}).keys()
@@ -67,11 +79,20 @@ starting_system = {self.starting_system.name}
         Construct a starting structure in the starting system
         """
         system = self.starting_system
+        money = structure['cost']['money']
+        basic = structure['cost']['basic_materials']
+        advanced = structure['cost']['advanced_materials']
+        self.resources.one_time_income(money, basic, advanced)
         self.construct_building(system, structure)
 
     def construct_building(self, system, structure):
+        if not self.can_afford(structure):
+            raise ValueError(f"idleiss.User.construct_building: {structure['name']} costs too much for {self.id} to afford")
         if self.has_structure(system, structure):
-            raise ValueError(f"idleiss.user.User.construct_building: {structure['name']} already built for {self.id} in {system.name}")
+            raise ValueError(f"idleiss.User.construct_building: {structure['name']} already built for {self.id} in {system.name}")
+        # spend resources
+        self.spend(structure)
+        # update solar system
         system_name = system.name
         structure_name = structure['name']
         money_income = structure['produces']['money']
@@ -88,8 +109,8 @@ starting_system = {self.starting_system.name}
         consumes Structure Gantry
         """
         if not structure['sov_structure']:
-            raise ValueError(f"idleiss.user.User.conquer_new_system: {self.id}: {structure['name']} is not a sov_structure")
+            raise ValueError(f"idleiss.User.conquer_new_system: {self.id}: {structure['name']} is not a sov_structure")
         if system.owned_by != None:
-            raise ValueError(f"idleiss.user.User.conquer_new_system: {user.id}: {system.name} is not free to be conquered")
+            raise ValueError(f"idleiss.User.conquer_new_system: {user.id}: {system.name} is not free to be conquered")
         system.owned_by = self.id
         self.construct_citadel(system, structure)

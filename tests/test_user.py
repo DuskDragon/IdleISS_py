@@ -86,3 +86,17 @@ class UserTestCase(TestCase):
         user.join(100)
         user.update(107)
         self.assertEqual(user.resources.money, 7)
+
+    def test_can_afford(self):
+        user = self.user
+        ship_stub = {"cost": {"money": 5, "basic_materials": 5, "advanced_materials": 5}}
+        user.resources.basic_materials = 0
+        user.resources.advanced_materials = 0
+        user.resources.money = 0
+        self.assertFalse(user.can_afford(ship_stub))
+        user.resources.basic_materials = 5
+        self.assertFalse(user.can_afford(ship_stub))
+        user.resources.advanced_materials = 5
+        self.assertFalse(user.can_afford(ship_stub))
+        user.resources.money = 5
+        self.assertTrue(user.can_afford(ship_stub))

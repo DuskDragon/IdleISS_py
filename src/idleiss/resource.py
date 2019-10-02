@@ -44,7 +44,23 @@ resources: [{self.basic_materials}, {self.advanced_materials}, {self.money}]
 \tsources: {self.income_sources}"""
         return outstr
 
-    def pay_resources(self, seconds):
+    def can_afford(self, money, basic, advanced):
+        return money <= self.money and basic <= self.basic_materials and advanced <= self.advanced_materials
+
+    def spend(self, money, basic, advanced):
+        if not self.can_afford(money, basic, advanced):
+            return False
+        self.basic_materials -= basic
+        self.advanced_materials -= advanced
+        self.money -= money
+        return True
+
+    def one_time_income(self, money, basic, advanced):
+        self.basic_materials += basic
+        self.advanced_materials += advanced
+        self.money += money
+
+    def produce_income(self, seconds):
         self.basic_materials += self.basic_materials_income*seconds
         self.advanced_materials += self.advanced_materials_income*seconds
         self.money += self.money_income*seconds
