@@ -1,78 +1,82 @@
 REMINDER:
-nosetests --with-coverage --cover-package=idleiss --cover-html
+pytest --cov-report html --cov=idleiss tests/
 
 TODO:
     BUILDING PRODUCTION
-        setup future events to try to build buildings
+        setup checks to try to build next building in progression
         add building production logic to user
             setup 'modes'
+                security
+                    player can pick which security to focus on
                 economic
                     produce structures
                 defensive
                     produce fleets
                 offensive
                     conquer systems
+                mixed
+                    build everything (slowly)
     DEBRIS FIELD
         add debris field generation to battle
         add solar system support for debris field
         implement cargosize on ships
         develop fleet management system
-        allow dispaches to debris field
+        implement dispaches to debris field
 
 DOCS:
  - Progression:
     Basic Income
 
     Early
-    Construct small citadels for basic resources
-    Construct small engineering complexes for larger sized ships
-    Construct small drilling platforms for advanced resources
+    Construct small commerical stations (CS) for basic resources
+    Construct small engineering stations (ES) for larger sized ships
+    Construct small drilling platforms (DP) for advanced resources
 
     Mid
-    Conquer Systems using ICHs
-    Construct medium citadels for more basic resources
-    Construct medium engineering complexes for capital ships
-    Construct medium drilling platforms for more advanced resources
+    Conquer Systems using System Control Hubs (SCH)
+    Construct medium ES for capital ships
+    Construct medium DP for more advanced resources
+    Construct medium CS for more basic resources
 
     Late
-    Construct large engineering complexes for supercapital ships
-    Construct large citadels to hold control of ICH
+    Construct large ES for supercapital ships
+    Construct system fortress (SF) to hold control of SCH, adds an additional defense layer to SCH
 
 Structure Tier:
 -1-----
-ICH (if not highsec)
+SCH (if not highsec)
 0------
-Astrahaus
+Small CS
 1------
-Ritaru
-Athanor
+Small ES
+Small DP
 2------
-Azbel
-Tatara
+Medium ES
+Medium DP
 3------
-Fortizar
+Medium CS
 4------
-Sotiyo
+Large ES
 5------
-Keepstar
+SF
 ------
 
- - Player Interaction
+ - AI Controlled Player Interaction
     Uses point system
         Prevent new players from being attacked by players with more than 3x their points
     Once a player achieves a new teir they cannot expand into the lower teir systems
     Players can destroy each other's structures
-        medium drilling platforms can be destroyed, but new mediums need ICH
-    ICH cannot be destroyed until the large citadel is destroyed
+        medium drilling platforms can be destroyed, but new mediums need SCH
+    SCH cannot be destroyed until the system fortress is destroyed
 
  - Universe
     High Security
-        Small Citadels and Engineering Complexes can be constructed
+        small CS and ES can be constructed
             make much less money, protected against other players
     Low Security
-        Medium Citadels and Engineering Complexes can be constructed
+        medium CS and ES can be constructed
             make more money, but only have 3x point protection
-        Small drilling platforms can be constructed
+        Small DP can be constructed
     Null Security
         All buildings can be constructed
             make most money

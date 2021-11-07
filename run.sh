@@ -7,7 +7,7 @@ pip install -e .[dev]
 
 # Run tests
 echo "Running Tests"
-nosetests
+pytest
 
 # Run Base App with no interpreter
 echo "Running IdleISS"
