@@ -15,9 +15,14 @@ RoundResult = namedtuple("RoundResult",
 
 def size_damage_factor(weapon_size, target_size):
     """
-    Calculates damage factor on size.  If weapon size is greater than
+    Calculates damage factor based on size.  If weapon size is greater than
     the target size, then only the area that falls within the target
-    will the damage be applied.
+    will have damage applied.
+    Imagine 2 circles with one representing the weapon and one representing the target
+    The ratio of overlap determines the damage ratio.
+    The parameters of this function are the radii of the circles.
+    A very small weapon will deal all its damage to a large target.
+    A very large weapon will only deal a fraction to a small target.
     """
 
     if weapon_size <= target_size:
@@ -42,10 +47,6 @@ def true_damage(damage, weapon_size, target_size, attacker_debuffs, target_debuf
 
     # webbers give < 1 multiplier to the weapon_size against target
     # reason - weapons can focus more damage on a webbed target
-
-    if weapon_size * web * tracking_disrupt <=  \
-            target_size * target_painter:
-        return damage
 
     true_weapon_size = (weapon_size * web) * tracking_disrupt
     true_target_size = target_size * target_painter

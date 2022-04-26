@@ -31,7 +31,6 @@ setup(name='idleiss',
       include_package_data=True,
       zip_safe=False,
       install_requires=requirements,
-      test_suite='nose.collector',
       tests_require=test_requirements,
       extras_require={'dev': [test_requirements]},
       entry_points={
