@@ -1,6 +1,7 @@
 from unittest import TestCase
 import networkx as nx
 import matplotlib.pyplot as plt
+import pytest
 
 from idleiss.universe import Universe
 
@@ -30,6 +31,7 @@ class UserTestCase(TestCase):
     def setUp(self):
         pass
 
+    @pytest.mark.slow
     def test_load_universe_config(self):
         uni = Universe("config/Universe_Config.json")
         graph = uni.generate_networkx(uni.systems)
@@ -47,6 +49,7 @@ class UserTestCase(TestCase):
 #            inter_region_graph = uni.generate_networkx(system_list)
 #            save_graph(inter_region_graph, uni, f"docs/default_region_{region.name}.png")
 
+    @pytest.mark.slow
     def test_consistent_generation(self):
         uni1 = Universe("config/Universe_Config.json")
         uni2 = Universe("config/Universe_Config.json")
@@ -59,6 +62,7 @@ class UserTestCase(TestCase):
         self.assertEqual(d1.number_of_edges(),0)
         self.assertEqual(d2.number_of_edges(),0)
 
+    @pytest.mark.slow
     def test_highsec_is_connected(self):
         uni = Universe("config/Universe_Config.json")
         highsec_regions_only = [r for r in uni.regions if r.security == "High"]

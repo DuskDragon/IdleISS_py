@@ -1,5 +1,6 @@
 from unittest import TestCase
 from os.path import join, dirname
+import json
 
 from idleiss import core
 
@@ -16,13 +17,6 @@ class CoreTestCase(TestCase):
     def test_base_game(self):
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
         self.assertTrue(engine)
-
-    # def test_user_interaction(self):
-        # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
-        # engine.user_logged_in("an_user", timestamp=1000)
-        # engine.user_room_message("an_user", "some_message", timestamp=1006)
-        # idleness = engine.get_user_current_idleduration("an_user", timestamp=1010)
-        # self.assertEqual(idleness, 4)
 
     def test_update_world_basic(self):
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
@@ -82,23 +76,6 @@ class CoreTestCase(TestCase):
         self.assertEqual(engine.users["an_user"].resources.basic_materials, 1100)
         self.assertEqual(engine.users["an_user"].resources.advanced_materials, 1100)
         self.assertEqual(engine.users["an_user"].resources.money, 1100)
-
-    # def test_events_user_spoke(self):
-        # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
-        # engine.user_logged_in("an_user", timestamp=1000)
-        # engine.update_world(timestamp=1050)
-        # self.assertEqual(events, {
-            # "an_user": {
-                # "new_level": 6,
-            # }
-        # })
-        # engine.user_room_message("an_user", "some_message", timestamp=1051)
-        # engine.update_world(timestamp=1053)
-        ##would not trigger the lower level events again
-        # self.assertEqual(events, {})
-
-        ##user level should not decrement either.
-        # self.assertEqual(engine.users["an_user"]["level"], 6)
 
     def test_backwards_in_time_failure(self):
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
@@ -188,28 +165,52 @@ starting_system = {starting_system_name}
         mes_manager = engine.update_world(active_list=user_list, timestamp=5)
         self.assertEqual(expected_val, mes_manager.broadcasts_with_times)
 
-    # def test_handle_incoming_thread_disaster(self):
-        # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
-        # engine.update_world(timestamp=100)
-        # engine.user_logged_out("an_user", 100)
-        # engine.user_logged_in("an_user", 100)
-        # engine.users["an_user"].resources.basic_materials_income = 1
-        # engine.user_logged_out("an_user", 101)
-        # engine.user_logged_out("an_user", 100)
-        # engine.user_logged_in("an_user", 100)
-        # engine.user_logged_in("an_user", 101)
-        # engine.user_logged_out("an_user", 101)
-        # engine.user_logged_in("an_user", 100)
-        # engine.update_world(timestamp=102)
-        # honestly I have no idea what the result _should_ be
+    def test_loaded_save_files_generate_same_save_files_to_active_engines(self):
+        engine1 = core.GameEngine(
+            path_to_file("Small_Universe_Config.json"),
+            path_to_file("validload.json")
+        )
+        user_list = ["user1", "user2"]
+        engine1.update_world(user_list, timestamp=1)
+        shared_save_json = json.dumps(engine1.generate_savedata())
+        shared_save = json.loads(shared_save_json)
+        engine2 = core.GameEngine(
+            path_to_file("Small_Universe_Config.json"),
+            path_to_file("validload.json"),
+            shared_save
+        )
+        engine1.update_world(user_list, timestamp=51)
+        engine2.update_world(user_list, timestamp=51)
+        check_save_json1 = json.dumps(engine1.generate_savedata())
+        check_save_json2 = json.dumps(engine2.generate_savedata())
+        self.assertEqual(check_save_json1, check_save_json2)
 
-        # for now, let's say it is supposed to be logged out since that
-        # was the event with the "newest" timestamp and the newest
-        # event sent to the engine
-        # test_user = engine.users["an_user"]
-        # self.assertEqual(test_user.online, False) #currently True
-        # self.assertEqual(test_user.online_at, 101) #currently 100
-        # self.assertEqual(test_user.offline_at, 101) #currently passes (101)
-        # self.assertEqual(test_user.total_idle_time, 1) #currently 4 (:ohdear:)
-        # self.assertEqual(test_user.last_payout, 101) #currently 102
-        # self.assertEqual(test_user.resources.basic_materials, 1) #currently 4
+    def test_different_timestamps_produce_different_outputs(self):
+        engine1 = core.GameEngine(
+            path_to_file("Small_Universe_Config.json"),
+            path_to_file("validload.json")
+        )
+        user_list = ["user1", "user2"]
+        engine1.update_world(user_list, timestamp=1)
+        shared_save_json = json.dumps(engine1.generate_savedata())
+        shared_save = json.loads(shared_save_json)
+        engine2 = core.GameEngine(
+            path_to_file("Small_Universe_Config.json"),
+            path_to_file("validload.json"),
+            shared_save
+        )
+        engine1.update_world(user_list, timestamp=51)
+        engine2.update_world(user_list, timestamp=50)
+        check_save_json1 = json.dumps(engine1.generate_savedata())
+        check_save_json2 = json.dumps(engine2.generate_savedata())
+        self.assertNotEqual(check_save_json1, check_save_json2)
+
+    def test_a_large_number_of_users(self):
+        engine = core.GameEngine(
+            path_to_file("Small_Universe_Config.json"),
+            path_to_file("validload.json")
+        )
+        user_list = [f'user{x}' for x in range(50)]
+        engine.update_world(user_list, timestamp=1)
+        shared_save_json = json.dumps(engine.generate_savedata())
+        shared_save = json.loads(shared_save_json)
