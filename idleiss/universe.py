@@ -3,6 +3,11 @@ import json
 import networkx as nx
 import matplotlib.pyplot as plt
 
+def tupleize(obj):
+    if isinstance(obj, list):
+        return tuple([tupleize(o) for o in obj])
+    return obj
+
 class SolarSystem(object):
     def __init__(self, random_state, universe, security, name, const, region):
         if universe.name_exists(name):
@@ -239,6 +244,43 @@ class Universe(object):
         self.debug_output = []
         if filename:
             self.load(filename)
+
+    def load_savedata(self, savedata):
+        """
+        Unlike most of the other items in this library we will let the saved seed
+        random generation rebuild the full universe first. Then update the differences
+        between a new generated uni and one where the players have built things
+        """
+        # unlist-ify the random.getstate smashed into JSON
+        #listblob =
+        #if len(listblob[0]) != 1 and len(listblob[1]) != 1 and len(listblob[2]) != 0:
+        #    proper_state = tuple(listblob[0])
+        #proper_state =
+        self.rand.setstate(tupleize(savedata['rand']))
+        system_updates = savedata['system_updates']
+        for id, sys in system_updates.items():
+            self.systems[int(id)].structures = sys['structures']
+            self.systems[int(id)].owned_by = sys['owned_by']
+
+    def generate_savedata(self):
+        system_updates = {}
+        for sys in self.systems:
+            if sys.owned_by != None:
+                system_updates[f'{sys.id}'] = {
+                    'owned_by': sys.owned_by,
+                    'structures': sys.structures,
+                }
+                continue
+            if sys.structures != {}:
+                system_updates[f'{sys.id}'] = {
+                    'owned_by': sys.owned_by,
+                    'structures': sys.structures,
+                }
+        save = {
+            'system_updates': system_updates,
+            'rand': self.rand.getstate(),
+        }
+        return save
 
     def get_next_system_id(self):
         ret_val = self.current_unused_system_id

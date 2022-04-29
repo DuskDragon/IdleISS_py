@@ -11,31 +11,41 @@ class Location_Does_Not_Exist(Exception):
         return repr(self.value)
 
 class ResourceManager(object):
-    def __init__(self):
-        self.basic_materials = 0
-        self.advanced_materials = 0
-        self.money = 0
-        #income is per second
-        self.basic_materials_income = 0
-        self.advanced_materials_income = 0
-        self.money_income = 0
-        self.income_sources = {}
-        #income sources are a nested dict of
-        # {
-        #   starsystem:{
-        #       'structure': [
-        #           basic_income,
-        #           adv_income,
-        #           money income
-        #       ]
-        #    }
-        # }
-        #
-        #example:
-        #{"START SYSTEM": {
-        #   "ISS": ["station", 2, 1, 1]
-        #   }
-        #}
+    def __init__(self, savedata=None):
+        if savedata == None:
+            self.basic_materials = 0
+            self.advanced_materials = 0
+            self.money = 0
+            #income is per second
+            self.basic_materials_income = 0
+            self.advanced_materials_income = 0
+            self.money_income = 0
+            self.income_sources = {}
+            #income sources are a nested dict of
+            # {
+            #   starsystem:{
+            #       'structure': [
+            #           basic_income,
+            #           adv_income,
+            #           money income
+            #       ]
+            #    }
+            # }
+            #
+            #example:
+            #{"START SYSTEM": {
+            #   "ISS": ["station", 2, 1, 1]
+            #   }
+            #}
+            return
+        #TODO add validation
+        self.basic_materials = savedata['basic_materials']
+        self.advanced_materials = savedata['advanced_materials']
+        self.money = savedata['money']
+        self.basic_materials_income = savedata['basic_materials_income']
+        self.advanced_materials_income = savedata['advanced_materials_income']
+        self.money_income = savedata['money_income']
+        self.income_sources = savedata['income_sources']
 
     def __str__(self):
         outstr = f"""\
@@ -43,6 +53,18 @@ resources: [{self.basic_materials}, {self.advanced_materials}, {self.money}]
 \tincome: [{self.basic_materials_income}, {self.advanced_materials_income}, {self.money_income}]
 \tsources: {self.income_sources}"""
         return outstr
+
+    def generate_savedata(self):
+        save = {
+            'basic_materials': self.basic_materials,
+            'advanced_materials': self.advanced_materials,
+            'money': self.money,
+            'basic_materials_income': self.basic_materials_income,
+            'advanced_materials_income': self.advanced_materials_income,
+            'money_income': self.money_income,
+            'income_sources': self.income_sources,
+        }
+        return save
 
     def can_afford(self, money, basic, advanced):
         return money <= self.money and basic <= self.basic_materials and advanced <= self.advanced_materials

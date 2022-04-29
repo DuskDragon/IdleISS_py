@@ -10,6 +10,11 @@ class TimeOutofBounds(Exception):
     def __str__(self):
         return repr(self.value)
 
+class InvalidSaveData(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
 class MessageManager(object):
     valid_types = ['broadcast', 'debug', 'admin']
@@ -60,6 +65,8 @@ class MessageManager(object):
     def get_broadcasts_with_time_diff(self, time):
         messages = []
         for mes in self.container:
+            if mes[1] != 'broadcast':
+                continue
             time_diff = time - mes[0]
             temp = f"{self.human_time_diff(time_diff)}{mes[2]}"
             messages.append(temp)
@@ -109,7 +116,7 @@ class MessageManager(object):
 
 class GameEngine(object):
 
-    def __init__(self, universe_filename, library_filename):
+    def __init__(self, universe_filename, library_filename, savedata=None):
         self.users = {}
         self.current_channel_list = []
         self.universe = Universe(universe_filename)
@@ -123,6 +130,39 @@ class GameEngine(object):
 
         # this should be a dequeue and must be thread safe.
         self._engine_events = []
+
+        self._load_save(savedata)
+
+    def _load_save(self, savedata):
+        """
+        A quick and straight-forward way to force in previous
+        Game Engine state from a safedata block.
+        """
+        if savedata == {}:
+            return
+        if savedata == None:
+            return
+        #TODO add validation
+        self._engine_events = savedata['_engine_events']
+        self.current_channel_list = set(savedata['current_channel_list'])
+        for usrid, usersave in savedata['users'].items():
+            usersave['starting_system'] = self.universe.systems[usersave['starting_system']]
+            self.users[usrid] = User(0, 0, usersave) #TODO clean this up
+        self.universe.load_savedata(savedata['universe'])
+        self.world_timestamp = savedata['world_timestamp']
+
+    def generate_savedata(self):
+        usersave = {}
+        for usrid, usr in self.users.items():
+            usersave[usrid] = usr.generate_savedata()
+        save = {
+            '_engine_events': self._engine_events, #TODO may not work in the future
+            'current_channel_list': list(self.current_channel_list),
+            'users': usersave,
+            'universe': self.universe.generate_savedata(),
+            'world_timestamp': self.world_timestamp
+        }
+        return save
 
     def _add_event(self, event_type, **kw):
         # this is a bit of a magic as we assume that any keyword

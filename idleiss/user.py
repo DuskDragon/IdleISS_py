@@ -2,16 +2,42 @@ from .fleet import FleetManager
 from .resource import ResourceManager
 
 class User(object):
-    def __init__(self, user_id, starting_system, *a, **kw):
-        self.id = user_id
-        self.fleet = FleetManager()
-        self.resources = ResourceManager()
-        self.in_userlist = False
-        self.join_time = -1
-        self.leave_time = -1
-        self.total_time = 0
-        self.last_payout = 0
-        self.starting_system = starting_system
+    def __init__(self, user_id, starting_system, savedata=None):
+        if savedata == None:
+            self.id = user_id
+            self.fleet = FleetManager()
+            self.resources = ResourceManager()
+            self.in_userlist = False
+            self.join_time = -1
+            self.leave_time = -1
+            self.total_time = 0
+            self.last_payout = 0
+            self.starting_system = starting_system
+            return
+        #TODO add validation
+        self.id = savedata['id']
+        self.fleet = FleetManager(savedata['fleet_save'])
+        self.resources = ResourceManager(savedata['resources_save'])
+        self.in_userlist = savedata['in_userlist']
+        self.join_time = savedata['join_time']
+        self.leave_time = savedata['leave_time']
+        self.total_time = savedata['total_time']
+        self.last_payout = savedata['last_payout']
+        self.starting_system = savedata['starting_system']
+
+    def generate_savedata(self):
+        save = {
+            'id': self.id,
+            'fleet_save' : self.fleet.ships,
+            'resources_save': self.resources.generate_savedata(),
+            'in_userlist': self.in_userlist,
+            'join_time': self.join_time,
+            'leave_time': self.leave_time,
+            'total_time': self.total_time,
+            'last_payout': self.last_payout,
+            'starting_system': self.starting_system.id,
+        }
+        return save
 
     def join(self, timestamp):
         if self.in_userlist:
