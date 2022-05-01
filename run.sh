@@ -6,7 +6,7 @@ echo "Installing IdleISS"
 pip install -e .[dev]
 
 # Run tests
-echo "Running Tests"
+echo "Running All Tests"
 pytest --runslow
 
 # Run Base App with no interpreter
