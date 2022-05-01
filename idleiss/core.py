@@ -147,7 +147,7 @@ class GameEngine(object):
         self.current_channel_list = set(savedata['current_channel_list'])
         for usrid, usersave in savedata['users'].items():
             usersave['starting_system'] = self.universe.systems[usersave['starting_system']]
-            self.users[usrid] = User(0, 0, usersave) #TODO clean this up
+            self.users[usrid] = User(0, 0, usersave) #TODO? clean this up: User's ugly constructor
         self.universe.load_savedata(savedata['universe'])
         self.world_timestamp = savedata['world_timestamp']
 
