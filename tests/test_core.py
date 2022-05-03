@@ -15,11 +15,11 @@ class CoreTestCase(TestCase):
         pass
 
     def test_base_game(self):
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         self.assertTrue(engine)
 
     def test_update_world_basic(self):
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         user_list = set(["an_user"])
         engine.update_world(active_list=user_list, timestamp=1000)
         # manually set one of the income rates
@@ -45,7 +45,7 @@ class CoreTestCase(TestCase):
         self.assertEqual(engine.users["an_user"].resources.money, 8)
 
     def test_offline_users_do_not_earn_resources(self):
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         user_list = set(["user1", "user2"])
         engine.update_world(active_list=user_list, timestamp=1000)
         engine.users["user1"].resources.basic_materials_income = 1
@@ -63,7 +63,7 @@ class CoreTestCase(TestCase):
         self.assertEqual(engine.users["user2"].resources.basic_materials, 1)
 
     def test_events_skip_time(self):
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         user_list = set(["an_user"])
         engine.update_world(active_list=user_list, timestamp=1000)
         # manually set one of the income rates
@@ -78,7 +78,7 @@ class CoreTestCase(TestCase):
         self.assertEqual(engine.users["an_user"].resources.money, 1100)
 
     def test_backwards_in_time_failure(self):
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         user_list = set(["an_user"])
         engine.update_world(active_list=user_list, timestamp=1000)
         with self.assertRaises(core.TimeOutofBounds) as context:
@@ -89,7 +89,7 @@ class CoreTestCase(TestCase):
         def some_event(name="foo"):
             return name
 
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         engine._add_event(some_event, name="foo")
         self.assertEqual(engine._engine_events[0].func, some_event)
         self.assertEqual(engine._engine_events[0].kw["name"], "foo")
@@ -102,7 +102,7 @@ class CoreTestCase(TestCase):
             # if there is even such a thing.
             return
 
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         engine.update_world(active_list=set(), timestamp=100)
         engine._add_event(time_dependent_event, timestamp=50)
         # timestamp argument magically forced to be the last time the
@@ -117,7 +117,7 @@ class CoreTestCase(TestCase):
         # of the engine, i.e. the chatroom interface.
 
     def test_inspect_user(self):
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         user_list = set(["user1", "user2"])
         engine.update_world(active_list=user_list, timestamp=1)
         # manually setting income sources
@@ -129,7 +129,7 @@ class CoreTestCase(TestCase):
         # inspect user1 and print all properties
         starting_system_name = engine.users["user1"].starting_system.name
         # formatting of a dict in a string is a mess so here is a bad workaround:
-        sources_string = r"{'"+f"{starting_system_name}"+r"': {'test_starting_structure': [0, 0, 0]}}"
+        sources_string = r"{'"+f"{starting_system_name}"+r"': {'Outpost': [1, 0, 1]}}"
         expected_string = f"""inspect:
 id: user1
 fleet: {{}}
@@ -154,7 +154,7 @@ starting_system = {starting_system_name}
             return 'c'
         def func_d(timestamp):
             return 'd'
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("validload.json"))
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
         user_list = set(["user1", "user2"])
         engine.update_world(active_list=user_list, timestamp=1)
         engine._add_event(func_a, timestamp=2)
@@ -168,7 +168,8 @@ starting_system = {starting_system_name}
     def test_loaded_save_files_generate_same_save_files_to_active_engines(self):
         engine1 = core.GameEngine(
             path_to_file("Small_Universe_Config.json"),
-            path_to_file("validload.json")
+            path_to_file("Ships_Config.json"),
+            path_to_file("Scan_Config.json")
         )
         user_list = ["user1", "user2"]
         engine1.update_world(user_list, timestamp=1)
@@ -176,7 +177,8 @@ starting_system = {starting_system_name}
         shared_save = json.loads(shared_save_json)
         engine2 = core.GameEngine(
             path_to_file("Small_Universe_Config.json"),
-            path_to_file("validload.json"),
+            path_to_file("Ships_Config.json"),
+            path_to_file("Scan_Config.json"),
             shared_save
         )
         engine1.update_world(user_list, timestamp=51)
@@ -188,7 +190,8 @@ starting_system = {starting_system_name}
     def test_different_timestamps_produce_different_outputs(self):
         engine1 = core.GameEngine(
             path_to_file("Small_Universe_Config.json"),
-            path_to_file("validload.json")
+            path_to_file("Ships_Config.json"),
+            path_to_file("Scan_Config.json")
         )
         user_list = ["user1", "user2"]
         engine1.update_world(user_list, timestamp=1)
@@ -196,7 +199,8 @@ starting_system = {starting_system_name}
         shared_save = json.loads(shared_save_json)
         engine2 = core.GameEngine(
             path_to_file("Small_Universe_Config.json"),
-            path_to_file("validload.json"),
+            path_to_file("Ships_Config.json"),
+            path_to_file("Scan_Config.json"),
             shared_save
         )
         engine1.update_world(user_list, timestamp=51)
@@ -208,7 +212,8 @@ starting_system = {starting_system_name}
     def test_a_large_number_of_users(self):
         engine = core.GameEngine(
             path_to_file("Small_Universe_Config.json"),
-            path_to_file("validload.json")
+            path_to_file("Ships_Config.json"),
+            path_to_file("Scan_Config.json")
         )
         user_list = [f'user{x}' for x in range(50)]
         engine.update_world(user_list, timestamp=1)

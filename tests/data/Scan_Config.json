@@ -1,0 +1,71 @@
+{
+    "settings": {
+        "low_recharge": 3300,
+        "focus_recharge": 13200,
+        "high_recharge": 79200,
+        "focus_height_max": 5,
+        "focus_width_max": 5,
+        "max_quality_per_constellation": 10,
+        "site_decay": 604800
+    },
+    "sites": {
+        "Mineable Asteroid": {
+            "low_chance": 0.5,
+            "focus_height": 2,
+            "focus_width": 2,
+            "high_chance": 0.9,
+            "quality": 1,
+            "initial_description": "The scan return appears to be from asteroid in a slightly inclined solar orbit. This type of asteroid may contain useful materials.",
+            "arrival_message": "The fleet arrives and starts to take samples of the asteroid. These samples will determine if the asteroid is worth collecting.",
+            "duration": 600,
+            "shared": false,
+            "success_rate": 0.90,
+            "completion_message": "The fleet has a solid capture on the asteroid and is returning to the nearest available structure.",
+            "basic_materials_reward": 1200,
+            "advanced_materials_reward": 0,
+            "money_reward": 0,
+            "failure_message": "The samples retrieved from the asteroid did not contain useful materials. The fleet is now returning."
+        },
+        "High Albedo Anomaly": {
+            "low_chance": 0.1,
+            "focus_height": 3,
+            "focus_width": 3,
+            "high_chance": 0.2,
+            "quality": 2,
+            "initial_description": "The return from the scan pulse is much more luminous than would be expected from normal rock or metalic objects.",
+            "arrival_message": "The fleet drops out of warp early due to a warp inhibiting field. Missiles inbound, prepare for impact!",
+            "duration": 180,
+            "shared": false,
+            "success_rate": 1,
+            "ships": {
+                "Standard Fighter": 3
+            },
+            "completion_message": "The enemy ships waiting in ambush have been disabled or annihilated. The object picked up by the scanner was a cloud of retroreflectors likely set up as a passive lure. The hulls of the ships were filled with useful resources.",
+            "basic_materials_reward": 8000,
+            "advanced_materials_reward": 1000,
+            "money_reward": 0,
+            "failure_message": "Contact with the fleet was lost."
+        },
+        "Faint Infrared Source": {
+            "low_chance": 0.1,
+            "focus_height": 1,
+            "focus_width": 1,
+            "high_chance": 0.7,
+            "quality": 3,
+            "initial_description": "The return from the scan pulse was very faint, but it continued to glow in the infrared after the pulse for a few seconds.",
+            "arrival_message": "The fleet arrives and intial radar scans of the asteroid show a solid metallic core. Extraction of the core will take some time and significantly increase the scan returns from this object.",
+            "duration": 3600,
+            "shared": true,
+            "in_progress_low_chance": 0.3,
+            "in_progress_focus_height": 2,
+            "in_progress_focus_width": 2,
+            "in_progress_high_chance": 1,
+            "success_rate": 1,
+            "completion_message": "The metallic core has been successfully extracted and the fleet is returning to the nearest available structure.",
+            "basic_materials_reward": 45000,
+            "advanced_materials_reward": 30000,
+            "money_reward": 0,
+            "failure_message": "Contact with the fleet was lost."
+        }
+    }
+}

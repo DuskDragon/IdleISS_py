@@ -10,4 +10,5 @@ info Ameinaka
 info Misneden
 add test3
 inc_time 1
+scan low test1
 e

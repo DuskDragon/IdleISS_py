@@ -2,6 +2,7 @@ from .event import GameEngineEvent
 from .ship import ShipLibrary
 from .universe import Universe
 from .user import User
+from .scan import Scanning
 
 
 class TimeOutofBounds(Exception):
@@ -116,11 +117,12 @@ class MessageManager(object):
 
 class GameEngine(object):
 
-    def __init__(self, universe_filename, library_filename, savedata=None):
+    def __init__(self, universe_filename, library_filename, scanning_filename, savedata=None):
         self.users = {}
         self.current_channel_list = []
         self.universe = Universe(universe_filename)
         self.library = ShipLibrary(library_filename)
+        self.scanning = Scanning(scanning_filename, self.library)
 
         # The current world_timestamp - only updated whenever the world
         # is updated by calling update_world with the current/latest

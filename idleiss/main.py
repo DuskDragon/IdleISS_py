@@ -2,6 +2,7 @@ from idleiss.universe import Universe
 from idleiss.ship import ShipLibrary
 from idleiss.battle import Battle
 from idleiss.interpreter import Interpreter
+from idleiss.scan import Scanning
 import argparse
 import os
 import json
@@ -10,6 +11,7 @@ import random
 
 default_universe_config = "config/Universe_Config.json"
 default_ships_config = "config/Ships_Config.json"
+default_scan_config = "config/Scan_Config.json"
 example_fleet_fight = "config/Example_Fleet_Fight.json"
 
 def run():
@@ -24,6 +26,8 @@ def run():
         help=f"Set json universe settings file, if not provided the default {default_universe_config} will be used")
     parser.add_argument("-s", "--ships", default=default_ships_config, dest="shipsconfig", action="store", type=str,
         help=f"Set json ships settings file, if not provided the default {default_ships_config} will be used")
+    parser.add_argument("-r" "--scanning", default=default_scan_config, dest="scanconfig", action="store", type=str,
+        help=f"Set json scan settings file, if not provided the default {default_scan_config} will be used")
     parser.add_argument("-b", "--simulate-battle", default=None, dest="simbattle",
         const=example_fleet_fight, nargs="?", action="store", type=str,
         help=f"Simulate a fleet fight between two fleets using a file and exit. Example file: {example_fleet_fight}")
@@ -44,6 +48,10 @@ def run():
     library = ShipLibrary(args.shipsconfig)
     print(f"Starships successfully loaded from {args.shipsconfig}: ")
     print(f"\tImported {len(library.ship_data)} ships")
+    if args.scanconfig != default_scan_config:
+        print(f"Loading scan settings using alternate config: {args.scanconfig}")
+    scanning = Scanning(args.scanconfig, library)
+    print(f"Scan settings successfully loaded from {args.scanconfig}: ")
     # map generation
     if args.genmaps:
         one_shot_only = True
@@ -80,7 +88,7 @@ def run():
 
     if not one_shot_only and not args.quickrun:
         # execute interpreter
-        interp = Interpreter(args.uniconfig, args.shipsconfig)
+        interp = Interpreter(args.uniconfig, args.shipsconfig, args.scanconfig)
         if args.interpreter_preload:
             interp.run(preload_file=args.interpreter_preload, logs_enabled=args.interpreter_log_enable)
         else:

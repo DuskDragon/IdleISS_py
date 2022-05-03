@@ -18,15 +18,21 @@ class FleetLibraryTestCase(TestCase):
         pass
 
     def test_load_library(self):
-        test_file_name = "validload.json"
+        test_file_name = "Ships_Config.json"
         target_path = join(dirname(__file__), "data", test_file_name)
         self.library = ship.ShipLibrary(target_path)
-        schema = self.library.get_ship_schemata("Small Cargo")
-        self.assertEqual(schema, ship.ShipSchema("Small Cargo", "Small Cargo",
-            10, 0, 200, [], 3, 1,
-            {'money': 0, 'basic_materials': 0, 'advanced_materials':0},
-            ship.ShipBuffs(10, 0, 0, 0),
-            ship.ShipDebuffs(0, 0, 0, 0), 2, False, False))
+        schema = self.library.get_ship_schemata("Standard Fighter")
+        self.assertEqual(schema, ship.ShipSchema(
+            "Standard Fighter",
+            "brawler fighter",
+            10, 10, 10,
+            [{"weapon_name": "Dual 20mm Autocannon", "weapon_size": 15,
+                "firepower": 10, "priority_targets": [],
+                "area_of_effect": 1, "cycle_time": 1}],
+            15, 10,
+            {'money': 5000, 'basic_materials': 0, 'advanced_materials':0},
+            ship.ShipBuffs(0, 0, 0, 0),
+            ship.ShipDebuffs(0, 0, 0, 0), 0, False, False))
 
     def test_load_fail_incorrect_priority_target(self):
         test_file_name = "invalidpriority_target.json"

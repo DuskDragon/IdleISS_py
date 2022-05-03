@@ -1,15 +1,15 @@
 {
     "attacker": {
-        "Rifter": 60,
-        "Incursus": 60,
-        "Maller": 60,
-        "Moa": 60
+        "Standard Fighter": 60,
+        "Standard Corvette": 60,
+        "Standard Frigate": 60,
+        "Standard Destroyer": 60
     },
     "defender": {
-        "Rifter": 60,
-        "Incursus": 60,
-        "Maller": 60,
-        "Moa": 60
+        "Standard Fighter": 60,
+        "Standard Corvette": 60,
+        "Standard Frigate": 60,
+        "Standard Destroyer": 60
     },
-    "rounds": 200
+    "rounds": 20
 }
