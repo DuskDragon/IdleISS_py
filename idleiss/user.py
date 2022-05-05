@@ -97,7 +97,7 @@ starting_system = {self.starting_system.name}
         return self.resources.spend(money, basic, advanced)
 
     def has_structure(self, system, structure):
-        sources = self.resources.income_sources
+        sources = self.resources.structures
         return structure['name'] in sources.get(system.name, {}).keys()
 
     def construct_starting_structure(self, structure):
@@ -125,7 +125,7 @@ starting_system = {self.starting_system.name}
         basic_income = structure['produces']['basic_materials']
         adv_income = structure['produces']['advanced_materials']
         # update user
-        self.resources.add_income_source(system_name, structure_name, basic_income, adv_income, money_income)
+        self.resources.add_structure(system_name, structure_name, basic_income, adv_income, money_income)
         # update system
         system.add_structure(self.id, structure)
 

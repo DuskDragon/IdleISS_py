@@ -290,6 +290,11 @@ class GameEngine(object):
                 return system.inspect()
         return "error: no such system"
 
+    def scan(self, username):
+        if username not in self.users:
+            return "error: no such user"
+        #TODO: implement
+
     def _sort_engine_events(self):
         self._engine_events.sort(key=(lambda x:(x.kw["timestamp"])))
 

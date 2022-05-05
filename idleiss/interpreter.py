@@ -85,7 +85,7 @@ class Interpreter(object):
         type = match.group("type")
         if type not in ["low", "focus", "high", "l", "f", "h"]:
             return "error: incorrect scan type entered. Use: [l]ow, [f]ocus, or [h]igh"
-        pass #TODO implement scanning in interpreter
+        return self.engine.scan(username)
 
     def run(self, preload_file=None, logs_enabled=False):
         if logs_enabled:
