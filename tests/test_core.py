@@ -181,6 +181,9 @@ starting_system = {starting_system_name}
             path_to_file("Scan_Config.json"),
             shared_save
         )
+        check_save_json1 = json.dumps(engine1.generate_savedata())
+        check_save_json2 = json.dumps(engine2.generate_savedata())
+        self.assertEqual(check_save_json1, check_save_json2)
         engine1.update_world(user_list, timestamp=51)
         engine2.update_world(user_list, timestamp=51)
         check_save_json1 = json.dumps(engine1.generate_savedata())
@@ -203,6 +206,9 @@ starting_system = {starting_system_name}
             path_to_file("Scan_Config.json"),
             shared_save
         )
+        check_save_json1 = json.dumps(engine1.generate_savedata(), indent=4)
+        check_save_json2 = json.dumps(engine2.generate_savedata(), indent=4)
+        self.assertEqual(check_save_json1, check_save_json2)
         engine1.update_world(user_list, timestamp=51)
         engine2.update_world(user_list, timestamp=50)
         check_save_json1 = json.dumps(engine1.generate_savedata())

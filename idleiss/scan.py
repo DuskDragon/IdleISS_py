@@ -36,6 +36,24 @@ _Site = namedtuple("Site", ["schema", "attributes"])
 def Site(schema, attributes):
     return _Site(schema, attributes)
 
+class SiteInstance(object):
+    def __init__(self, name, expire_time, in_progress=False, complete=False):
+        self.name = name
+        self.expire_time = expire_time
+        self.in_progress = in_progress
+        self.complete = complete
+
+    def asDict(self):
+        return {
+            'name': self.name,
+            'expire_time': self.expire_time,
+            'in_progress': self.in_progress,
+            'complete': self.complete
+        }
+
+    def __repr__(self):
+        return f"{self.name} expires:{self.expire_time}"
+
 class Scanning(object):
 
     _required_keys = {
@@ -96,7 +114,7 @@ class Scanning(object):
                 raise ValueError(f"_load: site config file contains invalid 'focus_width' for site {site_name}. Limits are [1, {self.settings.focus_width_max}] (inclusive, high limit is configurable under 'settings':'focus_width_max')")
             if data["high_chance"] > 1.0 and data["high_chance"] < 0:
                 raise ValueError(f"_load: site config file contains invalid 'high_chance' for site: {site_name}. Limits are [0, 1] (inclusive)")
-            if data["quality"] > self.settings.max_quality_per_constellation:
+            if data["quality"] > self.settings.max_quality_per_constellation or data["quality"] < 1:
                 raise ValueError(f"_load: site config file contains invalid 'quality' for site {site_name}. Limits are [1, {self.settings.max_quality_per_constellation}] (inclusive, high limit is configurable under 'settings':'max_quality_per_constellation')")
             if type(data["initial_description"]) != str:
                 raise ValueError(f"_load: site config file contains invalid 'initial_description' for site {site_name}. Type must be str.")
@@ -138,14 +156,25 @@ class Scanning(object):
     def get_site_schemata(self, site_name):
         return self.site_data[site_name]
 
-    def generate_constellation_scannables(self, system_count, rand):
+    def gen_constellation_scannables(self, constellation_sites, timestamp, rand):
         """
-        returns an list of size system_count where each list contains a list
-        of the sites to be added to the corresponding system
-        requires random to be passed to the constructor of this object
-        when it was created
+        mutates constellation_sites to clear old sites and update them with new sites
+        constellation_sites: a list of lists of sites, outer list are the systems, inner are sites
+        timestamp: current timestamp in seconds
+        rand: random instance from universe so full state can be recovered
         """
-        pass
-        #current_quality = 0
-        #while current_quality < self.settings.max_quality_per_constellation:
-        #    self.site_data[
+        current_quality = 0
+        for system in constellation_sites:
+            # remove completed and expired sites
+            system = filter(lambda site:
+                (not site.complete) and (site.expire_time > timestamp or site.in_progress),
+                system)
+            for site in system:
+                current_quality += self.site_data[site.name].quality
+        #if the constellation needs more sites add them to random slots
+        while current_quality < self.settings.max_quality_per_constellation:
+            name = rand.choice(list(self.site_data.keys()))
+            current_quality += self.site_data[name].quality
+            rand.choice(constellation_sites).append(
+                SiteInstance(name, timestamp+self.settings.site_decay)
+            )

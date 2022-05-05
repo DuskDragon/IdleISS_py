@@ -3,6 +3,8 @@ import json
 import networkx as nx
 import matplotlib.pyplot as plt
 
+from idleiss.scan import SiteInstance
+
 def tupleize(obj):
     if isinstance(obj, list):
         return tuple([tupleize(o) for o in obj])
@@ -28,6 +30,7 @@ class SolarSystem(object):
         self.cap_flooded = False
         self.owned_by = None
         self.structures = {}
+        self.sites = []
         # structures are stored by 'user.id': [structure1, structure2, structure3]
 
     def __str__(self):
@@ -261,20 +264,22 @@ class Universe(object):
         for id, sys in system_updates.items():
             self.systems[int(id)].structures = sys['structures']
             self.systems[int(id)].owned_by = sys['owned_by']
+            for site in sys['sites']:
+                self.systems[int(id)].sites.append(
+                    SiteInstance(
+                        site['name'], site['expire_time'],
+                        site['in_progress'], site['complete']
+                    )
+                )
 
     def generate_savedata(self):
         system_updates = {}
         for sys in self.systems:
-            if sys.owned_by != None:
+            if (sys.owned_by != None or sys.structures != {} or len(sys.sites) != 0):
                 system_updates[f'{sys.id}'] = {
                     'owned_by': sys.owned_by,
                     'structures': sys.structures,
-                }
-                continue
-            if sys.structures != {}:
-                system_updates[f'{sys.id}'] = {
-                    'owned_by': sys.owned_by,
-                    'structures': sys.structures,
+                    'sites': [site.asDict() for site in sys.sites],
                 }
         save = {
             'system_updates': system_updates,

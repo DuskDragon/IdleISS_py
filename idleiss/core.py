@@ -293,6 +293,20 @@ class GameEngine(object):
     def _sort_engine_events(self):
         self._engine_events.sort(key=(lambda x:(x.kw["timestamp"])))
 
+    def _update_sites(self, timestamp):
+        for constellation in self.universe.constellations:
+            system_count = len(constellation.systems)
+            scannables = [[] for x in range(system_count)]
+            #collect scannables references:
+            for x in range(system_count):
+                scannables[x] = constellation.systems[x].sites
+            #update sites in self.universe using their references:
+            self.scanning.gen_constellation_scannables(
+                scannables,
+                timestamp,
+                self.universe.rand
+            )
+
     def update_world(self, active_list, timestamp):
         """
         update_world will be the one point of intersection as far as data
@@ -324,19 +338,22 @@ class GameEngine(object):
                 next_event_timestamp = self._engine_events[0].kw["timestamp"]
                 event_results.extend(self._update_world(next_event_timestamp))
 
-        #### Pay Resources and Update total_idle_time
+        #### For Each User:
         for user_id in self.users:
+            #### Pay Resources for User and Update total_idle_time
             user = self.users[user_id]
             if not user.in_userlist:
                 # skip offline users.
                 continue
-
             user.update(timestamp)
+            #### Produce Units for User
 
-            #### Random Events
-            #### Calculate Battles
-            #### Produce Units
-            #### Other Events?
+        #### For the Full Gamestate:
+        #### Update Depleted Scanning Sites
+        self._update_sites(timestamp)
+        #### Random Events
+        #### Calculate Battles
+        #### Other
 
         time_diff = timestamp - self.world_timestamp
         engine_events = self._engine_events.copy()
