@@ -1,4 +1,4 @@
-import random
+from random import Random
 import json
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -60,6 +60,7 @@ flooded: {self.flooded}
 cap flooded: {self.cap_flooded}
 owned by: {self.owned_by}
 structures: {self.structures}
+sites: {self.sites}
 """
         return output_str
 
@@ -236,7 +237,7 @@ class Universe(object):
         generates a universe with #systems, #constellations and #regions
         using connectedness as a rough guide to how linked nodes are within a collection
         """
-        self.rand = random
+        self.rand = Random()
         self.used_names = []
         self.regions = []
         self.constellations = []

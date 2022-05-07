@@ -89,6 +89,10 @@ class Scanning(object):
         for k,v in raw_data["settings"].items():
             if type(v) != int:
                 raise ValueError(f'{k} is expected to be an integer, it is a {type(v)}')
+        if raw_data["settings"]["focus_height_max"] > 5:
+            raise ValueError(f'focus_height_max is {raw_data["focus_height_max"]} > 5 (discord limitation)')
+        if raw_data["settings"]["focus_width_max"] > 5:
+            raise ValueError(f'focus_width_max is {raw_data["focus_width_max"]} > 5 (discord limitation)')
         self.settings = _construct_tuple(SettingSchema, raw_data["settings"])
         self.site_data = {}
         for site_name, data in raw_data["sites"].items():
@@ -155,6 +159,34 @@ class Scanning(object):
 
     def get_site_schemata(self, site_name):
         return self.site_data[site_name]
+
+    def process_focus_sites(self, scannable_sites, sel_x, sel_y, rand):
+        ## writing this caused me to question why I am even doing this at all
+        ## it is kind of pretty I guess
+        max_width = self.settings.focus_width_max
+        max_height = self.settings.focus_height_max
+        scan_grid = [[[] for x in range(max_width)] for y in range(max_height)]
+        for site in scannable_sites:
+            site_width = self.site_data[site.name].focus_width
+            site_height = self.site_data[site.name].focus_height
+            local_max_width = max_width - site_width
+            local_max_height = max_height - site_height
+            x_pos = rand.randint(0, local_max_width)
+            y_pos = rand.randint(0, local_max_height)
+            for y_offset in range(site_height):
+                for x_offset in range(site_width):
+                    scan_grid[y_pos+y_offset][x_pos+x_offset].append(site)
+        results = scan_grid[sel_y][sel_x]
+        for y in range(max_height):
+            for x in range(max_width):
+                if scan_grid[y][x] != []:
+                    scan_grid[y][x] = "red"
+                else:
+                    scan_grid[y][x] = "grey"
+        if scan_grid[sel_y][sel_x] == "red":
+            scan_grid[sel_y][sel_x] = "green"
+        return (results, scan_grid)
+
 
     def gen_constellation_scannables(self, constellation_sites, timestamp, rand):
         """

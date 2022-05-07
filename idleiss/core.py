@@ -1,9 +1,9 @@
 from .event import GameEngineEvent
 from .ship import ShipLibrary
 from .universe import Universe
+from .universe import SolarSystem
 from .user import User
 from .scan import Scanning
-
 
 class TimeOutofBounds(Exception):
     def __init__(self, value):
@@ -285,15 +285,106 @@ class GameEngine(object):
         return self.users[username].inspect()
 
     def info_system(self, system_name):
-        for system in self.universe.systems:
-            if system_name == system.name:
-                return system.inspect()
-        return "error: no such system"
+        temp = self.universe.master_dict.get(system_name, None)
+        if type(temp) != SolarSystem:
+            return "error: no such system"
+        else:
+            return temp.inspect()
 
-    def scan(self, username):
+    def scan(self, rand, now, username, type, grid_pack=None):
         if username not in self.users:
-            return "error: no such user"
-        #TODO: implement
+            return ("error: no such user", None)
+        if type == "high" or type == "h":
+            if self.users[username].last_high_scan == None:
+                pass # avoid None errors for math below
+            elif now < (self.users[username].last_high_scan +
+                      self.scanning.settings.high_recharge
+            ):
+                return ("You are scanning too soon since your last scan of this type, please try again later.", None)
+        elif type == "focus" or type == "f":
+            if grid_pack == None:
+                raise RuntimeError(f"IdleISS.core.scan of focus type called by {username} with no grid_pack selected at {now}.")
+            elif grid_pack[0] < 0 or grid_pack[0] > (
+                self.scanning.settings.focus_width_max *
+                self.scanning.settings.focus_height_max
+            ):
+                raise RuntimeError(f"IdleISS.core.scan of focus type called by {username} with out of range at {now}.")
+            if self.users[username].last_focus_scan == None:
+                pass # avoid None errors for math below
+            elif now < (self.users[username].last_focus_scan +
+                      self.scanning.settings.focus_recharge
+            ):
+                return ("You are scanning too soon since your last scan of this type, please try again later.", None)
+        elif type == "low" or type == "l":
+            if self.users[username].last_low_scan == None:
+                pass # avoid None errors for math below
+            elif now < (self.users[username].last_low_scan +
+                      self.scanning.settings.low_recharge
+            ):
+                return ("You are scanning too soon since your last scan of this type, please try again later.", None)
+        else:
+            raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {type} by {username}")
+        constellation_list = []
+        #collect constellations with an owned structure
+        for sys_name, structure in self.users[username].resources.structures.items():
+            const_name = self.universe.master_dict[sys_name].constellation
+            const = self.universe.master_dict[const_name]
+            if const not in constellation_list:
+                constellation_list.append(const)
+        lookup = self.scanning.site_data
+        #collect scannables
+        scannables = []
+        for constellation in constellation_list:
+            for system in constellation.systems:
+                for site in system.sites:
+                    if site.complete:
+                        continue
+                    if site.in_progress and not lookup[site.name].shared:
+                        continue
+                    if site.expire_time < now:
+                        continue
+                    scannables.append(site)
+        scanned = []
+        if type == "high" or type == "h":
+            self.users[username].last_high_scan = now
+            #TODO REGISTER HIGH ENERGY SCAN PULSE EVENT
+            return ("Charging ultracapacitors for wideband superluminal transmission. High energy scan pulse will be fired in approximately one hour. Please note this action will be extremely visible across the galaxy.", None)
+        elif type == "focus" or type == "f":
+            self.users[username].last_focus_scan = now
+            scanned, grid = self.scanning.process_focus_sites(scannables, grid_pack[1], grid_pack[2], rand)
+            site_text = ""
+            if len(scanned) <= 0:
+                return (f"Scan was successful, but it detected nothing notable at that frequency.", grid)
+            elif len(scanned) <= 5:
+                for x in range(len(scanned)):
+                    site_text += f"{x+1}: {lookup[scanned[x].name].initial_description}\n"
+                return (f"Scan was successful, results are as follows: \n{site_text}Dispatch fleets using /destinations.", grid)
+            else:
+                scanned.sort(reverse=True, key=lambda x: lookup[x.name].quality)
+                for x in range(5):
+                    site_text += f"{x+1}: {lookup[site[x].name].initial_description}\n"
+                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using /destinations.", grid) #TODO implement /destinations
+            return ("focus result", "magic")
+        elif type == "low" or type == "l":
+            self.users[username].last_low_scan = now
+            for site in scannables:
+                if rand.random() < lookup[site.name].low_chance:
+                    scanned.append(site)
+            #TODO register sites to user
+            site_text = ""
+            if len(scanned) <= 0:
+                return (f"Scan was successful, but it detected nothing notable in range.", None)
+            elif len(scanned) <= 5:
+                for x in range(len(scanned)):
+                    site_text += f"{x+1}: {lookup[scanned[x].name].initial_description}\n"
+                return (f"Scan was successful, results are as follows: \n{site_text}Dispatch fleets using /destinations.", None)
+            else:
+                scanned.sort(reverse=True, key=lambda x: lookup[x.name].quality)
+                for x in range(5):
+                    site_text += f"{x+1}: {lookup[site[x].name].initial_description}\n"
+                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using /destinations.", None) #TODO implement /destinations
+        else:
+            raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {type} by {username} at {now}")
 
     def _sort_engine_events(self):
         self._engine_events.sort(key=(lambda x:(x.kw["timestamp"])))

@@ -2,6 +2,8 @@ from idleiss.core import GameEngine
 import time
 import re
 
+from random import Random
+
 # all calls from Interpreter should be to idleiss.core.GameEngine
 # an external program which imports idleiss should also only make calls to GameEngine
 
@@ -17,11 +19,11 @@ class Interpreter(object):
         self.parser_regex = {}
         self.parser_command_list = "Commands: exit|e|q"
         self.add_parser([r"init\s*$"], self.init_engine, "init")
-        self.add_parser([r"add\s+(?P<username>.*)\s*$"], self.add_user, "add <username>")
-        self.add_parser([r"inc_time\s+(?P<duration>.*)\s*$"], self.increment_time, "inc_time <length>")
-        self.add_parser([f"inspect\s+(?P<username>.*)\s*$"], self.inspect, "inspect <username>")
-        self.add_parser([f"info\s+(?P<system_name>.*)\s*$"], self.info, "info <system_name>")
-        self.add_parser([f"scan\s+(?P<type>.*)\s+(?P<username>.*)\s*$"], self.scan, "scan <type> <username>")
+        self.add_parser([r"add\s+(?P<username>\w+)\s*$"], self.add_user, "add <username>")
+        self.add_parser([r"inc_time\s+(?P<duration>\w+)\s*$"], self.increment_time, "inc_time <length>")
+        self.add_parser([r"inspect\s+(?P<username>\w+)\s*$"], self.inspect, "inspect <username>")
+        self.add_parser([r"info\s+(?P<system_name>\w+)\s*$"], self.info, "info <system_name>")
+        self.add_parser([r"scan\s+(?P<type>\w+)\s+(?P<username>\w+)\s*(?P<pos>\w+)?\s*$"], self.scan, "scan <type> <username> [<pos>]")
 
     def add_parser(self, phrases, callback, help_text):
         self.parser_command_list += f", {help_text}"
@@ -83,9 +85,19 @@ class Interpreter(object):
             return "error: use init first"
         username = match.group("username")
         type = match.group("type")
+        pos = match.group("pos")
         if type not in ["low", "focus", "high", "l", "f", "h"]:
-            return "error: incorrect scan type entered. Use: [l]ow, [f]ocus, or [h]igh"
-        return self.engine.scan(username)
+            return f"error: incorrect scan type entered: {type}. Use: [l]ow, [f]ocus, or [h]igh"
+        if type == "f" or type == "focus":
+            if pos == None:
+                return f"error: for scan type {type} a pos value is needed"
+            else:
+                sel_y = int((pos-1)/self.engine.scanning.settings.focus_height_max)
+                sel_x = pos-(self.engine.scanning.settings.focus_height_max*
+                    self.engine.scanning.settings.focus_width_max
+                )
+                return self.engine.scan(Random(), self.current_time, username, type, (pos,sel_x,sel_y))
+        return self.engine.scan(Random(), self.current_time, username, type)
 
     def run(self, preload_file=None, logs_enabled=False):
         if logs_enabled:

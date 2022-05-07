@@ -13,6 +13,9 @@ class User(object):
             self.total_time = 0
             self.last_payout = 0
             self.starting_system = starting_system
+            self.last_low_scan = None
+            self.last_focus_scan = None
+            self.last_high_scan = None
             return
         #TODO add validation
         self.id = savedata['id']
@@ -24,6 +27,9 @@ class User(object):
         self.total_time = savedata['total_time']
         self.last_payout = savedata['last_payout']
         self.starting_system = savedata['starting_system']
+        self.last_low_scan = savedata['last_low_scan']
+        self.last_focus_scan = savedata['last_focus_scan']
+        self.last_high_scan = savedata['last_high_scan']
 
     def generate_savedata(self):
         save = {
@@ -36,6 +42,9 @@ class User(object):
             'total_time': self.total_time,
             'last_payout': self.last_payout,
             'starting_system': self.starting_system.id,
+            'last_low_scan': self.last_low_scan,
+            'last_focus_scan': self.last_focus_scan,
+            'last_high_scan': self.last_high_scan,
         }
         return save
 
