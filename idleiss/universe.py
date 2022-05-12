@@ -1,7 +1,9 @@
 from random import Random
 import json
+import math
 import networkx as nx
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as PathEffects
 
 from idleiss.scan import SiteInstance
 
@@ -469,7 +471,7 @@ class Universe(object):
 
     def generate_networkx(self, node_list):
         """
-        Debugging function which uses NetworkX (python mathematics tool)
+        Mapping function which uses NetworkX (python mathematics tool)
         NetworkX is a fully python implementation so don't use HUGE graphs
         it's 225x slower than graph-tool (g-t is implemented as a C++ library with python wrapper)
         """
@@ -498,7 +500,7 @@ class Universe(object):
 
     def generate_graph_tool(self, node_list):
         """
-        Debugging function which uses graph-tool (python mathematics tool)
+        Mapping function which uses graph-tool (python mathematics tool)
         graph-tool is a C++ implementation with a python wrapper
         it's 225x faster than NetworkX (NetworkX is python only)
         """
@@ -926,7 +928,7 @@ class Universe(object):
         plt.show()
 
     def save_graph(self, graph, name_of_file):
-        plt.figure(figsize=(24,14))
+        fig = plt.figure(figsize=(18,13.5))
         color_array = []
         for node in graph:
             if self.master_dict[node].security == "High":
@@ -937,9 +939,33 @@ class Universe(object):
                 color_array.append("r")
             else:
                 raise ValueError(f"{node}: did not have a valid security rating")
-        nx.draw_networkx(graph, pos=nx.spring_layout(graph),
-            node_size=24, font_size=16, with_labels=True, node_color=color_array)
-        plt.savefig(name_of_file, bbox_inches="tight")
+        layout = nx.spring_layout(graph, k=(1/(math.sqrt(len(graph)))))
+        nx.draw_networkx_edges(graph,
+            pos=layout,
+            edge_color='white',
+            width=1
+        )
+        nx.draw_networkx_nodes(graph,
+            pos=layout,
+            node_color=color_array,
+            node_size=500
+        )
+        result = nx.draw_networkx_labels(graph,
+            pos=layout,
+            font_size=16,
+            font_color='white',
+        )
+        for k, v in result.items():
+            v.set_path_effects([PathEffects.withStroke(linewidth=2, foreground="black")])
+        plt.tight_layout()
+        plt.axis("off")
+        fig.set_facecolor("#000000")
+        plt.savefig(name_of_file,
+            facecolor=fig.get_facecolor(),
+            edgecolor='white',
+            bbox_inches=0,
+            pad_inches=0,
+            dpi=100)
         plt.close()
 
     #TODO: Distance floodfill?

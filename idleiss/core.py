@@ -1,9 +1,25 @@
-from .event import GameEngineEvent
+from .event import event_types, HighEnergyScan, HighEnergyScanAnnouncement
 from .ship import ShipLibrary
 from .universe import Universe
 from .universe import SolarSystem
 from .user import User
 from .scan import Scanning
+import bisect
+
+#bisect tools
+def bisect_index(a, x):
+    'Locate the leftmost value in sorted list a exactly equal to x'
+    i = bisect.bisect_left(a, x)
+    if i != len(a) and a[i] == x:
+        return i
+    return None
+
+def bisect_is_present(a, x):
+    'Return if sorted list a contains x'
+    i = bisect.bisect_left(a, x)
+    if i != len(a) and a[i] == x:
+        return True
+    return False
 
 class TimeOutofBounds(Exception):
     def __init__(self, value):
@@ -18,14 +34,20 @@ class InvalidSaveData(Exception):
         return repr(self.value)
 
 class MessageManager(object):
-    valid_types = ['broadcast', 'debug', 'admin']
+    valid_types = ['broadcast', 'debug', 'admin', 'major_event']
     container_order = ['time', 'mess_type', 'message']
     def __init__(self, message=None, mess_type=None, time=None):
         self.container = []
+        ## this allows creation an empty array that can easily be extended
         if message == None or mess_type == None or time == None:
             return
+        ## if not called using MessageManager() then validate entered node
         if mess_type not in self.valid_types:
             raise ValueError(f"MessageManager: passed an invalid message type: {mess_type}")
+        if message == None or message == '':
+            raise ValueError(f"MessageManager: passed an empty message. {time}, {mess_type}")
+        if time < 0:
+            raise ValueError(f"MessageManager: passed a negative timestamp {mess_type}, {message}")
         if message != None and message != '':
             self.container.append([time, mess_type, message])
 
@@ -39,12 +61,6 @@ class MessageManager(object):
             raise ValueError(f"MessageManager.append: passed an invalid message type: {mess_type}")
         if message != None and message != '':
             self.container.append([time, mess_type, message])
-
-    def append(self, engine_event, timestamp):
-        if type(engine_event) != GameEngineEvent:
-            raise ValueError(f"MessageManager.append: passed a non-engine_event")
-        mess_type = engine_event.kw.get('message_type', 'broadcast')
-        self.container.append([timestamp, mess_type, engine_event()])
 
     @staticmethod
     def human_time_diff(time):
@@ -130,7 +146,7 @@ class GameEngine(object):
         # have occured yet
         self.world_timestamp = 0
 
-        # this should be a dequeue and must be thread safe.
+        # this should be a bisect managed sorted list and must be thread safe.
         self._engine_events = []
 
         self._load_save(savedata)
@@ -144,8 +160,13 @@ class GameEngine(object):
             return
         if savedata == None:
             return
-        #TODO add validation
-        self._engine_events = savedata['_engine_events']
+
+        ## load _engine_events from save file. Dump current events:
+        self._engine_events = []
+        ## load each event in order, this ensures they are in order now
+        for event in savedata['_engine_events']:
+            prepared_event = event_types[event[0]](**event[1])
+            bisect.insort(self._engine_events, prepared_event)
         self.current_channel_list = set(savedata['current_channel_list'])
         for usrid, usersave in savedata['users'].items():
             usersave['starting_system'] = self.universe.systems[usersave['starting_system']]
@@ -157,8 +178,9 @@ class GameEngine(object):
         usersave = {}
         for usrid, usr in self.users.items():
             usersave[usrid] = usr.generate_savedata()
+        events_save = [(event.type_str(), event.asdict()) for event in self._engine_events]
         save = {
-            '_engine_events': self._engine_events, #TODO may not work in the future
+            '_engine_events': events_save,
             'current_channel_list': list(self.current_channel_list),
             'users': usersave,
             'universe': self.universe.generate_savedata(),
@@ -166,22 +188,9 @@ class GameEngine(object):
         }
         return save
 
-    def _add_event(self, event_type, **kw):
-        # this is a bit of a magic as we assume that any keyword
-        # arguments that are called `timestamp` relates to the
-        # current time and not earlier.  We check that the engine hasn't
-        # processed any timestamp older relative to world_timestamp.
-        # If the timestamp is in the past then we force to world_timestamp
-        kw["timestamp"] = max(kw.get("timestamp",0), self.world_timestamp)
-        # this means that events can only occur between ticks and if an
-        # event occurs past the next tick we can safely ignore it until
-        # the tick where it would "occur". This is very useful since
-        # it allows us to schedule future events by simpily placing them
-        # into this queue. Hopefully this does not lead to a queue
-        # which is overly large and stuffed full of future events
-
-        self._engine_events.append(GameEngineEvent(event_type, **kw))
-        self._sort_engine_events()
+    def _add_event(self, event):
+        event.timestamp = max(event.timestamp, self.world_timestamp)
+        bisect.insort(self._engine_events, event)
 
     def _can_construct_structure(self, user, system, structure):
         """
@@ -346,8 +355,21 @@ class GameEngine(object):
                     scannables.append(site)
         scanned = []
         if type == "high" or type == "h":
+            ## update user info for high scan
             self.users[username].last_high_scan = now
-            #TODO REGISTER HIGH ENERGY SCAN PULSE EVENT
+            ## register future high scan global event
+            const_names = [const.name for cost in constellation_list]
+            self._add_event(HighEnergyScan(
+                timestamp=now+1+self.scanning.settings.high_delay,
+                user=username,
+                constellations=const_names
+            ))
+            ## register high scan announcement now
+            self._add_event(HighEnergyScanAnnouncement(
+                timestamp=now+1,
+                user=username,
+                constellations=const_names
+            ))
             return ("Charging ultracapacitors for wideband superluminal transmission. High energy scan pulse will be fired in approximately one hour. Please note this action will be extremely visible across the galaxy.", None)
         elif type == "focus" or type == "f":
             self.users[username].last_focus_scan = now
@@ -386,9 +408,6 @@ class GameEngine(object):
         else:
             raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {type} by {username} at {now}")
 
-    def _sort_engine_events(self):
-        self._engine_events.sort(key=(lambda x:(x.kw["timestamp"])))
-
     def _update_sites(self, timestamp):
         for constellation in self.universe.constellations:
             system_count = len(constellation.systems)
@@ -405,12 +424,13 @@ class GameEngine(object):
 
     def update_world(self, active_list, timestamp):
         """
-        update_world will be the one point of intersection as far as data
-        modification between this engine and the outside world.
+        update_world will be the the major point of intersection as far as data
+        modification between this engine and the outside world. Some usage of
+        user abilities such as scanning will be edited outside of this function
+        but everything else including managing fleets, events, and the results
+        of abilities will be managed here.
         Every tick (chosen by the controller program) the controller must
-        send the current timestamp along with the current user list and any commands
-        possible example: "fleet engage <enemy player>"
-        (direct control by user may never be implemented, but may be automatic)
+        send the current timestamp along with the current user list.
         """
         if timestamp == self.world_timestamp:
             return MessageManager()
@@ -427,12 +447,17 @@ class GameEngine(object):
         event_results = MessageManager()
 
         # recursive magic to hit each event in the future as queued
-        if len(self._engine_events) > 0:
-            # evaulate that event as if it happened at that timestamp if
-            # it's between self.world_timestamp and our new eval target
-            while self._engine_events[0].kw["timestamp"] < timestamp:
-                next_event_timestamp = self._engine_events[0].kw["timestamp"]
+        # evaulate that event as if it happened at that timestamp if
+        # it's between self.world_timestamp and our new eval target
+        # only works if the _engine_events list is sorted
+        while len(self._engine_events) > 0:
+            # if event is in the past relative to timestamp rewind to catch it
+            if self._engine_events[0].timestamp < timestamp:
+                next_event_timestamp = self._engine_events[0].timestamp
                 event_results.extend(self._update_world(next_event_timestamp))
+            else:
+                #if next event is future or current, don't back up time
+                break
 
         #### For Each User:
         for user_id in self.users:
@@ -455,10 +480,13 @@ class GameEngine(object):
         engine_events = self._engine_events.copy()
         for engine_event in engine_events:
             # we know the engine_events are sorted so as soon as we hit one in the future, eject
-            if engine_event.kw["timestamp"] > timestamp:
+            if engine_event.timestamp > timestamp:
                 break
             else: # if not a future event, process it
-                event_results.append(engine_event, timestamp)
+                results = engine_event(self)
+                for result in engine_event(self):
+                    event_message, event_mess_type, event_timestamp = result
+                    event_results.append(message=event_message, mess_type=event_mess_type, time=timestamp)
                 self._engine_events.remove(engine_event)
 
         self.world_timestamp = timestamp

@@ -6,7 +6,8 @@
         "focus_height_max": 5,
         "focus_width_max": 5,
         "max_quality_per_constellation": 10,
-        "site_decay": 604800
+        "site_decay": 604800,
+        "high_delay": 3600
     },
     "sites": {
         "Mineable Asteroid": {

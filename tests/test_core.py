@@ -85,36 +85,36 @@ class CoreTestCase(TestCase):
             engine.update_world(active_list=user_list, timestamp=999)
         self.assertEqual(str(context.exception), "'already processed this timestamp'")
 
-    def test_event_engine_add(self):
-        def some_event(name="foo"):
-            return name
+    #def test_event_engine_add(self):
+        #def some_event(name="foo"):
+        #    return name
 
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
-        engine._add_event(some_event, name="foo")
-        self.assertEqual(engine._engine_events[0].func, some_event)
-        self.assertEqual(engine._engine_events[0].kw["name"], "foo")
+        #engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
+        #engine._add_event(some_event, name="foo")
+        #self.assertEqual(engine._engine_events[0].func, some_event)
+        #self.assertEqual(engine._engine_events[0].kw["name"], "foo")
 
-    def test_event_engine_backwards_in_time(self):
-        def time_dependent_event(timestamp):
-            return timestamp
+    # def test_event_engine_backwards_in_time(self):
+        # def time_dependent_event(timestamp):
+            # return timestamp
 
-        def time_independent_event():
-            # if there is even such a thing.
-            return
+        # def time_independent_event():
+            # # if there is even such a thing.
+            # return
 
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
-        engine.update_world(active_list=set(), timestamp=100)
-        engine._add_event(time_dependent_event, timestamp=50)
-        # timestamp argument magically forced to be the last time the
-        # world was updated.
+        # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
+        # engine.update_world(active_list=set(), timestamp=100)
+        # engine._add_event(time_dependent_event, timestamp=50)
+        # # timestamp argument magically forced to be the last time the
+        # # world was updated.
 
-        self.assertEqual(engine._engine_events[0].kw["timestamp"], 100)
+        # self.assertEqual(engine._engine_events[0].kw["timestamp"], 100)
 
-        # note that the order of events that got added to the engine do
-        # matter very much.  i.e. if login and logout happened at about
-        # the same time but the order they were added in were reversed,
-        # bad things probably will happen.  Problem belongs to the user
-        # of the engine, i.e. the chatroom interface.
+        # # note that the order of events that got added to the engine do
+        # # matter very much.  i.e. if login and logout happened at about
+        # # the same time but the order they were added in were reversed,
+        # # bad things probably will happen.  Problem belongs to the user
+        # # of the engine, i.e. the chatroom interface.
 
     def test_inspect_user(self):
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
@@ -145,25 +145,25 @@ starting_system = {starting_system_name}
 """
         self.assertEqual(expected_string,engine.inspect_user("user1"))
 
-    def test_events_occur_in_order(self):
-        def func_a(timestamp):
-            return 'a'
-        def func_b(timestamp):
-            return 'b'
-        def func_c(timestamp):
-            return 'c'
-        def func_d(timestamp):
-            return 'd'
-        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
-        user_list = set(["user1", "user2"])
-        engine.update_world(active_list=user_list, timestamp=1)
-        engine._add_event(func_a, timestamp=2)
-        engine._add_event(func_b, timestamp=3)
-        engine._add_event(func_c, timestamp=4)
-        engine._add_event(func_d, timestamp=5)
-        expected_val = ['2: a','3: b', '4: c', '5: d']
-        mes_manager = engine.update_world(active_list=user_list, timestamp=5)
-        self.assertEqual(expected_val, mes_manager.broadcasts_with_times)
+    # def test_events_occur_in_order(self):
+        # def func_a(timestamp):
+            # return 'a'
+        # def func_b(timestamp):
+            # return 'b'
+        # def func_c(timestamp):
+            # return 'c'
+        # def func_d(timestamp):
+            # return 'd'
+        # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
+        # user_list = set(["user1", "user2"])
+        # engine.update_world(active_list=user_list, timestamp=1)
+        # engine._add_event(func_a, timestamp=2)
+        # engine._add_event(func_b, timestamp=3)
+        # engine._add_event(func_c, timestamp=4)
+        # engine._add_event(func_d, timestamp=5)
+        # expected_val = ['2: a','3: b', '4: c', '5: d']
+        # mes_manager = engine.update_world(active_list=user_list, timestamp=5)
+        # self.assertEqual(expected_val, mes_manager.broadcasts_with_times)
 
     def test_loaded_save_files_generate_same_save_files_to_active_engines(self):
         engine1 = core.GameEngine(

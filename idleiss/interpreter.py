@@ -1,6 +1,9 @@
 from idleiss.core import GameEngine
 import time
 import re
+import json
+import os
+import pathlib
 
 from random import Random
 
@@ -8,12 +11,47 @@ from random import Random
 # an external program which imports idleiss should also only make calls to GameEngine
 
 class Interpreter(object):
-    def __init__(self, universe_filename, library_filename, scanning_filename):
+    def __init__(self, universe_filename, library_filename, scanning_filename, save_filename=None):
         self.current_time = int(time.time())
-        self.engine = GameEngine(universe_filename, library_filename, scanning_filename)
+        self._load(universe_filename, library_filename, scanning_filename, save_filename)
         self.init_parser()
         self.userlist = []
         self.is_started = False
+        self.save_filename = save_filename
+
+    def _load(self, universe_filename, library_filename, scanning_filename, save_filename):
+        save = None
+        if save_filename != None:
+            savefile = pathlib.Path(save_filename)
+            savefile.touch(exist_ok=True)
+            if os.path.getsize(save_filename) == 0:
+                with open(save_filename, 'w') as fd:
+                    fd.write('{}')
+                print(f'{save_filename} was not present. Generating fresh IdleISS instance...')
+                self.engine = GameEngine(universe_filename, library_filename, scanning_filename, {})
+                return
+            with open(save_filename, 'r') as fd:
+                save = json.load(fd)
+            savedata_engine = save.get('engine', None)
+            savedata_userlist = save.get('userlist', None)
+            if save == {}:
+                print(f'{save_filename} was empty. Generating fresh IdleISS instance...')
+                self.engine = GameEngine(universe_filename, library_filename, scanning_filename, {})
+                return
+            if ( #TODO move to validate function and make more robust
+                    savedata_engine == None or
+                    savedata_userlist == None
+                ):
+                raise RuntimeError(f'{save_filename} contains invalid save data, delete the file or replace with valid save data to continue.')
+            self.engine = GameEngine(universe_filename, library_filename, scanning_filename, savedata_engine)
+            self.userlist = savedata_userlist
+            print(f"Current time is {self.current_time}, save has: {savedata_engine['world_timestamp']}")
+            self.current_time = max(savedata_engine["world_timestamp"], self.current_time)
+            print(f"Current time forced to {self.current_time}")
+            print(f'Successfully loaded savefile: {save_filename}')
+        else:
+            print(f'No save file provided. Generating fresh IdleISS instance...')
+            self.engine = GameEngine(universe_filename, library_filename, scanning_filename, {})
 
     def init_parser(self):
         self.parser_regex = {}
@@ -24,6 +62,7 @@ class Interpreter(object):
         self.add_parser([r"inspect\s+(?P<username>\w+)\s*$"], self.inspect, "inspect <username>")
         self.add_parser([r"info\s+(?P<system_name>\w+)\s*$"], self.info, "info <system_name>")
         self.add_parser([r"scan\s+(?P<type>\w+)\s+(?P<username>\w+)\s*(?P<pos>\w+)?\s*$"], self.scan, "scan <type> <username> [<pos>]")
+        self.add_parser([r"save\s*(?P<filename>[a-zA-Z0-9_]+.[a-zA-Z0-9_]+)?\s*$"], self.save, "save")
 
     def add_parser(self, phrases, callback, help_text):
         self.parser_command_list += f", {help_text}"
@@ -92,12 +131,31 @@ class Interpreter(object):
             if pos == None:
                 return f"error: for scan type {type} a pos value is needed"
             else:
+                pos = int(pos)
                 sel_y = int((pos-1)/self.engine.scanning.settings.focus_height_max)
-                sel_x = pos-(self.engine.scanning.settings.focus_height_max*
-                    self.engine.scanning.settings.focus_width_max
-                )
+                sel_x = int(pos-(sel_y*self.engine.scanning.settings.focus_width_max))
                 return self.engine.scan(Random(), self.current_time, username, type, (pos,sel_x,sel_y))
         return self.engine.scan(Random(), self.current_time, username, type)
+
+    def save(self, match):
+        save_file = None
+        if match.group("filename") == None:
+            if self.save_filename == None:
+                return f"error: save needs filename when idleiss not started with -l"
+            else:
+                save_file = self.save_filename
+        else:
+            save_file = match.group("filename")
+        engine_savedata = self.engine.generate_savedata()
+        savedata = {
+            'engine': engine_savedata,
+            'userlist': self.userlist,
+        }
+        #verify that dump doesn't fail before writing
+        testout = json.dumps(savedata, indent=4)
+        with open(save_file, 'w') as fd:
+            fd.write(testout)
+        return f"savefile generated in file: {save_file} at {self.current_time}"
 
     def run(self, preload_file=None, logs_enabled=False):
         if logs_enabled:

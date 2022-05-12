@@ -20,3 +20,7 @@ idleiss --simulate-battle config/Example_Fleet_Fight.json
 # Run with interpreter with pre-set instructions
 echo "Running Sample Interpreter"
 idleiss --preload interpreter_test_log.txt
+
+# Run with interpreter with savefile
+echo "Running Sample Interpreter with Save File"
+idleiss --preload interpreter_test_log.txt -l test.json

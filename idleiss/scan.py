@@ -11,7 +11,7 @@ site_schema_optional_fields = ["ships", "in_progress_low_chance",
 
 setting_schema_fields = ["low_recharge", "focus_recharge", "high_recharge",
     "focus_height_max", "focus_width_max", "max_quality_per_constellation",
-    "site_decay"]
+    "site_decay", "high_delay"]
 setting_schema_optional_fields = []
 
 SiteSchema = namedtuple("SiteSchema", ["name"] + site_schema_fields +
