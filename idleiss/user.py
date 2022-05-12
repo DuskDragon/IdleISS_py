@@ -16,6 +16,7 @@ class User(object):
             self.last_low_scan = None
             self.last_focus_scan = None
             self.last_high_scan = None
+            self.destinations = []
             return
         #TODO add validation
         self.id = savedata['id']
@@ -30,6 +31,7 @@ class User(object):
         self.last_low_scan = savedata['last_low_scan']
         self.last_focus_scan = savedata['last_focus_scan']
         self.last_high_scan = savedata['last_high_scan']
+        self.destinations = savedata['destinations']
 
     def generate_savedata(self):
         save = {
@@ -45,6 +47,7 @@ class User(object):
             'last_low_scan': self.last_low_scan,
             'last_focus_scan': self.last_focus_scan,
             'last_high_scan': self.last_high_scan,
+            'destinations': self.destinations,
         }
         return save
 

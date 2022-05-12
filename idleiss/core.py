@@ -303,6 +303,7 @@ class GameEngine(object):
     def scan(self, rand, now, username, type, grid_pack=None):
         if username not in self.users:
             return ("error: no such user", None)
+        #this if/else block returns early with an error if cooldowns are not ready
         if type == "high" or type == "h":
             if self.users[username].last_high_scan == None:
                 pass # avoid None errors for math below
@@ -333,6 +334,7 @@ class GameEngine(object):
                 return ("You are scanning too soon since your last scan of this type, please try again later.", None)
         else:
             raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {type} by {username}")
+        #after continuing past this block we are clear to execute scan as far as cooldowns are concerned
         constellation_list = []
         #collect constellations with an owned structure
         for sys_name, structure in self.users[username].resources.structures.items():
