@@ -416,7 +416,7 @@ class GameEngine(object):
             scannables = [[] for x in range(system_count)]
             #collect scannables references:
             for x in range(system_count):
-                scannables[x] = constellation.systems[x].sites
+                scannables[x] = constellation.systems[x]
             #update sites in self.universe using their references:
             self.scanning.gen_constellation_scannables(
                 scannables,

@@ -34,6 +34,7 @@ class HighEnergyScanAnnouncement(Event):
 
 def handle_high_energy_scan(event: HighEnergyScan, engine):
     #TODO implement adding scan call and registering it to all players in the constellations
+    #TODO register destiations to players with fleets operating in those constellations
     if len(event.constellations) == 1:
         return (f"High Energy Scan Released, ships and structures in the constellation {event.constellations[0]} have received new valid destinations. Check /destinations", "broadcast", event.timestamp)
     elif len(event.constellations) == 2:

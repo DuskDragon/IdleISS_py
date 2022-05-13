@@ -4,6 +4,7 @@ import math
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as PathEffects
+import itertools
 
 from idleiss.scan import SiteInstance
 
@@ -90,6 +91,12 @@ sites: {self.sites}
         temp = self.structures.get(user_id, [])
         temp.append(structure['name'])
         self.structures[user_id] = temp
+
+    def get_next_site_id(self):
+        used_ids = [site.site_id for site in self.sites]
+        for id in itertools.count(start=1):
+            if id not in used_ids:
+                return id
 
 class Constellation(object):
     def __init__(self, random_state, universe, systems, security, name, region):
@@ -257,20 +264,20 @@ class Universe(object):
         random generation rebuild the full universe first. Then update the differences
         between a new generated uni and one where the players have built things
         """
-        # unlist-ify the random.getstate smashed into JSON
-        #listblob =
-        #if len(listblob[0]) != 1 and len(listblob[1]) != 1 and len(listblob[2]) != 0:
-        #    proper_state = tuple(listblob[0])
-        #proper_state =
         self.rand.setstate(tupleize(savedata['rand']))
         system_updates = savedata['system_updates']
         for id, sys in system_updates.items():
             self.systems[int(id)].structures = sys['structures']
             self.systems[int(id)].owned_by = sys['owned_by']
+            #verify ids are unique per system
+            used_ids = [site['site_id'] for site in sys['sites']]
+            if len(used_ids) != len(set(used_ids)):
+                raise RuntimeError(f'Invalid site_id in savefile for system {id}')
             for site in sys['sites']:
+                used_ids = []
                 self.systems[int(id)].sites.append(
                     SiteInstance(
-                        site['name'], site['expire_time'],
+                        site['name'], site['expire_time'], site['site_id'],
                         site['in_progress'], site['complete']
                     )
                 )

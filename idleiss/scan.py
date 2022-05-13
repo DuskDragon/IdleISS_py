@@ -37,18 +37,20 @@ def Site(schema, attributes):
     return _Site(schema, attributes)
 
 class SiteInstance(object):
-    def __init__(self, name, expire_time, in_progress=False, complete=False):
+    def __init__(self, name, expire_time, site_id, in_progress=False, complete=False):
         self.name = name
         self.expire_time = expire_time
         self.in_progress = in_progress
         self.complete = complete
+        self.site_id = site_id
 
     def asDict(self):
         return {
             'name': self.name,
             'expire_time': self.expire_time,
             'in_progress': self.in_progress,
-            'complete': self.complete
+            'complete': self.complete,
+            'site_id': self.site_id
         }
 
     def __repr__(self):
@@ -188,25 +190,27 @@ class Scanning(object):
         return (results, scan_grid)
 
 
-    def gen_constellation_scannables(self, constellation_sites, timestamp, rand):
+    def gen_constellation_scannables(self, constellation_systems, timestamp, rand):
         """
-        mutates constellation_sites to clear old sites and update them with new sites
-        constellation_sites: a list of lists of sites, outer list are the systems, inner are sites
+        mutates constellation_systems to clear old sites and update them with new sites
+        constellation_systems: a list of systems each with sites, outer list are the systems, inner are sites
         timestamp: current timestamp in seconds
         rand: random instance from universe so full state can be recovered
         """
         current_quality = 0
-        for system in constellation_sites:
+        for system in constellation_systems:
             # remove completed and expired sites
-            system = filter(lambda site:
+            system.sites = list(filter(lambda site:
                 (not site.complete) and (site.expire_time > timestamp or site.in_progress),
-                system)
-            for site in system:
+                system.sites))
+            for site in system.sites:
                 current_quality += self.site_data[site.name].quality
         #if the constellation needs more sites add them to random slots
         while current_quality < self.settings.max_quality_per_constellation:
             name = rand.choice(list(self.site_data.keys()))
             current_quality += self.site_data[name].quality
-            rand.choice(constellation_sites).append(
-                SiteInstance(name, timestamp+self.settings.site_decay)
+            random_system = rand.choice(constellation_systems)
+            site_id = random_system.get_next_site_id()
+            random_system.sites.append(
+                SiteInstance(name, timestamp+self.settings.site_decay, site_id)
             )
