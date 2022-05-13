@@ -3,7 +3,7 @@ import os
 
 version = '0.0.1'
 
-long_description = open('README.rst').read()
+long_description = open('README.md').read()
 
 def clean_lines(filename):
     with open(filename) as fd:
