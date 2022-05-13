@@ -288,6 +288,15 @@ class GameEngine(object):
         self.current_channel_list = set(active_list)
         return messages
 
+    def _prune_destinations(self, destination_data):
+        #prune destinations for users
+        for user_id, user in self.users.items():
+            user.destinations = list(filter(
+                lambda dest: dest != destination_data,
+                user.destinations
+            ))
+        #TODO: prune_destiations for fleets
+
     def inspect_user(self, username):
         if username not in self.users:
             return "error: no such user"
@@ -299,6 +308,35 @@ class GameEngine(object):
             return "error: no such system"
         else:
             return temp.inspect()
+
+    def _highenergyscan(self, constellations, timestamp):
+        #collect all scannables
+        scannables = []
+        players = []
+        lookup = self.scanning
+        for constellation_name in constellations:
+            constellation = self.universe.master_dict[constellation_name]
+            for system in constellation.systems:
+                #check for players using structures
+                for user_id, structure in system.structures.items():
+                    if self.users[user_id] not in players:
+                        players.append(self.users[user_id])
+                #TODO: check for players using fleets
+                # for user_id, fleet in system.fleets.items():
+                    # if self.users[user_id] not in players:
+                        # players.append(self.users[user_id])
+                for site in system.sites:
+                    if site.is_scannable(timestamp, lookup):
+                        #TODO ONLY ADD IF CHANCE IS CHECKED, CURRENTLY NOT DONE DUE TO DEBUGGING
+                        if site not in scannables:
+                            scannables.append(site)
+        scanned = []
+        for player in players:
+            for site in scannables:
+                site_data = ["SiteInstance", site.site_id, site.system_id]
+                if site_data not in player.destinations:
+                    player.destinations.append(site_data)
+        #TODO update 'recent' menu to reflect new sites being added
 
     def scan(self, rand, now, username, type, grid_pack=None):
         if username not in self.users:
@@ -342,19 +380,15 @@ class GameEngine(object):
             const = self.universe.master_dict[const_name]
             if const not in constellation_list:
                 constellation_list.append(const)
-        lookup = self.scanning.site_data
-        #collect scannables
+        lookup = self.scanning
+        #collect scannables, we only need to do this for low and focus
+        #in the future speed can be increased for non-high scans here
         scannables = []
         for constellation in constellation_list:
             for system in constellation.systems:
                 for site in system.sites:
-                    if site.complete:
-                        continue
-                    if site.in_progress and not lookup[site.name].shared:
-                        continue
-                    if site.expire_time < now:
-                        continue
-                    scannables.append(site)
+                    if site.is_scannable(now, lookup):
+                        scannables.append(site)
         scanned = []
         if type == "high" or type == "h":
             ## update user info for high scan
@@ -381,18 +415,18 @@ class GameEngine(object):
                 return (f"Scan was successful, but it detected nothing notable at that frequency.", grid)
             elif len(scanned) <= 5:
                 for x in range(len(scanned)):
-                    site_text += f"{x+1}: {lookup[scanned[x].name].initial_description}\n"
-                return (f"Scan was successful, results are as follows: \n{site_text}Dispatch fleets using /destinations.", grid)
+                    site_text += f"{x+1}: {lookup.site_data[scanned[x].name].initial_description}\n"
+                return (f"Scan was successful, results are as follows: \n{site_text}Dispatch fleets using the destinations menu.", grid)
             else:
-                scanned.sort(reverse=True, key=lambda x: lookup[x.name].quality)
+                scanned.sort(reverse=True, key=lambda x: lookup.site_data[x.name].quality)
                 for x in range(5):
-                    site_text += f"{x+1}: {lookup[site[x].name].initial_description}\n"
-                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using /destinations.", grid) #TODO implement /destinations
+                    site_text += f"{x+1}: {lookup.site_data[site[x].name].initial_description}\n"
+                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using the destinations menu.", grid) #TODO implement destinations menu
             return ("focus result", "magic")
         elif type == "low" or type == "l":
             self.users[username].last_low_scan = now
             for site in scannables:
-                if rand.random() < lookup[site.name].low_chance:
+                if rand.random() < lookup.site_data[site.name].low_chance:
                     scanned.append(site)
             #TODO register sites to user
             site_text = ""
@@ -400,13 +434,13 @@ class GameEngine(object):
                 return (f"Scan was successful, but it detected nothing notable in range.", None)
             elif len(scanned) <= 5:
                 for x in range(len(scanned)):
-                    site_text += f"{x+1}: {lookup[scanned[x].name].initial_description}\n"
-                return (f"Scan was successful, results are as follows: \n{site_text}Dispatch fleets using /destinations.", None)
+                    site_text += f"{x+1}: {lookup.site_data[scanned[x].name].initial_description}\n"
+                return (f"Scan was successful, results are as follows: \n{site_text}Dispatch fleets using the destinations menu.", None)
             else:
-                scanned.sort(reverse=True, key=lambda x: lookup[x.name].quality)
+                scanned.sort(reverse=True, key=lambda x: lookup.site_data[x.name].quality)
                 for x in range(5):
-                    site_text += f"{x+1}: {lookup[site[x].name].initial_description}\n"
-                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using /destinations.", None) #TODO implement /destinations
+                    site_text += f"{x+1}: {lookup.site_data[site[x].name].initial_description}\n"
+                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using the destinations menu.", None) #TODO implement destinations menu
         else:
             raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {type} by {username} at {now}")
 
@@ -419,6 +453,7 @@ class GameEngine(object):
                 scannables[x] = constellation.systems[x]
             #update sites in self.universe using their references:
             self.scanning.gen_constellation_scannables(
+                self,
                 scannables,
                 timestamp,
                 self.universe.rand

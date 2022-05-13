@@ -36,13 +36,17 @@ _Site = namedtuple("Site", ["schema", "attributes"])
 def Site(schema, attributes):
     return _Site(schema, attributes)
 
+class Scanning(object):
+    pass
+
 class SiteInstance(object):
-    def __init__(self, name, expire_time, site_id, in_progress=False, complete=False):
+    def __init__(self, name, expire_time, site_id, system_id, in_progress=False, complete=False):
         self.name = name
         self.expire_time = expire_time
         self.in_progress = in_progress
         self.complete = complete
         self.site_id = site_id
+        self.system_id = system_id
 
     def asDict(self):
         return {
@@ -50,11 +54,30 @@ class SiteInstance(object):
             'expire_time': self.expire_time,
             'in_progress': self.in_progress,
             'complete': self.complete,
-            'site_id': self.site_id
+            'site_id': self.site_id,
+            'system_id': self.system_id
         }
 
     def __repr__(self):
         return f"{self.name} expires:{self.expire_time}"
+
+    def is_scannable(self, timestamp: int, lookup: Scanning):
+        if self.complete:
+            return False
+        elif self.expire_time < timestamp:
+            return False
+        elif self.in_progress and not lookup.site_data[self.name].shared:
+            return False
+        else:
+            return True
+
+    def is_expired(self, timestamp: int):
+        if self.complete:
+            return True
+        elif self.expire_time < timestamp and not self.in_progress:
+            return True
+        else:
+            return False
 
 class Scanning(object):
 
@@ -189,8 +212,7 @@ class Scanning(object):
             scan_grid[sel_y][sel_x] = "green"
         return (results, scan_grid)
 
-
-    def gen_constellation_scannables(self, constellation_systems, timestamp, rand):
+    def gen_constellation_scannables(self, engine, constellation_systems, timestamp, rand):
         """
         mutates constellation_systems to clear old sites and update them with new sites
         constellation_systems: a list of systems each with sites, outer list are the systems, inner are sites
@@ -200,9 +222,13 @@ class Scanning(object):
         current_quality = 0
         for system in constellation_systems:
             # remove completed and expired sites
-            system.sites = list(filter(lambda site:
-                (not site.complete) and (site.expire_time > timestamp or site.in_progress),
-                system.sites))
+            valid_sites = []
+            for site in system.sites:
+                if site.is_expired(timestamp):
+                    engine._prune_destinations(["SiteInstance", site.site_id, site.system_id])
+                else: #not expired
+                    valid_sites.append(site)
+            system.sites = valid_sites
             for site in system.sites:
                 current_quality += self.site_data[site.name].quality
         #if the constellation needs more sites add them to random slots
@@ -212,5 +238,5 @@ class Scanning(object):
             random_system = rand.choice(constellation_systems)
             site_id = random_system.get_next_site_id()
             random_system.sites.append(
-                SiteInstance(name, timestamp+self.settings.site_decay, site_id)
+                SiteInstance(name, timestamp+self.settings.site_decay, site_id, random_system.id)
             )

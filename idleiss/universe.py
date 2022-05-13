@@ -272,13 +272,13 @@ class Universe(object):
             #verify ids are unique per system
             used_ids = [site['site_id'] for site in sys['sites']]
             if len(used_ids) != len(set(used_ids)):
-                raise RuntimeError(f'Invalid site_id in savefile for system {id}')
+                raise RuntimeError(f"Invalid site_id in savefile for system {id}")
             for site in sys['sites']:
                 used_ids = []
                 self.systems[int(id)].sites.append(
                     SiteInstance(
                         site['name'], site['expire_time'], site['site_id'],
-                        site['in_progress'], site['complete']
+                        site['system_id'], site['in_progress'], site['complete']
                     )
                 )
 

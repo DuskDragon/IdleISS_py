@@ -4,6 +4,7 @@ import re
 import json
 import os
 import pathlib
+import pprint
 
 from random import Random
 
@@ -18,6 +19,7 @@ class Interpreter(object):
         self.userlist = []
         self.is_started = False
         self.save_filename = save_filename
+        self.pp = pprint.PrettyPrinter(indent=4, width=68, compact=True) #68=80 minus '##########: '
 
     def _load(self, universe_filename, library_filename, scanning_filename, save_filename):
         save = None
@@ -86,7 +88,9 @@ class Interpreter(object):
             return "error: init already done"
         self.is_started = True
         mes_manager = self.engine.update_world(self.userlist, self.current_time)
-        return f"core started: events:\n{mes_manager.get_broadcasts_with_time_diff(self.current_time)}"
+        message_array = mes_manager.get_broadcasts_with_time_diff(self.current_time)
+        updates = '\n'.join(message_array)
+        return f"core started: events:\n{updates}"
 
     def add_user(self, match):
         username = match.group("username")
@@ -104,8 +108,10 @@ class Interpreter(object):
             return "error: duration must be positive integer"
         self.current_time += duration
         mes_manager = self.engine.update_world(self.userlist, self.current_time)
+        message_array = mes_manager.get_broadcasts_with_time_diff(self.current_time)
+        updates = '\n'.join(message_array)
         return f"time incremented by {duration} to {self.current_time}, " \
-               f"events:\n{mes_manager.get_broadcasts_with_time_diff(self.current_time)}"
+               f"events:\n{updates}"
 
     def inspect(self, match):
         if not self.is_started:
@@ -134,8 +140,10 @@ class Interpreter(object):
                 pos = int(pos)
                 sel_y = int((pos-1)/self.engine.scanning.settings.focus_height_max)
                 sel_x = int(pos-(sel_y*self.engine.scanning.settings.focus_width_max))
-                return self.engine.scan(Random(), self.current_time, username, type, (pos,sel_x,sel_y))
-        return self.engine.scan(Random(), self.current_time, username, type)
+                mess, grid = self.engine.scan(Random(), self.current_time, username, type, (pos,sel_x,sel_y))
+                full_mess = f"{mess}\nFrequency Map:\n{self.pp.pformat(grid)}"
+                return full_mess
+        return self.engine.scan(Random(), self.current_time, username, type)[0]
 
     def save(self, match):
         save_file = None

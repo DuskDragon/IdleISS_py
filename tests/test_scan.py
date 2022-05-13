@@ -16,3 +16,15 @@ class ScanTestCase(TestCase):
     def test_can_load_config(self):
         scanning = scan.Scanning(path_to_file("Scan_Config.json"), self.library)
         self.assertTrue(scanning)
+
+    #TODO
+    # def test_asDict
+
+    #TODO
+    # def test_is_scannable
+
+    #TODO
+    # def test_is_expired
+
+    #TODO
+    # def test_gen_constellation_scannables

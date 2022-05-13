@@ -1,5 +1,6 @@
 from .fleet import FleetManager
 from .resource import ResourceManager
+from .scan import SiteInstance
 
 class User(object):
     def __init__(self, user_id, starting_system, savedata=None):
@@ -89,11 +90,14 @@ id: {self.id}
 {self.resources}
 in_userlist: {self.in_userlist}
 join_time: {self.join_time}
-leave_time = {self.leave_time}
-total_time = {self.total_time}
-last_payout = {self.last_payout}
-starting_system = {self.starting_system.name}
-"""
+leave_time: {self.leave_time}
+total_time: {self.total_time}
+last_payout: {self.last_payout}
+starting_system: {self.starting_system.name}
+last_low_scan: {self.last_low_scan}
+last_focus_scan: {self.last_focus_scan}
+last_high_scan: {self.last_high_scan}
+destinations: {self.destinations}"""
         return output_str
 
     def can_afford(self, ship_or_structure):

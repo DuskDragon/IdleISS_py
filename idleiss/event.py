@@ -33,16 +33,15 @@ class HighEnergyScanAnnouncement(Event):
     constellations: list
 
 def handle_high_energy_scan(event: HighEnergyScan, engine):
-    #TODO implement adding scan call and registering it to all players in the constellations
-    #TODO register destiations to players with fleets operating in those constellations
+    engine._highenergyscan(event.constellations, event.timestamp)
     if len(event.constellations) == 1:
-        return (f"High Energy Scan Released, ships and structures in the constellation {event.constellations[0]} have received new valid destinations. Check /destinations", "broadcast", event.timestamp)
+        return (f"High Energy Scan Released, ships and structures in the constellation {event.constellations[0]} have received new sites in the destinations menu.", "broadcast", event.timestamp)
     elif len(event.constellations) == 2:
-        return (f"High Energy Scan Released, ships and structures in the constellations {event.constellations[0]} and {event.constellations[1]} have received new valid destinations. Check /destinations", "broadcast", event.timestamp)
+        return (f"High Energy Scan Released, ships and structures in the constellations {event.constellations[0]} and {event.constellations[1]} have received new sites in the destinations menu.", "broadcast", event.timestamp)
     else: #len(event.constellations) >= 3:
         const_names = [const for const in (event.constellations[0:-1])]
         const_list = ", ".join(const_names)
-        return (f"High Energy Scan Released, ships and structures in the constellations {const_list}, and {event.constellations[-1]} have received new valid destinations. Check /destinations", "broadcast", event.timestamp)
+        return (f"High Energy Scan Released, ships and structures in the constellations {const_list}, and {event.constellations[-1]} have received new sites in the destinations menu.", "broadcast", event.timestamp)
 
 def handle_high_energy_scan_announcement(event: HighEnergyScanAnnouncement, engine):
     if len(event.constellations) == 1:

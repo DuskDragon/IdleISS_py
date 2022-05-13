@@ -85,6 +85,7 @@ class CoreTestCase(TestCase):
             engine.update_world(active_list=user_list, timestamp=999)
         self.assertEqual(str(context.exception), "'already processed this timestamp'")
 
+    #TODO
     #def test_event_engine_add(self):
         #def some_event(name="foo"):
         #    return name
@@ -93,28 +94,6 @@ class CoreTestCase(TestCase):
         #engine._add_event(some_event, name="foo")
         #self.assertEqual(engine._engine_events[0].func, some_event)
         #self.assertEqual(engine._engine_events[0].kw["name"], "foo")
-
-    # def test_event_engine_backwards_in_time(self):
-        # def time_dependent_event(timestamp):
-            # return timestamp
-
-        # def time_independent_event():
-            # # if there is even such a thing.
-            # return
-
-        # engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
-        # engine.update_world(active_list=set(), timestamp=100)
-        # engine._add_event(time_dependent_event, timestamp=50)
-        # # timestamp argument magically forced to be the last time the
-        # # world was updated.
-
-        # self.assertEqual(engine._engine_events[0].kw["timestamp"], 100)
-
-        # # note that the order of events that got added to the engine do
-        # # matter very much.  i.e. if login and logout happened at about
-        # # the same time but the order they were added in were reversed,
-        # # bad things probably will happen.  Problem belongs to the user
-        # # of the engine, i.e. the chatroom interface.
 
     def test_inspect_user(self):
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
@@ -138,13 +117,23 @@ resources: [10, 10, 10]
 \tsources: {sources_string}
 in_userlist: True
 join_time: 1
-leave_time = -1
-total_time = 10
-last_payout = 11
-starting_system = {starting_system_name}
-"""
+leave_time: -1
+total_time: 10
+last_payout: 11
+starting_system: {starting_system_name}
+last_low_scan: None
+last_focus_scan: None
+last_high_scan: None
+destinations: []"""
         self.assertEqual(expected_string,engine.inspect_user("user1"))
 
+    #TODO
+    # def test__prune_destinations
+
+    #TODO
+    # def test__high_energy_scan
+
+    #TODO
     # def test_events_occur_in_order(self):
         # def func_a(timestamp):
             # return 'a'
