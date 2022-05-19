@@ -1,9 +1,37 @@
 # IdleISS: The Internet Spaceships IdleRPG
 
-### To use IdleISS stand-alone for development:
+### Setup IdleISS stand-alone for development:
 ```
 $ pip install -e .[dev]
+```
+### Running the Test Suite
+```
 $ pytest --runslow
+```
+### Running the Interpreter to Send Commands to a Default Settings Game Engine
+```
+$ idleiss
+[config file import details displayed here]
+
+IdleISS Interpreter: Send commands to IdleISS Core
+Commands: [full list of commands here]
+[current timestamp]||
+```
+Entering some example commands:
+```
+[current timestamp]||add u1
+[current timestamp]: user u1 logged in
+[current timestamp]||add u2
+[current timestamp]: user u2 logged in
+[current timestamp]||init
+[current timestamp]: core started: events:
+u1 has constructed their first structure, an Outpost in [starting system]. Their journey in the universe begins here.
+u2 has constructed their first structure, an Outpost in [starting system]. Their journey in the universe begins here.
+[current timestamp]>scan low u1
+[current timestamp]: [scan results]
+```
+### Command Line Help
+```
 $ idleiss --help
 
 usage: idleiss [-h] [-o] [-q] [-m] [-M] [-u UNICONFIG] [-s SHIPSCONFIG] [-r SCANCONFIG] [-b [SIMBATTLE]] [-p INTERPRETER_PRELOAD] [-l SAVE_FILE]
