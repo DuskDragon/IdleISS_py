@@ -231,7 +231,7 @@ class Scanning(object):
             system.sites = valid_sites
             for site in system.sites:
                 current_quality += self.site_data[site.name].quality
-        #if the constellation needs more sites add them to random slots
+        #if the constellation needs more sites add them to random systems
         while current_quality < self.settings.max_quality_per_constellation:
             name = rand.choice(list(self.site_data.keys()))
             current_quality += self.site_data[name].quality

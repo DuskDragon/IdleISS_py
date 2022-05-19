@@ -327,10 +327,19 @@ class GameEngine(object):
                         # players.append(self.users[user_id])
                 for site in system.sites:
                     if site.is_scannable(timestamp, lookup):
-                        #TODO ONLY ADD IF CHANCE IS CHECKED, CURRENTLY NOT DONE DUE TO DEBUGGING
                         if site not in scannables:
-                            scannables.append(site)
-        scanned = []
+                            #the random check to determine if site is scanned
+                            #occurs here because only the player scanning initially
+                            #detects all the sites, everyone else just gets the results
+                            #for free. If scanning power changes per player it would
+                            #need to be updated, but for now we will just do the
+                            #check once here and not in the lower loop where sites
+                            #are added to each player's destinations
+                            #
+                            #we use the main uni random here since it is a global dispatched
+                            #event and not a transient application-side interaction
+                            if self.universe.rand.random() < lookup.site_data[site.name].high_chance:
+                                scannables.append(site)
         for player in players:
             for site in scannables:
                 site_data = ["SiteInstance", site.site_id, site.system_id]
@@ -422,7 +431,6 @@ class GameEngine(object):
                 for x in range(5):
                     site_text += f"{x+1}: {lookup.site_data[site[x].name].initial_description}\n"
                 return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using the destinations menu.", grid) #TODO implement destinations menu
-            return ("focus result", "magic")
         elif type == "low" or type == "l":
             self.users[username].last_low_scan = now
             for site in scannables:
@@ -521,7 +529,7 @@ class GameEngine(object):
                 break
             else: # if not a future event, process it
                 results = engine_event(self)
-                for result in engine_event(self):
+                for result in results:
                     event_message, event_mess_type, event_timestamp = result
                     event_results.append(message=event_message, mess_type=event_mess_type, time=timestamp)
                 self._engine_events.remove(engine_event)
