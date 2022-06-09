@@ -3,6 +3,7 @@ from os.path import join, dirname
 import json
 
 from idleiss import core
+from idleiss.event import HighEnergyScan
 
 path_to_file = lambda fn: join(dirname(__file__), "data", fn)
 
@@ -85,15 +86,13 @@ class CoreTestCase(TestCase):
             engine.update_world(active_list=user_list, timestamp=999)
         self.assertEqual(str(context.exception), "'already processed this timestamp'")
 
-    #TODO
-    #def test_event_engine_add(self):
-        #def some_event(name="foo"):
-        #    return name
-
-        #engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
-        #engine._add_event(some_event, name="foo")
-        #self.assertEqual(engine._engine_events[0].func, some_event)
-        #self.assertEqual(engine._engine_events[0].kw["name"], "foo")
+    def test_event_engine_add(self):
+        engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
+        user_list = set(["user1"])
+        engine.update_world(active_list=user_list, timestamp=1)
+        some_event = HighEnergyScan(timestamp=1, user="user1", constellations=[engine.universe.constellations[0].name])
+        engine._add_event(some_event)
+        self.assertEqual(engine._engine_events[0], some_event)
 
     def test_inspect_user(self):
         engine = core.GameEngine(path_to_file("Small_Universe_Config.json"), path_to_file("Ships_Config.json"), path_to_file("Scan_Config.json"))
