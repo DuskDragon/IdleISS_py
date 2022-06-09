@@ -64,7 +64,8 @@ class Interpreter(object):
         self.add_parser([r"inspect\s+(?P<username>\w+)\s*$"], self.inspect, "inspect <username>")
         self.add_parser([r"info\s+(?P<system_name>\w+)\s*$"], self.info, "info <system_name>")
         self.add_parser([r"scan\s+(?P<type>\w+)\s+(?P<username>\w+)\s*(?P<pos>\w+)?\s*$"], self.scan, "scan <type> <username> [<pos>]")
-        self.add_parser([r"save\s*(?P<filename>[a-zA-Z0-9_]+.[a-zA-Z0-9_]+)?\s*$"], self.save, "save")
+        self.add_parser([r"destinations\s+(?P<username>\w+)\s*$"], self.destinations, "destinations <username>")
+        self.add_parser([r"save\s*(?P<filename>[a-zA-Z0-9_]+.[a-zA-Z0-9_]+)?\s*$"], self.save, "save [<filename>]")
 
     def add_parser(self, phrases, callback, help_text):
         self.parser_command_list += f", {help_text}"
@@ -144,6 +145,18 @@ class Interpreter(object):
                 full_mess = f"{mess}\nFrequency Map:\n{self.pp.pformat(grid)}"
                 return full_mess
         return self.engine.scan(Random(), self.current_time, username, type)[0]
+
+    def destinations(self, match):
+        if not self.is_started:
+            return "error: use init first"
+        username = match.group("username")
+        strs = self.engine.user_destinations(username, 2000, 3)
+        total = ""
+        for str in strs:
+            total += str
+            total += "\n--------------\nEnd of Message\n"
+        total = total[0:-1]
+        return total
 
     def save(self, match):
         save_file = None

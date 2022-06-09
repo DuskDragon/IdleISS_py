@@ -153,6 +153,6 @@ destinations: {self.destinations}"""
         if not structure['sov_structure']:
             raise ValueError(f"idleiss.User.conquer_new_system: {self.id}: {structure['name']} is not a sov_structure")
         if system.owned_by != None:
-            raise ValueError(f"idleiss.User.conquer_new_system: {user.id}: {system.name} is not free to be conquered")
+            raise ValueError(f"idleiss.User.conquer_new_system: {self.id}: {system.name} is not free to be conquered")
         system.owned_by = self.id
         self.construct_citadel(system, structure)

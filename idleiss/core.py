@@ -309,6 +309,49 @@ class GameEngine(object):
         else:
             return temp.inspect()
 
+    def user_destinations(self, username, max_length, max_messages):
+        if username not in self.users:
+            return "error: no such user"
+        destinations = self.users[username].destinations
+        formatted_strings = [""]
+        counter = 1
+        for destination in destinations:
+            dest_type = destination[0]
+            if dest_type == "SiteInstance":
+                dest_sys = self.universe.systems[destination[2]]
+                dest_site = None
+                for site in dest_sys.sites:
+                    if site.site_id == destination[1]:
+                        dest_site = site
+                        break
+                if dest_site == None:
+                    raise RuntimeError(f"IdleISS.core.user_destinations could not find SiteInstance id {destination[1]} on system {dest_sys.name}")
+                site_info = self.scanning.site_data[site.name].initial_description
+                new_dest_str = f"{counter}. System: {dest_sys.name}, Type: Scanned Site, Information: {site_info}\n"
+            else:
+                raise RuntimeError(f"IdleISS.core.user_destinations found invalid destination type for user: {username}. Destination was a '{dest_type}'")
+            #check if composed destination string is too long
+            if len(new_dest_str) > max_length:
+                raise RuntimeError(f"IdleISS.core.user_destinations new destination string is longer than max_length, cannot send destination information")
+            #check if composed destinations message is too long
+            if (len(formatted_strings[-1]) + len(new_dest_str)) > max_length:
+                #check if we are at messages limit
+                if len(formatted_strings)+1 == max_messages:
+                    #if at message limit add note that we have too many messages and eject
+                    formatted_strings.append("You have access to addtional destinations, but they cannot be listed due to length limitations.\n")
+                    return formatted_strings
+                formatted_strings.append("")
+            formatted_strings[-1] += new_dest_str
+            counter += 1
+        #end destinations loop
+        if len(formatted_strings[0]) == 0:
+            formatted_strings[0] += "No destinations are available at this time. Using the scanning menu can generate destinations.\n"
+        #trim trailing \n
+        for x in range(len(formatted_strings)):
+            if formatted_strings[x][-1] == "\n":
+                formatted_strings[x] = formatted_strings[x][0:-1]
+        return formatted_strings
+
     def _highenergyscan(self, constellations, timestamp):
         #collect all scannables
         scannables = []
@@ -345,20 +388,19 @@ class GameEngine(object):
                 site_data = ["SiteInstance", site.site_id, site.system_id]
                 if site_data not in player.destinations:
                     player.destinations.append(site_data)
-        #TODO update 'recent' menu to reflect new sites being added
 
-    def scan(self, rand, now, username, type, grid_pack=None):
+    def scan(self, rand, now, username, scan_type, grid_pack=None):
         if username not in self.users:
             return ("error: no such user", None)
         #this if/else block returns early with an error if cooldowns are not ready
-        if type == "high" or type == "h":
+        if scan_type == "high" or scan_type == "h":
             if self.users[username].last_high_scan == None:
                 pass # avoid None errors for math below
             elif now < (self.users[username].last_high_scan +
                       self.scanning.settings.high_recharge
             ):
                 return ("You are scanning too soon since your last scan of this type, please try again later.", None)
-        elif type == "focus" or type == "f":
+        elif scan_type == "focus" or scan_type == "f":
             if grid_pack == None:
                 raise RuntimeError(f"IdleISS.core.scan of focus type called by {username} with no grid_pack selected at {now}.")
             elif grid_pack[0] < 0 or grid_pack[0] > (
@@ -372,7 +414,7 @@ class GameEngine(object):
                       self.scanning.settings.focus_recharge
             ):
                 return ("You are scanning too soon since your last scan of this type, please try again later.", None)
-        elif type == "low" or type == "l":
+        elif scan_type == "low" or scan_type == "l":
             if self.users[username].last_low_scan == None:
                 pass # avoid None errors for math below
             elif now < (self.users[username].last_low_scan +
@@ -380,7 +422,7 @@ class GameEngine(object):
             ):
                 return ("You are scanning too soon since your last scan of this type, please try again later.", None)
         else:
-            raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {type} by {username}")
+            raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {scan_type} by {username}")
         #after continuing past this block we are clear to execute scan as far as cooldowns are concerned
         constellation_list = []
         #collect constellations with an owned structure
@@ -399,7 +441,7 @@ class GameEngine(object):
                     if site.is_scannable(now, lookup):
                         scannables.append(site)
         scanned = []
-        if type == "high" or type == "h":
+        if scan_type == "high" or scan_type == "h":
             ## update user info for high scan
             self.users[username].last_high_scan = now
             ## register future high scan global event
@@ -416,10 +458,14 @@ class GameEngine(object):
                 constellations=const_names
             ))
             return ("Charging ultracapacitors for wideband superluminal transmission. High energy scan pulse will be fired in approximately one hour. Please note this action will be extremely visible across the galaxy.", None)
-        elif type == "focus" or type == "f":
+        elif scan_type == "focus" or scan_type == "f":
             self.users[username].last_focus_scan = now
             scanned, grid = self.scanning.process_focus_sites(scannables, grid_pack[1], grid_pack[2], rand)
             site_text = ""
+            for site in scanned:
+                site_data = ["SiteInstance", site.site_id, site.system_id]
+                if site_data not in self.users[username].destinations:
+                    self.users[username].destinations.append(site_data)
             if len(scanned) <= 0:
                 return (f"Scan was successful, but it detected nothing notable at that frequency.", grid)
             elif len(scanned) <= 5:
@@ -430,14 +476,17 @@ class GameEngine(object):
                 scanned.sort(reverse=True, key=lambda x: lookup.site_data[x.name].quality)
                 for x in range(5):
                     site_text += f"{x+1}: {lookup.site_data[site[x].name].initial_description}\n"
-                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using the destinations menu.", grid) #TODO implement destinations menu
-        elif type == "low" or type == "l":
+                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using the destinations menu.", grid)
+        elif scan_type == "low" or scan_type == "l":
             self.users[username].last_low_scan = now
             for site in scannables:
                 if rand.random() < lookup.site_data[site.name].low_chance:
                     scanned.append(site)
-            #TODO register sites to user
             site_text = ""
+            for site in scanned:
+                site_data = ["SiteInstance", site.site_id, site.system_id]
+                if site_data not in self.users[username].destinations:
+                    self.users[username].destinations.append(site_data)
             if len(scanned) <= 0:
                 return (f"Scan was successful, but it detected nothing notable in range.", None)
             elif len(scanned) <= 5:
@@ -448,9 +497,9 @@ class GameEngine(object):
                 scanned.sort(reverse=True, key=lambda x: lookup.site_data[x.name].quality)
                 for x in range(5):
                     site_text += f"{x+1}: {lookup.site_data[site[x].name].initial_description}\n"
-                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using the destinations menu.", None) #TODO implement destinations menu
+                return (f"Scan was successful with {len(scanned)} results. Top five results are: \n{site_text}\nRemaining sites are accessable using the destinations menu.", None)
         else:
-            raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {type} by {username} at {now}")
+            raise RuntimeError(f"IdleISS.core.scan called with invalid scan type: {scan_type} by {username} at {now}")
 
     def _update_sites(self, timestamp):
         for constellation in self.universe.constellations:

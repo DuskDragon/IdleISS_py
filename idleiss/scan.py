@@ -186,8 +186,6 @@ class Scanning(object):
         return self.site_data[site_name]
 
     def process_focus_sites(self, scannable_sites, sel_x, sel_y, rand):
-        ## writing this caused me to question why I am even doing this at all
-        ## it is kind of pretty I guess
         max_width = self.settings.focus_width_max
         max_height = self.settings.focus_height_max
         scan_grid = [[[] for x in range(max_width)] for y in range(max_height)]
