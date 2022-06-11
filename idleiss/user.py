@@ -1,6 +1,6 @@
 from .fleet import FleetManager
 from .resource import ResourceManager
-from .scan import SiteInstance
+#from .scan import SiteInstance
 
 class User(object):
     def __init__(self, user_id, starting_system, savedata=None):

@@ -150,7 +150,7 @@ class Interpreter(object):
         if not self.is_started:
             return "error: use init first"
         username = match.group("username")
-        strs = self.engine.user_destinations(username, 2000, 3)
+        strs = self.engine.user_destinations(self.current_time, username, 2000, 3)
         total = ""
         for str in strs:
             total += str

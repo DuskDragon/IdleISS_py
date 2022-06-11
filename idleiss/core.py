@@ -21,6 +21,22 @@ def bisect_is_present(a, x):
         return True
     return False
 
+def human_time_diff(duration_in_seconds):
+    if duration_in_seconds == 0:
+        return 'just now'
+    suffix = "ago"
+    if duration_in_seconds < 0:
+        suffix = "in the future"
+        duration_in_seconds = duration_in_seconds * -1
+    if duration_in_seconds < 90:
+        return f"{duration_in_seconds}s {suffix}"
+    if duration_in_seconds < 90*60:
+        return f"{int(duration_in_seconds/60)}m {suffix}"
+    if duration_in_seconds < 36*60*60:
+        return f"{int(duration_in_seconds/60/60)}h {suffix}"
+    else:
+        return f"{int(duration_in_seconds/60/60/24)}d {suffix}"
+
 class TimeOutofBounds(Exception):
     def __init__(self, value):
         self.value = value
@@ -291,10 +307,13 @@ class GameEngine(object):
     def _prune_destinations(self, destination_data):
         #prune destinations for users
         for user_id, user in self.users.items():
-            user.destinations = list(filter(
-                lambda dest: dest != destination_data,
-                user.destinations
-            ))
+            user.destinations = list(
+                filter( # drop only exact matches for fields 0, 1, and 2
+                    lambda dest: not (dest[0] == destination_data[0] and
+                                      dest[1] == destination_data[1] and
+                                      dest[2] == destination_data[2])
+                    , user.destinations)
+            )
         #TODO: prune_destiations for fleets
 
     def inspect_user(self, username):
@@ -309,7 +328,7 @@ class GameEngine(object):
         else:
             return temp.inspect()
 
-    def user_destinations(self, username, max_length, max_messages):
+    def user_destinations(self, now, username, max_length, max_messages):
         if username not in self.users:
             return "error: no such user"
         destinations = self.users[username].destinations
@@ -327,7 +346,12 @@ class GameEngine(object):
                 if dest_site == None:
                     raise RuntimeError(f"IdleISS.core.user_destinations could not find SiteInstance id {destination[1]} on system {dest_sys.name}")
                 site_info = self.scanning.site_data[site.name].initial_description
-                new_dest_str = f"{counter}. System: {dest_sys.name}, Type: Scanned Site, Information: {site_info}\n"
+                if len(destination) == 3:
+                    new_dest_str = f"{counter}. System: {dest_sys.name}, Type: Scanned Site, Information: {site_info}\n"
+                elif len(destination) == 5:
+                    new_dest_str = f"{counter}. System: {dest_sys.name}, Type: Scanned Site, Information: {site_info} Source: {destination[3]} {human_time_diff(now-destination[4])}\n"
+                else:
+                    raise RuntimeError(f"IdleISS.core.user_destinations SiteInstance has a length ({len(destination)}) with an unsupported data-to-string conversion")
             else:
                 raise RuntimeError(f"IdleISS.core.user_destinations found invalid destination type for user: {username}. Destination was a '{dest_type}'")
             #check if composed destination string is too long
@@ -345,7 +369,7 @@ class GameEngine(object):
             counter += 1
         #end destinations loop
         if len(formatted_strings[0]) == 0:
-            formatted_strings[0] += "No destinations are available at this time. Using the scanning menu can generate destinations.\n"
+            formatted_strings[0] += "No destinations are available at this time. Hint: One way to find destinations is by using the scanning menu.\n"
         #trim trailing \n
         for x in range(len(formatted_strings)):
             if formatted_strings[x][-1] == "\n":
@@ -385,8 +409,15 @@ class GameEngine(object):
                                 scannables.append(site)
         for player in players:
             for site in scannables:
-                site_data = ["SiteInstance", site.site_id, site.system_id]
-                if site_data not in player.destinations:
+                site_data = ["SiteInstance", site.site_id, site.system_id, "High Energy Scan", timestamp]
+                present = False
+                for destination in player.destinations:
+                    if (site_data[0] == destination[0] and
+                        site_data[1] == destination[1] and
+                        site_data[2] == destination[2]):
+                        present = True
+                        break
+                if not present:
                     player.destinations.append(site_data)
 
     def scan(self, rand, now, username, scan_type, grid_pack=None):
@@ -463,8 +494,15 @@ class GameEngine(object):
             scanned, grid = self.scanning.process_focus_sites(scannables, grid_pack[1], grid_pack[2], rand)
             site_text = ""
             for site in scanned:
-                site_data = ["SiteInstance", site.site_id, site.system_id]
-                if site_data not in self.users[username].destinations:
+                site_data = ["SiteInstance", site.site_id, site.system_id, "Focused Scan", now]
+                present = False
+                for destination in self.users[username].destinations:
+                    if (site_data[0] == destination[0] and
+                        site_data[1] == destination[1] and
+                        site_data[2] == destination[2]):
+                        present = True
+                        break
+                if not present:
                     self.users[username].destinations.append(site_data)
             if len(scanned) <= 0:
                 return (f"Scan was successful, but it detected nothing notable at that frequency.", grid)
@@ -484,8 +522,15 @@ class GameEngine(object):
                     scanned.append(site)
             site_text = ""
             for site in scanned:
-                site_data = ["SiteInstance", site.site_id, site.system_id]
-                if site_data not in self.users[username].destinations:
+                site_data = ["SiteInstance", site.site_id, site.system_id, "Low Energy Scan", now]
+                present = False
+                for destination in self.users[username].destinations:
+                    if (site_data[0] == destination[0] and
+                        site_data[1] == destination[1] and
+                        site_data[2] == destination[2]):
+                        present = True
+                        break
+                if not present:
                     self.users[username].destinations.append(site_data)
             if len(scanned) <= 0:
                 return (f"Scan was successful, but it detected nothing notable in range.", None)
@@ -564,7 +609,7 @@ class GameEngine(object):
             #### Produce Units for User
 
         #### For the Full Gamestate:
-        #### Update Depleted Scanning Sites
+        #### Update Depleted Scanning Sites and Update User Destinations for Sites only
         self._update_sites(timestamp)
         #### Random Events
         #### Calculate Battles
