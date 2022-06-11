@@ -151,7 +151,7 @@ class GameEngine(object):
 
     def __init__(self, universe_filename, library_filename, scanning_filename, savedata=None):
         self.users = {}
-        self.current_channel_list = []
+        self.current_channel_list = set()
         self.universe = Universe(universe_filename)
         self.library = ShipLibrary(library_filename)
         self.scanning = Scanning(scanning_filename, self.library)
@@ -195,9 +195,11 @@ class GameEngine(object):
         for usrid, usr in self.users.items():
             usersave[usrid] = usr.generate_savedata()
         events_save = [(event.type_str(), event.asdict()) for event in self._engine_events]
+        sav_current_channel_list = list(self.current_channel_list)
+        sav_current_channel_list.sort()
         save = {
             '_engine_events': events_save,
-            'current_channel_list': list(self.current_channel_list),
+            'current_channel_list': sav_current_channel_list,
             'users': usersave,
             'universe': self.universe.generate_savedata(),
             'world_timestamp': self.world_timestamp
@@ -263,7 +265,7 @@ class GameEngine(object):
         return MessageManager(message, 'broadcast', timestamp)
         # TODO: register user in control system to generate events
 
-    def _construct_structure(self, user, system, structure):
+    def _construct_structure(self, now, user, system, structure):
         new_conquered_system = False
         can_build = self._can_construct_structure(user, system, structure)
         if can_build[0]:
@@ -275,7 +277,7 @@ class GameEngine(object):
             message = f"{system.name} has been conquered by {user.id} with the construction of a {structure['name']}"
         else:
             message = f"{user.id} has constructed a new {structure['name']} in {system.name}"
-        return MessageManager(message, 'broadcast', timestamp)
+        return MessageManager(message, 'broadcast', now)
 
     def _user_joined(self, user_id, timestamp):
         messages = MessageManager()

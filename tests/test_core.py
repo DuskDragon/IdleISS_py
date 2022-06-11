@@ -169,14 +169,10 @@ destinations: []"""
             path_to_file("Scan_Config.json"),
             shared_save
         )
-        check_save_json1 = json.dumps(engine1.generate_savedata())
-        check_save_json2 = json.dumps(engine2.generate_savedata())
-        self.assertEqual(check_save_json1, check_save_json2)
+        self.assertEqual(engine1.generate_savedata(), engine2.generate_savedata())
         engine1.update_world(user_list, timestamp=51)
         engine2.update_world(user_list, timestamp=51)
-        check_save_json1 = json.dumps(engine1.generate_savedata())
-        check_save_json2 = json.dumps(engine2.generate_savedata())
-        self.assertEqual(check_save_json1, check_save_json2)
+        self.assertEqual(engine1.generate_savedata(), engine2.generate_savedata())
 
     def test_different_timestamps_produce_different_outputs(self):
         engine1 = core.GameEngine(
@@ -194,16 +190,12 @@ destinations: []"""
             path_to_file("Scan_Config.json"),
             shared_save
         )
-        check_save_json1 = json.dumps(engine1.generate_savedata())
-        check_save_json2 = json.dumps(engine2.generate_savedata())
-        self.assertEqual(check_save_json1, check_save_json2)
+        self.assertEqual(engine1.generate_savedata(), engine2.generate_savedata())
         engine1.update_world(user_list, timestamp=51)
         engine2.update_world(user_list, timestamp=50)
-        check_save_json1 = json.dumps(engine1.generate_savedata())
-        check_save_json2 = json.dumps(engine2.generate_savedata())
-        self.assertNotEqual(check_save_json1, check_save_json2)
+        self.assertNotEqual(engine1.generate_savedata(), engine2.generate_savedata())
 
-    def test_a_large_number_of_users(self):
+    def test_a_large_number_of_users_can_save(self):
         engine = core.GameEngine(
             path_to_file("Small_Universe_Config.json"),
             path_to_file("Ships_Config.json"),
