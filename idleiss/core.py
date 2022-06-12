@@ -372,10 +372,8 @@ class GameEngine(object):
         #end destinations loop
         if len(formatted_strings[0]) == 0:
             formatted_strings[0] += "No destinations are available at this time. Hint: One way to find destinations is by using the scanning menu.\n"
-        #trim trailing \n
-        for x in range(len(formatted_strings)):
-            if formatted_strings[x][-1] == "\n":
-                formatted_strings[x] = formatted_strings[x][0:-1]
+        for x in range(len(formatted_strings)): #since we only need the index this is slightly faster than enumerate
+            formatted_strings[x] = formatted_strings[x].rstrip()
         return formatted_strings
 
     def _highenergyscan(self, constellations, timestamp):
@@ -509,8 +507,8 @@ class GameEngine(object):
             if len(scanned) <= 0:
                 return (f"Scan was successful, but it detected nothing notable at that frequency.", grid)
             elif len(scanned) <= 5:
-                for x in range(len(scanned)):
-                    site_text += f"{x+1}: {lookup.site_data[scanned[x].name].initial_description}\n"
+                for i, v in enumerate(scanned):
+                    site_test += f"{i+1}: {lookup.site_data[v.name].initial_description}\n"
                 return (f"Scan was successful, results are as follows: \n{site_text}Dispatch fleets using the destinations menu.", grid)
             else:
                 scanned.sort(reverse=True, key=lambda x: lookup.site_data[x.name].quality)
@@ -537,8 +535,8 @@ class GameEngine(object):
             if len(scanned) <= 0:
                 return (f"Scan was successful, but it detected nothing notable in range.", None)
             elif len(scanned) <= 5:
-                for x in range(len(scanned)):
-                    site_text += f"{x+1}: {lookup.site_data[scanned[x].name].initial_description}\n"
+                for i, v in enumerate(scanned):
+                    site_text += f"{i+1}: {lookup.site_data[v.name].initial_description}\n"
                 return (f"Scan was successful, results are as follows: \n{site_text}Dispatch fleets using the destinations menu.", None)
             else:
                 scanned.sort(reverse=True, key=lambda x: lookup.site_data[x.name].quality)

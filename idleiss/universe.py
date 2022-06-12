@@ -636,8 +636,7 @@ class Universe(object):
         highsec_ring.remove(central_highsec_region)
         # form the ring using the self.connectedness metric to determine
         #   when a spoke or arc exists
-        for x in range(len(highsec_ring)):
-            region = highsec_ring[x]
+        for i, region in enumerate(highsec_ring):
             edge_chance = min(float(self.connectedness)/2.0,1.0)
             # check if there is only one region
             if len(highsec_ring) == 1:
@@ -645,10 +644,10 @@ class Universe(object):
                 continue
             # determine which node is on the "rightside"
             rightside = 0
-            if x == len(highsec_ring)-1: #last node
+            if i == len(highsec_ring)-1: #last node
                 rightside = highsec_ring[0]
             else:
-                rightside = highsec_ring[x+1]
+                rightside = highsec_ring[i+1]
             # roll for spoke
             if self.rand.random() <= edge_chance:
                 region.add_connection(central_highsec_region)
@@ -667,14 +666,13 @@ class Universe(object):
         self.stitch_nodes(highsec_regions)
         # highsec is forced to be connected
         # now to create lowsec ring
-        for x in range(len(lowsec_regions)):
-            region = lowsec_regions[x]
+        for i, v in enumerate(lowsec_regions):
             edge_chance = min(float(self.connectedness)/2.0,1.0)
             inward = 0
             rightside = 0
             #determine if there are more lowsec regions than highsec for the rings
             #determine spoke target
-            lowsec_pos = (x+1)
+            lowsec_pos = (i+1)
             if len(highsec_ring) == 0:
                 inward = central_highsec_region
             elif len(highsec_ring) == 1:
@@ -682,24 +680,24 @@ class Universe(object):
             elif len(lowsec_regions) >= len(highsec_ring):
                 inward = highsec_ring[int(lowsec_pos/len(highsec_ring))]
             else: #len(lowsec_regions) < len(highsec_ring):
-                inner_start = int(x*len(highsec_ring)/len(lowsec_regions))
+                inner_start = int(i*len(highsec_ring)/len(lowsec_regions))
                 inner_end = inner_start + int(len(highsec_ring)/len(lowsec_regions))
                 inward = self.rand.choice(highsec_ring[inner_start:inner_end])
             #determine rightside
-            if x == len(lowsec_regions)-1: #last node
+            if i == len(lowsec_regions)-1: #last node
                 rightside = highsec_ring[0]
             elif len(lowsec_regions) == 1:
                 rightside = highsec_ring[0]
             elif len(highsec_ring) == 1:
                 rightside = highsec_ring[0]
             else:
-                rightside = highsec_ring[x+1]
+                rightside = highsec_ring[i+1]
             #roll for spoke
             if self.rand.random() <= edge_chance:
-                region.add_connection(inward)
+                v.add_connection(inward)
             #roll for righside arc
             if self.rand.random() <= edge_chance:
-                region.add_connection(rightside)
+                v.add_connection(rightside)
         # add additional connections at random according to connectedness
         if len(lowsec_regions) != 1:
             existing_connections = self.count_edges(lowsec_regions)
@@ -730,10 +728,8 @@ class Universe(object):
             random_ring = self.rand.choice(nullsec_ring_list)
             random_position = self.rand.randint(0,len(random_ring))
             random_ring.insert(random_position, region)
-        for ring_number in range(len(nullsec_ring_list)):
-            this_ring = nullsec_ring_list[ring_number]
-            for region_number in range(len(this_ring)):
-                region = this_ring[region_number]
+        for ring_number, this_ring in enumerate(nullsec_ring_list):
+            for region_number, region in enumerate(this_ring):
                 edge_chance = min(float(self.connectedness)/2.0,1.0)
                 inward = 0
                 righward = 0

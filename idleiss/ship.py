@@ -139,16 +139,12 @@ class ShipLibrary(object):
 
             #apply weapon_size adjustment to each weapon
             updates["weapons"] = []
-            for x in range(len(data["weapons"])):
-                weapon = data["weapons"][x]
-                updates["weapons"].append(data["weapons"][x])
-                size_of_weapon = updates["weapons"][x]["weapon_size"]
-                weapon_size_type = type(size_of_weapon)
-                updates["weapons"][x]["weapon_size"] = size_of_weapon if weapon_size_type is \
-                                                       int else self.size_data[size_of_weapon]
-                # include optional values: area_of_effect and cycle_time
-                updates["weapons"][x]["area_of_effect"] = weapon.get("area_of_effect", 1)
-                updates["weapons"][x]["cycle_time"] = weapon.get("cycle_time", 1)
+            for v in data["weapons"]:
+                if not isinstance(v["weapon_size"], int):
+                    v["weapon_size"] = self.size_data[v["weapon_size"]]
+                v["area_of_effect"] = v.get("area_of_effect", 1)
+                v["cycle_time"] = v.get("cycle_time", 1)
+                updates["weapons"].append(v)
 
             size_type = type(data["size"])
             updates["size"] = data["size"] if size_type is int else self.size_data[data["size"]]

@@ -228,11 +228,9 @@ def priority_target_list(input_fleet, priority):
     which have the same hullclass as passed in parameter priority
     """
     subfleet = []
-    for x in range(len(input_fleet)):
-        if input_fleet[x].schema.hullclass in priority:
-            subfleet.append(x)
-        else:
-            continue
+    for i, v in enumerate(input_fleet):
+        if v.schema.hullclass in priority:
+            subfleet.append(i)
     return subfleet
 
 def only_strucutre_list(input_fleet):
@@ -240,11 +238,9 @@ def only_strucutre_list(input_fleet):
     returns a list of ships where ship.schema.is_structure is True
     """
     subfleet = []
-    for x in range(len(input_fleet)):
-        if input_fleet[x].schema.is_structure == True:
-            subfleet.append(x)
-        else:
-            continue
+    for i, v in enumerate(input_fleet):
+        if v.schema.is_structure is True:
+            subfleet.append(i)
     return subfleet
 
 def remove_structures_list(input_fleet):
@@ -252,11 +248,9 @@ def remove_structures_list(input_fleet):
     returns a list of ships where ship.schema.is_structure is False
     """
     subfleet = []
-    for x in range(len(input_fleet)):
-        if input_fleet[x].schema.is_structure == False:
-            subfleet.append(x)
-        else:
-            continue
+    for i, v in enumerate(input_fleet):
+        if v.schema.is_structure is False:
+            subfleet.append(i)
     return subfleet
 
 def repair_fleet(input_fleet):
@@ -275,9 +269,9 @@ def repair_fleet(input_fleet):
     # and a ship might get over repped, but that's actually intended
 
     # shield first
-    for x in range(len(input_fleet)):
-        if input_fleet[x].attributes.shield != input_fleet[x].schema.shield:
-            damaged_shield.append(x)
+    for i, v in enumerate(input_fleet):
+        if v.attributes.shield != v.schema.shield:
+            damaged_shield.append(i)
 
     if damaged_shield != []:
         for ship in logi_shield:
@@ -296,11 +290,10 @@ def repair_fleet(input_fleet):
             )
 
     damaged_armor = []
-
     #armor second
-    for x in range(len(input_fleet)):
-        if input_fleet[x].attributes.armor != input_fleet[x].schema.armor:
-            damaged_armor.append(int(x))
+    for i, v in enumerate(input_fleet):
+        if v.attributes.armor != v.schema.armor:
+            damaged_armor.append(i)
 
     if damaged_armor != []:
         for ship in logi_armor:
