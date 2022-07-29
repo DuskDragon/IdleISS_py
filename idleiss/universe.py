@@ -505,39 +505,39 @@ class Universe(object):
         #plt.show()
         return G
 
-    def generate_graph_tool(self, node_list):
-        """
-        Mapping function which uses graph-tool (python mathematics tool)
-        graph-tool is a C++ implementation with a python wrapper
-        it's 225x faster than NetworkX (NetworkX is python only)
-        """
-        import graph_tool as gtool
-        graph = gtool.Graph(directed=False)
-        connection_list = []
-        orphan_list = []
-        name_list = list(range(len(node_list)))
-        vprop = graph.new_vertex_property("string")
-        vertex_list = list(graph.add_vertex(len(node_list)))
-        for x in node_list:
-            name_list[x.id] = x.name
-            if len(x.connections) == 0:
-                orphan_list.append(x.name)
-            for y in x.connections:
-                if x.id > y.id:
-                    connection_list.append((x.id,y.id,))
-                else: # y > x:
-                    connection_list.append((y.id,x.id,))
-        #prune redundant connections
-        pruned_list = set(connection_list)
-        # name nodes
-        for x in range(len(vertex_list)):
-            vprop[vertex_list[x]] = name_list[x]
-        # assign properties as a dict value
-        graph.vertex_properties["name"]=vprop
-        # add collected edges
-        for x in pruned_list:
-            graph.add_edge(vertex_list[x[0]],vertex_list[x[1]])
-        return graph
+    #def generate_graph_tool(self, node_list):
+    #    """
+    #    Mapping function which uses graph-tool (python mathematics tool)
+    #    graph-tool is a C++ implementation with a python wrapper
+    #    it's 225x faster than NetworkX (NetworkX is python only)
+    #    """
+    #    import graph_tool as gtool
+    #    graph = gtool.Graph(directed=False)
+    #    connection_list = []
+    #    orphan_list = []
+    #    name_list = list(range(len(node_list)))
+    #    vprop = graph.new_vertex_property("string")
+    #    vertex_list = list(graph.add_vertex(len(node_list)))
+    #    for x in node_list:
+    #        name_list[x.id] = x.name
+    #        if len(x.connections) == 0:
+    #            orphan_list.append(x.name)
+    #        for y in x.connections:
+    #            if x.id > y.id:
+    #                connection_list.append((x.id,y.id,))
+    #            else: # y > x:
+    #                connection_list.append((y.id,x.id,))
+    #    #prune redundant connections
+    #    pruned_list = set(connection_list)
+    #    # name nodes
+    #    for x in range(len(vertex_list)):
+    #        vprop[vertex_list[x]] = name_list[x]
+    #    # assign properties as a dict value
+    #    graph.vertex_properties["name"]=vprop
+    #    # add collected edges
+    #    for x in pruned_list:
+    #        graph.add_edge(vertex_list[x[0]],vertex_list[x[1]])
+    #    return graph
 
     def _build_universe(self, verified_config):
         regions = verified_config["Universe Structure"]
